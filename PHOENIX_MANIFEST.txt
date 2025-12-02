@@ -1,0 +1,7 @@
+RICK PHOENIX - Clean Merge
+Created: 2025-11-26T12:35:42.311213
+Baseline: /home/ing/RICK/RICK_LIVE_CLEAN/FROZEN_V2_SNAPSHOT_20251124T055859.zip
+Files from baseline: 3727
+Files updated: 6
+Files added: 4692
+AUTH CODE: 841921

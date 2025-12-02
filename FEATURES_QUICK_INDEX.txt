@@ -1,0 +1,365 @@
+================================================================================
+                    RICK_LIVE_CLEAN - FEATURES QUICK INDEX
+                         PIN: 841921 | Nov 4, 2025
+================================================================================
+
+To view the COMPLETE 100% feature audit, run:
+  $ cat ADVANCED_FEATURES_COMPLETE_AUDIT.md
+
+================================================================================
+FEATURE CATEGORIES (130+ TOTAL)
+================================================================================
+
+1. CORE TRADING (19 features)
+   ✓ Multi-instrument FX trading (18 pairs)
+   ✓ Real-time market data (M15/M30/H1)
+   ✓ OCO order execution
+   ✓ Position tracking & P&L monitoring
+   ✓ Position Police (auto-close <$15k)
+   ✓ Charter Gates enforcement
+   ✓ Trailing stop logic
+   ✓ Market regime detection
+   ✓ Adaptive signal generation
+   + 10 more (see full audit)
+
+2. ANALYSIS & OPTIMIZATION (15+ features)
+   ✓ Sharpe Ratio calculation
+   ✓ Win rate analysis
+   ✓ Drawdown tracking
+   ✓ Parameter impact analysis
+   ✓ Regime-specific optimization
+   ✓ Backtesting support
+   ✓ Correlation analysis
+   + 8 more (see full audit)
+
+3. GOVERNANCE & SECURITY (18 features)
+   ✓ PIN authentication (841921)
+   ✓ File-level read-only locking
+   ✓ Charter immutability
+   ✓ Runtime import hooks
+   ✓ Audit trail logging
+   ✓ Tamper detection
+   ✓ Credential management
+   + 11 more (see full audit)
+
+4. DATA INFRASTRUCTURE (12 features)
+   ✓ OANDA real-time data
+   ✓ Narration stream (JSON)
+   ✓ Engine logs (detailed)
+   ✓ Receipt system with hashes
+   ✓ Trade recording
+   ✓ Historical storage
+   + 6 more (see full audit)
+
+5. DASHBOARD & UI (16 features)
+   ✓ Web dashboard (Flask)
+   ✓ Real-time narration sidebar
+   ✓ Live P&L chart
+   ✓ Risk heatmap
+   ✓ ElectronJS shell
+   ✓ WebSocket streaming
+   ✓ TradingView integration
+   + 9 more (see full audit)
+
+6. ADVANCED SYSTEMS (22 features)
+   ✓ Golden Age Market Simulator
+   ✓ Correlation-based hedging
+   ✓ Momentum detection
+   ✓ Smart trailing system
+   ✓ ATR calculation (NO TALIB)
+   ✓ Volatility analysis
+   ✓ Multi-regime adaptation
+   + 15 more (see full audit)
+
+7. BROKER INTEGRATIONS (3)
+   ✓ OANDA (Active)
+   ✓ Coinbase (Ready)
+   ✓ Interactive Brokers (Ready)
+
+8. MONITORING & OBSERVABILITY (15 features)
+   ✓ Real-time status audit
+   ✓ Health checks
+   ✓ Latency monitoring
+   ✓ Error tracking
+   ✓ Process tracking
+   + 10 more (see full audit)
+
+9. AUTOMATION & TASKS (18 RLC Tasks)
+   ✓ Start/stop engine
+   ✓ Position Police sweep
+   ✓ System audits
+   ✓ Narration monitoring
+   ✓ File locking
+   + 13 more (see full audit)
+
+================================================================================
+HOW TO ACCESS EACH FEATURE
+================================================================================
+
+TRADING FEATURES:
+  Real-time signals: Watch engine logs
+    $ tail -f logs/engine.log
+  
+  Position monitoring: Live narration
+    $ tail -f logs/narration.jsonl | jq '.'
+  
+  Execute Position Police: Force notional check
+    $ ./start_with_integrity.sh
+    Then: RLC: Sweep — Position Police task
+
+ANALYSIS FEATURES:
+  Optimizer metrics:
+    $ python3 -c "
+      from ml_learning.optimizer import TradingOptimizer
+      opt = TradingOptimizer(pin=841921)
+      print(opt.get_optimization_report())
+    "
+  
+  Performance analysis:
+    $ python3 -c "
+      from util.optimizer import TradingOptimizer
+      opt = TradingOptimizer(pin=841921)
+      print(opt.get_regime_performance_summary())
+    "
+
+SECURITY & GOVERNANCE:
+  System audit:
+    $ python3 check_integrity.py
+  
+  Full status audit:
+    $ python3 -c "import subprocess; 
+      subprocess.run(['python3', 'check_integrity.py'])"
+  
+  Lock files:
+    $ chmod 444 brokers/oanda_connector.py rick_charter.py 
+      oanda_trading_engine.py .vscode/tasks.json
+
+DASHBOARD:
+  Start web dashboard:
+    $ python3 dashboard/app.py
+    Then visit: http://localhost:5000
+  
+  Start API server:
+    $ python3 services/market_data_api.py
+    Then query: http://localhost:8788/api/engine/status
+
+DATA & MONITORING:
+  Recent trades:
+    $ tail -50 logs/engine.log
+  
+  Narration stream:
+    $ tail -20 logs/narration.jsonl | python3 -c "
+      import sys, json; 
+      [print(json.dumps(json.loads(line), indent=2)) 
+       for line in sys.stdin]"
+  
+  Receipt verification:
+    $ ls -la logs/receipt_*.json
+    $ cat logs/receipt_*.json | jq '.'
+
+RLC AUTOMATION TASKS:
+  Use VS Code tasks or command line:
+    $ cd .vscode
+    $ grep "RLC:" tasks.json | head -20
+  
+  Or directly via tasks:
+    • RLC: Start STRICT Engine (practice)
+    • RLC: Stop All (safe)
+    • RLC: Full System Audit
+    • RLC: Charter Compliance Check
+    • RLC: Live Position Monitor
+    • RLC: Account Balance
+    • RLC: Recent Trades
+    • RLC: Emergency: Close All Positions
+    • RLC: Engine Logs (last 50)
+    • RLC: Narration Logs (last 20)
+    • RLC: Snapshot + Hash Receipt
+    • RLC: Integrity Check
+    • RLC: Lock All + Verify
+
+BROKER INTEGRATIONS:
+  OANDA (active):
+    Practice account: 101-001-31210531-002
+    Real-time pricing: Enabled
+    Trading: OCO orders working
+  
+  Coinbase (ready):
+    Set credentials in .env:
+      COINBASE_ADVANCED_KEY=...
+      COINBASE_ADVANCED_SECRET=...
+    Then activate in broker config
+
+  IBKR (ready):
+    Start IB Gateway
+    Configure in broker config
+    Test connection via check_integrity.py
+
+================================================================================
+SYSTEM ARCHITECTURE OVERVIEW
+================================================================================
+
+Entry Point:
+  ./start_with_integrity.sh
+    ↓
+  Check critical files
+    ↓
+  Verify file locks (chmod 444)
+    ↓
+  Load environment (.env.oanda_only)
+    ↓
+  Test sitecustomize.py import hooks
+    ↓
+  Launch: python3 -u oanda_trading_engine.py
+
+Runtime Patches (sitecustomize.py):
+  ✓ Install import hooks on MetaPathFinder
+  ✓ Intercept brokers.oanda_connector module load
+  ✓ Patch _make_request() to accept params
+  ✓ Patch get_historical_data() response parsing
+  ✓ Map charter aliases (MAX_HOLD_TIME_HOURS → MAX_HOLD_DURATION_HOURS)
+  ✓ Wrap TerminalDisplay.info() for signature compatibility
+
+Core Engine (oanda_trading_engine.py):
+  ✓ Real-time market regime detection
+  ✓ Multi-pair signal generation
+  ✓ OCO order placement
+  ✓ Position Police enforcement
+  ✓ Risk management gates
+  ✓ Narration stream output
+
+Supporting Systems:
+  • OandaConnector: API + order execution
+  • TradingOptimizer: Performance analysis
+  • TerminalDisplay: Real-time UI
+  • RickCharter: Immutable constants
+  • Dashboard: Web UI + visualizations
+
+Output Streams:
+  logs/engine.log          → Detailed engine activity
+  logs/narration.jsonl     → Real-time narration events
+  logs/receipt_*.json      → Timestamped status snapshots
+
+================================================================================
+COMPLIANCE & GOVERNANCE
+================================================================================
+
+Charter Constants (Immutable):
+  MIN_NOTIONAL_USD = 15,000
+    → Minimum position size
+    → Position Police auto-closes smaller positions
+  
+  MAX_HOLD_DURATION_HOURS = 6
+    → Maximum time in position
+    → M15 candle compliance
+  
+  MIN_RISK_REWARD_RATIO = 3.2
+    → Mandatory stop/target ratio
+    → TP-PnL gate validates
+  
+  OCO_MANDATORY = True
+    → No directional orders without TP/SL
+
+Guardian Gates (Active):
+  ✓ TP-PnL Floor Gate
+    Prevents trades if expected PnL below minimum
+  
+  ✓ Notional Floor Gate
+    Blocks trades under $15k notional
+  
+  ✓ Position Police
+    Auto-closes positions under limit
+    Runs every cycle (no manual needed)
+
+File-Level Security:
+  ✓ brokers/oanda_connector.py     (chmod 444)
+  ✓ rick_charter.py                (chmod 444)
+  ✓ oanda_trading_engine.py        (chmod 444)
+  ✓ .vscode/tasks.json             (chmod 444)
+
+Audit Trail:
+  ✓ All operations logged to narration.jsonl
+  ✓ Hash receipts (SHA256) for tamper detection
+  ✓ Timestamped snapshots
+  ✓ Before/after state comparison
+
+================================================================================
+QUICK DIAGNOSTICS
+================================================================================
+
+Q: How do I know the engine is working?
+A: 
+  1. Check process: ps aux | grep oanda_trading_engine.py
+  2. Watch logs: tail -f logs/engine.log
+  3. Check narration: tail -f logs/narration.jsonl | jq '.'
+  4. Run audit: python3 check_integrity.py
+
+Q: How do I verify all features are active?
+A:
+  1. System audit: Full health check
+     RLC: 🎯 Full System Audit
+  2. Charter check: Compliance verification
+     RLC: 📊 Charter Compliance Check
+  3. Position check: Real-time monitoring
+     RLC: 🔍 Live Position Monitor
+
+Q: How do I see the complete feature list?
+A:
+  $ cat ADVANCED_FEATURES_COMPLETE_AUDIT.md | less
+  
+  Contains:
+    • 130+ feature descriptions
+    • Usage examples
+    • Architecture diagrams
+    • Complete API reference
+    • Performance metrics
+    • Integration instructions
+
+Q: How do I unlock files for editing?
+A:
+  # Only with PIN 841921
+  
+  chmod 644 brokers/oanda_connector.py
+  chmod 644 rick_charter.py
+  chmod 644 oanda_trading_engine.py
+  chmod 644 .vscode/tasks.json
+  
+  # Re-lock after editing
+  chmod 444 brokers/oanda_connector.py
+  chmod 444 rick_charter.py
+  chmod 444 oanda_trading_engine.py
+  chmod 444 .vscode/tasks.json
+
+Q: How do I access the optimizer?
+A:
+  from ml_learning.optimizer import TradingOptimizer
+  opt = TradingOptimizer(pin=841921)
+  
+  # Available methods:
+  opt.calculate_sharpe_ratio(returns)
+  opt.calculate_performance_metrics(trades)
+  opt.analyze_parameter_impact(parameter, trades)
+  opt.generate_optimization_suggestions()
+  opt.get_regime_performance_summary()
+  opt.get_optimization_report()
+
+================================================================================
+PIN AUTHENTICATION
+================================================================================
+
+PIN: 841921
+
+Required for:
+  • Unlocking files for editing
+  • Creating TradingOptimizer instances
+  • Accessing governance operations
+  • All high-security operations
+
+Usage:
+  • In code: TradingOptimizer(pin=841921)
+  • In scripts: Store in environment variable
+  • In CLI: Passed as argument
+
+================================================================================
+STATUS: ✅ FULLY OPERATIONAL
+Last Updated: November 4, 2025
+================================================================================

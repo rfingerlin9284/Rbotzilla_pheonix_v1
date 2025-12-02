@@ -1,0 +1,171 @@
+================================================================================
+                    RICK SYSTEM - COMPREHENSIVE TASKS CREATED
+                              PIN: 841921 VALIDATED
+================================================================================
+
+STATUS: ✅ ALL SYSTEMS OPERATIONAL
+
+Current State:
+  • Engine RUNNING (PID: 913017)
+  • Account: 101-001-31210531-002 (OANDA Practice)
+  • Balance: $1,935.13 | NAV: $1,905.45
+  • Open Positions: 5 | Unrealized P&L: -$29.68
+  • Charter Enforcement: ACTIVE
+  • All Gates: ACTIVE (TP-PnL, Notional, Position Police)
+  • File Protection: ALL LOCKED (444 permissions)
+
+================================================================================
+                          AVAILABLE VS CODE TASKS (19)
+================================================================================
+
+CORE OPERATIONS:
+  1. RLC: List Tasks - Show all available tasks
+  2. RLC: Ping / Status Audit - Full health check
+  3. RLC: Start STRICT Engine (practice) - Start engine with enforcement
+  4. RLC: Stop All (safe) - Stop engine safely
+  5. RLC: Sweep — Position Police - Force-close sub-$15k positions
+  6. RLC: Tail Narration (pretty) - Live event stream
+  7. RLC: Lock Critical Files - Apply read-only protection
+  8. RLC: Show Guardrails - Display governance rules
+  9. RLC: Snapshot Status (receipt) - Generate audit receipt
+
+COMPREHENSIVE MONITORING (NEW):
+  10. RLC: 🎯 Full System Audit - Quick status overview
+  11. RLC: 📊 Charter Compliance Check - Verify immutable parameters
+  12. RLC: 🔍 Live Position Monitor - Show open OANDA positions
+  13. RLC: 💰 Account Balance - Account summary with margin
+  14. RLC: 📈 Recent Trades - Last 10 trades executed
+  15. RLC: 🚨 Emergency: Close All Positions - Emergency exit
+  16. RLC: 📋 Engine Logs (last 50) - Engine output
+  17. RLC: 🎬 Narration Logs (last 20) - Recent events (JSON)
+  18. RLC: 🔒 Lock All + Verify - Lock + show permissions
+  19. RLC: 📸 Snapshot + Hash Receipt - Receipt with SHA256 hashes
+
+================================================================================
+                          CHARTER ENFORCEMENT ACTIVE
+================================================================================
+
+Immutable Parameters:
+  • MIN_NOTIONAL_USD: $15,000 (connector gate + Position Police)
+  • MIN_EXPECTED_PNL_USD: $100 (connector gate)
+  • MAX_HOLD_TIME_HOURS: 6h (auto-close)
+  • MIN_RR_RATIO: 3.2:1 (take-profit ≥ 3.2 × stop-loss)
+  • OCO_REQUIRED: true (all orders must be OCO pairs)
+  • MAX_DAILY_LOSS_PCT: 5% (trading halts if breached)
+
+Gate Status:
+  ✓ TP-PnL Floor Gate: ACTIVE (blocks trades < $100 expected PnL)
+  ✓ Notional Floor Gate: ACTIVE (blocks orders < $15,000)
+  ✓ Position Police: ACTIVE (auto-closes positions < $15,000)
+
+File Protection:
+  🔒 brokers/oanda_connector.py (444)
+  🔒 rick_charter.py (444)
+  🔒 oanda_trading_engine.py (444)
+  🔒 .vscode/tasks.json (444)
+
+================================================================================
+                              USAGE INSTRUCTIONS
+================================================================================
+
+From VS Code:
+  1. Press Ctrl+Shift+P
+  2. Type "Tasks: Run Task"
+  3. Select any "RLC:" task from the list
+
+From Terminal:
+  • All tasks use NATIVE SHELL FORMAT (no bash -lc issues)
+  • All tasks are IDEMPOTENT (safe to re-run)
+  • All tasks follow STATUS → ACTION pattern
+
+Quick Commands:
+  • Check health: RLC: Ping / Status Audit
+  • View positions: RLC: Live Position Monitor
+  • Check balance: RLC: Account Balance
+  • Monitor live: RLC: Tail Narration (pretty)
+  • Emergency stop: RLC: Emergency: Close All Positions
+
+================================================================================
+                           TECHNICAL IMPLEMENTATION
+================================================================================
+
+Task Structure:
+  • Format: Native VS Code shell tasks (type: "shell", args: [...])
+  • NO bash -lc wrapper (fixes Windows/WSL quoting issues)
+  • ALL Python code inline (no heredocs, no external scripts)
+  • ALL quotes properly escaped for VS Code/WSL
+
+Key Features:
+  • OANDA API integration via requests library
+  • File integrity checks with SHA256 hashes
+  • Charter compliance validation via foundation.rick_charter
+  • Comprehensive logging (engine.log, narration.jsonl)
+  • Timestamped receipts in logs/ directory
+
+================================================================================
+                            GOVERNANCE & SAFETY
+================================================================================
+
+PIN Required: approve 841921
+  • All modifications require PIN validation
+  • Charter parameters are IMMUTABLE
+  • Gates cannot be disabled without PIN
+  • File locks prevent unauthorized changes
+
+Forbidden Actions:
+  • Modify charter parameters (MIN_NOTIONAL, MAX_HOLD, etc.)
+  • Disable gates or Position Police
+  • Use live OANDA endpoints (practice only)
+  • Hold positions > 6 hours
+  • Trade outside allowed timeframes (M15, M30, H1)
+  • Override without PIN 841921
+
+Safe Operations:
+  ✓ Run any RLC: task (read-only or controlled state changes)
+  ✓ Monitor positions, balance, trades
+  ✓ View logs and narration events
+  ✓ Generate audit receipts
+  ✓ Lock/verify file permissions
+
+================================================================================
+                              NEXT ACTIONS
+================================================================================
+
+Recommended Workflow:
+  1. RLC: Ping / Status Audit - Verify all systems operational
+  2. RLC: Account Balance - Check current account state
+  3. RLC: Live Position Monitor - Review open positions
+  4. RLC: Tail Narration (pretty) - Monitor live events
+  5. RLC: Snapshot + Hash Receipt - Generate audit trail
+
+Ongoing Monitoring:
+  • Keep "RLC: Tail Narration" running in dedicated panel
+  • Periodically run "RLC: Account Balance" to track P&L
+  • Run "RLC: Snapshot + Hash Receipt" for audit trail
+  • Use "RLC: Position Police Sweep" if manual enforcement needed
+
+Emergency Procedures:
+  • If engine misbehaves: RLC: Stop All (safe)
+  • If positions breach charter: RLC: Sweep — Position Police
+  • If immediate exit needed: RLC: Emergency: Close All Positions
+  • If files compromised: RLC: Lock All + Verify
+
+================================================================================
+                           COMPLETION VERIFICATION
+================================================================================
+
+✅ Engine Running: PID 913017
+✅ Gates Active: TP-PnL, Notional, Position Police
+✅ Files Protected: All critical files locked (444)
+✅ Tasks Created: 19 comprehensive RLC tasks
+✅ Charter Enforced: MIN_NOTIONAL ≥ $15k, MIN_PNL ≥ $100
+✅ API Access: OANDA practice endpoints validated
+✅ Credentials: Loaded from .env.oanda_only
+✅ Logs Active: engine.log, narration.jsonl
+
+System ready for autonomous practice trading with full charter enforcement.
+All modifications require PIN: approve 841921
+
+================================================================================
+                               END OF SUMMARY
+================================================================================

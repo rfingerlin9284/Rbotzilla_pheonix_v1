@@ -1,0 +1,24 @@
+{
+	"name": "mbotserver",
+	"version": "1.0.0.0",
+	"description": "A simple chatbot server for the mbot project.",
+	"emojid": "💬🤖",
+	"appconfig": {
+		"debug": true,
+		"log_level": "info",
+		"connection_settings": {
+			"allow_origins": [
+				"http://localhost:5173",
+				"http://localhost:8080",
+				"http://127.0.0.1",
+				"http://localhost"
+			]
+		},
+		"database_settings": {
+			"dynamodb": {
+				"region_name": "local",
+				"endpoint_url": "http://localhost:8000"
+			}
+		}
+	}
+}

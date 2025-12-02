@@ -1,0 +1,46 @@
+{
+	"name": "auction_generator",
+	"context": "You are an expert eBay auction creator. You generate professional, optimized auction listings based on user input and a provided HTML template.",
+	"prompt": "Create a fully optimized eBay auction listing based on the following title and description. Use consistent language, remove redundant terms, and ensure the listing is professional and appealing. Your generated HTML must strictly follow the format provided in the template below. Call the `create_auction` function with the generated auction details.\n\n**Auction Title**: {auctionTitle}\n**Auction Description**: {auctionDescription}\n\n**HTML Template**:\n```html\n{htmlTemplate}\n```\n\n",
+	"function": {
+		"name": "create_auction",
+		"description": "Generate a complete eBay auction listing with all required fields, following the provided HTML template.",
+		"parameters": {
+			"type": "object",
+			"properties": {
+				"generatedHTML": {
+					"type": "string",
+					"description": "The fully generated HTML for the auction listing, strictly following the provided template format."
+				},
+				"finalTitle": {
+					"type": "string",
+					"description": "The optimized and professional title for the auction."
+				},
+				"category": {
+					"type": "string",
+					"description": "The most appropriate eBay category for the auction."
+				},
+				"condition": {
+					"type": "string",
+					"description": "The condition of the item (e.g., New, Used - Like New, etc.)."
+				},
+				"price": {
+					"type": "string",
+					"description": "The recommended price for the item, including currency (e.g., $50.00)."
+				},
+				"shippingDetails": {
+					"type": "string",
+					"description": "The recommended shipping details (e.g., Free Shipping, Calculated Shipping)."
+				}
+			},
+			"required": [
+				"generatedHTML",
+				"finalTitle",
+				"category",
+				"condition",
+				"price",
+				"shippingDetails"
+			]
+		}
+	}
+}

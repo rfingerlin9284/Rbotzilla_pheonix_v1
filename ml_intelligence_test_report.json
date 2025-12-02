@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-10-12T17:47:36.640065+00:00",
+  "test_type": "full_intelligence_stack",
+  "results": {
+    "ml_models": true,
+    "pattern_learner": true,
+    "regime_detector": true,
+    "smart_logic": true,
+    "full_pipeline": true,
+    "ghost_integration": true
+  },
+  "passed": 6,
+  "total": 6,
+  "status": "OPERATIONAL"
+}

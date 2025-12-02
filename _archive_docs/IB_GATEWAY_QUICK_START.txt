@@ -1,0 +1,249 @@
+#!/bin/bash
+# Quick reference for IB Gateway Headless Setup on Linux
+
+cat << 'QUICK_REF'
+
+╔════════════════════════════════════════════════════════════════════════╗
+║          IB GATEWAY HEADLESS SETUP - QUICK REFERENCE                 ║
+║          Linux | TWS API | No GUI Required                           ║
+║          PIN: 841921                                                 ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ⚡ COMPLETE SETUP (1 COMMAND)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  bash /home/ing/RICK/RICK_LIVE_CLEAN/scripts/setup_ib_gateway_headless.sh
+
+After this runs, you get:
+  ✅ IB Gateway installed
+  ✅ Headless startup script
+  ✅ Python test script
+  ✅ Systemd service
+  ✅ Monitoring tools
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🚀 STARTUP SEQUENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Start IB Gateway (headless)
+   ~/.local/bin/start_ib_gateway
+   
+   Expected output:
+   ✅ IB Gateway started (PID: 12345)
+
+2. Wait 5 seconds for startup
+
+3. Test connection
+   ~/.local/bin/test_ib_connection
+   
+   Expected output:
+   ✅ PIN verified: 841921
+   ✅ Connected!
+   📊 Account ID: DU6880040
+      Balance: $50,000.00
+
+4. Start monitoring dashboard
+   cd /home/ing/RICK/RICK_LIVE_CLEAN
+   python3 dashboard/app.py
+
+5. Open browser
+   http://127.0.0.1:8080
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🔍 VERIFICATION COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Is gateway running?
+  lsof -i :4002
+
+View gateway logs
+  tail -f ~/Jts/ib_gateway.log
+
+Monitor status (realtime)
+  ~/.local/bin/ib_monitor
+  
+OR watch status
+  watch -n 1 'lsof -i :4002'
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🛑 STOP/RESTART
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Stop gateway
+  pkill ibgateway
+
+Restart gateway
+  pkill ibgateway
+  sleep 2
+  ~/.local/bin/start_ib_gateway
+
+Stop via systemd (if service is running)
+  systemctl --user stop ib-gateway
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 📋 PORT MAPPING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Paper Trading
+  Port: 4002
+  Account: DU6880040 (default)
+  Real Money: NO
+  Use For: Testing, validation, learning
+
+Live Trading
+  Port: 4001
+  Account: Your live IB account
+  Real Money: YES
+  Use For: REAL TRADING (PIN protected)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🔐 SECURITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PIN: 841921 (Charter verified)
+  - Required for any broker instantiation
+  - Validated in IBConnector.__init__()
+  - Prevents unauthorized trading
+
+Order Guardian Gating
+  - All orders pass through Position Guardian
+  - 7 rule systems enforced:
+    ✅ Correlation (< 0.70)
+    ✅ Margin (< 60%)
+    ✅ Volatility (no bad times)
+    ✅ Notional ($15K minimum)
+    ✅ Hedging (auto-applied)
+    ✅ Session (respects hours)
+    ✅ Post-trade (auto-BE, trailing, scale)
+
+Narration Logging
+  - All operations logged to audit trail
+  - View with: tail -f logs/narration.jsonl
+  - Proof of compliance
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🐛 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: "Connection refused" on port 4002
+A: Gateway not running
+   Fix: ~/.local/bin/start_ib_gateway
+
+Q: "API not enabled"
+A: TWS settings need update
+   Fix: First time only:
+        1. Start GUI: ~/Jts/ibgateway/*/ibgateway
+        2. Login with IB credentials
+        3. Configure → Settings → API → Settings
+        4. Check "Enable ActiveX and Socket Clients"
+        5. Save, then use headless mode
+
+Q: "ib_insync not installed"
+A: Python library missing
+   Fix: pip install ib_insync
+
+Q: Python test fails but gateway is running
+A: Socket connection issue
+   Fix: 1. Check port: lsof -i :4002
+        2. Check logs: tail ~/Jts/ib_gateway.log
+        3. Restart: pkill ibgateway && ~/.local/bin/start_ib_gateway
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 📂 KEY FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Setup script
+  /home/ing/RICK/RICK_LIVE_CLEAN/scripts/setup_ib_gateway_headless.sh
+
+Starter script (after setup)
+  ~/.local/bin/start_ib_gateway
+
+Test script (verify connection)
+  ~/.local/bin/test_ib_connection
+
+Monitor script (real-time status)
+  ~/.local/bin/ib_monitor
+
+Python connector
+  /home/ing/RICK/RICK_LIVE_CLEAN/brokers/ib_connector.py
+
+Configuration
+  ~/Jts/ibgateway_config.ini
+  /home/ing/RICK/RICK_LIVE_CLEAN/env_new2.env
+
+Logs
+  ~/Jts/ib_gateway.log
+  /home/ing/RICK/RICK_LIVE_CLEAN/logs/narration.jsonl
+
+Documentation
+  /home/ing/RICK/RICK_LIVE_CLEAN/IBKR_HEADLESS_GATEWAY_LINUX_CONFIRMATION.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ✅ SUCCESS CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After setup:
+  ☑ IB Gateway installed at ~/Jts/ibgateway
+  ☑ Startup script at ~/.local/bin/start_ib_gateway
+  ☑ Test script at ~/.local/bin/test_ib_connection
+  ☑ Monitor script at ~/.local/bin/ib_monitor
+  ☑ Config at ~/Jts/ibgateway_config.ini
+  ☑ Systemd service created (optional)
+
+After startup:
+  ☑ Gateway running on port 4002
+  ☑ Can connect from Python
+  ☑ Account info retrievable
+  ☑ Positions visible
+  ☑ Orders can be placed (through guardian)
+
+After integration:
+  ☑ Dashboard shows IB status
+  ☑ Pointers feed updating every 15s
+  ☑ Orders routing through guardian
+  ☑ Narration logging working
+  ☑ All broker integrations active (OANDA/Coinbase/IB)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🎯 TIMELINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Time          Action
+────────────────────────────────────────────
+ 0:00-0:05    Run setup script
+ 0:05-0:06    Start IB Gateway
+ 0:06-0:08    Wait for startup
+ 0:08-0:09    Test connection
+ 0:09-0:14    Review dashboard
+ 0:14+        Ready to trade!
+
+Total: ~15 minutes from start to live trading
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🚀 YOU'RE READY!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+IB Gateway Headless is:
+  ✅ Configured for Linux
+  ✅ No GUI required
+  ✅ Fully automated startup
+  ✅ PIN protected (841921)
+  ✅ Guardian gated (7 rule systems)
+  ✅ Integrated with monitoring
+  ✅ Multi-broker ready (OANDA/Coinbase/IB)
+  ✅ Production ready
+
+Next command:
+  bash /home/ing/RICK/RICK_LIVE_CLEAN/scripts/setup_ib_gateway_headless.sh
+
+Then:
+  ~/.local/bin/start_ib_gateway
+  ~/.local/bin/test_ib_connection
+  cd /home/ing/RICK/RICK_LIVE_CLEAN && python3 dashboard/app.py
+
+Then: Open http://127.0.0.1:8080 and start trading!
+
+════════════════════════════════════════════════════════════════════════════
+
+QUICK_REF

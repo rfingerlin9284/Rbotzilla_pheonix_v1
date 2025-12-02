@@ -1,0 +1,32 @@
+[Unit]
+Description=RICK Trading System - Paper Trading Service
+After=network.target
+
+[Service]
+Type=simple
+User=ing
+WorkingDirectory=/home/ing/RICK/RICK_LIVE_CLEAN
+Environment="PATH=/usr/bin:/usr/local/bin"
+
+# Send startup alert
+ExecStartPre=/usr/bin/python3 /home/ing/RICK/RICK_LIVE_CLEAN/util/alert_notifier.py startup
+
+# Main service
+ExecStart=/usr/bin/make -C /home/ing/RICK/RICK_LIVE_CLEAN deploy-full-auto
+
+# Send shutdown alert
+ExecStopPost=/usr/bin/python3 /home/ing/RICK/RICK_LIVE_CLEAN/util/alert_notifier.py shutdown
+
+# Restart policy
+Restart=always
+RestartSec=30
+
+# Send restart alert on restart
+ExecStartPost=/usr/bin/python3 /home/ing/RICK/RICK_LIVE_CLEAN/util/alert_notifier.py restart
+
+# Logging
+StandardOutput=append:/home/ing/RICK/RICK_LIVE_CLEAN/logs/rick_service.log
+StandardError=append:/home/ing/RICK/RICK_LIVE_CLEAN/logs/rick_service_error.log
+
+[Install]
+WantedBy=multi-user.target

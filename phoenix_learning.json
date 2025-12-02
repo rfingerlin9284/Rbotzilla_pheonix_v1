@@ -1,0 +1,27 @@
+{
+  "strategy_performance": {
+    "scalp": {
+      "pnl": 105.0,
+      "wins": 11,
+      "losses": 2,
+      "consecutive_losses": 0
+    }
+  },
+  "strategy_weights": {
+    "scalp": 1.1569237287229759
+  },
+  "order_strategy_map": {
+    "trade123": "scalp",
+    "oanda1": "scalp"
+  },
+  "strategy_params": {
+    "ema_scalper": {
+      "fast": 50,
+      "sl_atr_mult": 1.5,
+      "risk_reward": 3.0
+    }
+  },
+  "strategy_live_approved": {
+    "scalp": true
+  }
+}

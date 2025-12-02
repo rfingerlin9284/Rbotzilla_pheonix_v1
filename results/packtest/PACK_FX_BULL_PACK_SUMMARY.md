@@ -1,0 +1,7 @@
+# Pack Backtest: FX_BULL_PACK
+
+## EUR_USD
+- cagr: 0.02316224999999994
+- sharpe: 6.369643872945064
+- max_dd: 0.1
+

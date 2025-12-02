@@ -1,0 +1,15 @@
+{
+	"name": "mbotapp",
+	"version": "1.0.0",
+	"description": "This is an app interface for mbot.",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron .",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"electron": "^25.3.2"
+	}
+}

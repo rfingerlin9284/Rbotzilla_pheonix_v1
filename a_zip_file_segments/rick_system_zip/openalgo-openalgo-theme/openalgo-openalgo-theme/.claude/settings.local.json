@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:css:*)",
+      "Bash(npm install:*)",
+      "Bash(npm info:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx postcss:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(node -e \"const config = require(''./tailwind.config.mjs''); console.log(JSON.stringify(config, null, 2))\")",
+      "Bash(node:*)",
+      "Bash(cat:*)",
+      "WebSearch",
+      "WebFetch(domain:daisyui.com)",
+      "WebFetch(domain:www.openalgo.in)",
+      "Bash(curl -L \"https://www.openalgo.in/faq\")",
+      "Bash(curl -s \"https://www.openalgo.in/_next/data\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

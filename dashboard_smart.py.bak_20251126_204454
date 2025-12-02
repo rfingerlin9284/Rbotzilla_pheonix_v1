@@ -1,0 +1,49 @@
+import time
+import os
+import random
+
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def render_dashboard():
+    # Simulation of reading live stats from the engine
+    target = 500.00
+    current = 387.50 + random.uniform(-5, 50) # Simulating live PnL flux
+    progress = int((current / target) * 20)
+    progress = max(0, min(20, progress))
+    bar = "█" * progress + "░" * (20 - progress)
+
+    print(f"╔════════════════════════════════════════════════════════════════╗")
+    print(f"║             🔥 RBOTZILLA $500/DAY COUNTDOWN 🔥                ║")
+    print(f"╚════════════════════════════════════════════════════════════════╝")
+    print("")
+    print(f"📅 Day 47 of Smart Aggression Sprint")
+    print("")
+    print(f"💰 TODAY'S PROGRESS:")
+    print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    print(f"Daily Goal:     ${target:.2f}")
+    print(f"Current P&L:    ${current:.2f}  ({(current/target)*100:.1f}%) {bar}")
+    print(f"Remaining:      ${max(0, target-current):.2f}")
+    print(f"Time Elapsed:   Active Session")
+    print("")
+    print(f"🤖 ML PERFORMANCE:")
+    print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    print(f"Confidence:     68% (optimal)")
+    print(f"Filter Mode:    STRICT (3:1 Minimum)")
+    print(f"Next Signal:    Scanning...")
+    print("")
+    print(f"🚀 STRATEGY:")
+    print(f"• Focus: OANDA / Forex")
+    print(f"• Aggression: 5 Concurrent Pos")
+    print(f"• Reinvest: 90%")
+    print("")
+    print(f"Press Ctrl+C to exit dashboard (Engine keeps running)")
+
+if __name__ == "__main__":
+    try:
+        while True:
+            clear()
+            render_dashboard()
+            time.sleep(10)
+    except KeyboardInterrupt:
+        print("Dashboard Closed.")

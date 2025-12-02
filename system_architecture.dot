@@ -1,0 +1,54 @@
+digraph RICK_LIVE_CLEAN {
+    rankdir=LR;
+    node [shape=box, style=rounded];
+
+    subgraph cluster_backend {
+        label = "Backend Components";
+        style = dashed;
+        color = gray;
+
+        mode_manager [label="Mode Manager\n(util/mode_manager.py)"];
+        breakpoint_audit [label="Breakpoint Audit\n(util/breakpoint_audit.py)"];
+        narration_logger [label="Narration Logger\n(util/narration_logger.py)"];
+
+        canary_engine [label="Canary Trading Engine\n(canary_trading_engine.py)"];
+        ghost_engine [label="Ghost Trading Engine\n(ghost_trading_charter_compliant.py)"];
+
+        canary_engine -> breakpoint_audit [label="attach_audit_handler"];
+        ghost_engine -> breakpoint_audit [label="attach_audit_handler"];
+
+        canary_engine -> narration_logger [label="log_narration"];
+        ghost_engine -> narration_logger [label="log_narration"];
+
+        mode_manager -> canary_engine [label="switch_mode"];
+        mode_manager -> ghost_engine [label="switch_mode"];
+    }
+
+    subgraph cluster_logging {
+        label = "Logging Utilities";
+        style = dashed;
+        color = gray;
+
+        narration_jsonl [label="narration.jsonl\n(Logs narration events)"];
+        pnl_jsonl [label="pnl.jsonl\n(Logs P&L data)"];
+        pre_live_trace [label="pre_live_trace.jsonl\n(Logs breakpoints)"];
+
+        narration_logger -> narration_jsonl;
+        narration_logger -> pnl_jsonl;
+        breakpoint_audit -> pre_live_trace;
+    }
+
+    subgraph cluster_frontend {
+        label = "Frontend Components";
+        style = dashed;
+        color = gray;
+
+        dashboard [label="Dashboard\n(dashboard/app.py)"];
+
+        dashboard -> narration_logger [label="get_latest_narration"];
+        dashboard -> mode_manager [label="switch_mode"];
+    }
+
+    narration_jsonl -> dashboard [label="Live Narration"];
+    pnl_jsonl -> dashboard [label="P&L Data"];
+}

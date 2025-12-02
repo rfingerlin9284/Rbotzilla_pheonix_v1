@@ -1,0 +1,82 @@
+import logging
+
+# ==============================================================================
+# 🔥 RBOTZILLA SMART AGGRESSION CONFIGURATION
+# ==============================================================================
+SMART_AGGRESSION = {
+    "min_rr_ratio": 3.0,        # NON-NEGOTIABLE 3:1
+    "min_ml_confidence": 0.65,
+    "min_edge_score": 0.70,
+    "max_positions": 5,         # Scaled up from 3
+    "max_daily_risk": 0.10,     # 10% cap
+    "reinvestment_rate": 0.90,  # Compound FAST
+}
+
+class MLRewardSystem:
+    """
+    The Brain: Rewards good decisions, penalizes bad ones.
+    """
+    def __init__(self):
+        self.base_confidence = 0.65
+        self.win_streak = 0
+        self.total_trades = 0
+        self.winning_trades = 0
+        self.daily_pnl = 0.0
+        self.logger = logging.getLogger("ML_Reward")
+
+    def evaluate_trade_setup(self, signal):
+        """
+        The Filter: REJECTS anything below 3:1 RR.
+        """
+        entry = signal.get('entry', 0)
+        stop = signal.get('sl', 0)
+        target = signal.get('tp', 0)
+
+        if entry == 0:
+            return False, 0.0
+
+        risk = abs(entry - stop)
+        reward = abs(target - entry)
+
+        if risk == 0:
+            return False, 0.0
+
+        rr_ratio = reward / risk
+
+        # HARD FILTER
+        if rr_ratio < SMART_AGGRESSION["min_rr_ratio"]:
+            return False, rr_ratio
+
+        # Calculate Edge Score
+        edge_score = (rr_ratio * 0.4) + (self.base_confidence * 0.6)
+
+        return True, rr_ratio
+
+    def record_outcome(self, profit):
+        """
+        The Feedback Loop: Updates confidence based on result.
+        """
+        self.total_trades += 1
+        self.daily_pnl += profit
+
+        if profit > 0:
+            self.winning_trades += 1
+            self.win_streak += 1
+            multiplier = 1.5 if self.win_streak >= 3 else 1.0
+            multiplier = 2.0 if self.win_streak >= 5 else multiplier
+            self.logger.info(f"🔥 WIN STREAK: {self.win_streak} (Multiplier {multiplier}x)")
+
+            # Boost Confidence
+            self.base_confidence = max(0.55, self.base_confidence - 0.01)
+        else:
+            self.win_streak = 0
+            # Tighten Standards
+            self.base_confidence = min(0.85, self.base_confidence + 0.02)
+
+    def get_stats(self):
+        return {
+            "win_streak": self.win_streak,
+            "confidence": self.base_confidence,
+            "daily_pnl": self.daily_pnl,
+            "trades": self.total_trades
+        }

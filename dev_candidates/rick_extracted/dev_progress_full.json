@@ -1,0 +1,80 @@
+{
+  "system": "Dev_unibot_RICK_Migration",
+  "version": "1.0",
+  "pin_required": 841921,
+  "migration_source": "RICK_LIVE_CLEAN",
+  "migration_target": "Dev_unibot_v001",
+  "phases": {
+    "extraction": {
+      "phase_id": "extraction",
+      "status": "COMPLETE",
+      "timestamp": "2025-10-14T04:03:34.853707+00:00",
+      "progress_pct": 25.0,
+      "artifacts": [
+        "RICK_MIGRATION_ANALYSIS.md",
+        "dev_candidates/rick_extracted/stochastic_engine.py",
+        "dev_candidates/rick_extracted/progress_manager.py",
+        "scripts/stochastic_test.sh"
+      ],
+      "errors": [],
+      "complete_time": "2025-10-14T04:03:34.853707+00:00"
+    },
+    "pre_test": {
+      "phase_id": "pre_test",
+      "status": "PENDING",
+      "timestamp": "2025-10-14T04:03:34.915069+00:00",
+      "progress_pct": 0.0,
+      "artifacts": [],
+      "errors": []
+    }
+  },
+  "history": [
+    {
+      "phase": "extraction",
+      "status": "COMPLETE",
+      "timestamp": "2025-10-14T04:03:34.853707+00:00",
+      "progress_pct": 25.0
+    },
+    {
+      "phase": "pre_test",
+      "status": "PENDING",
+      "timestamp": "2025-10-14T04:03:34.915069+00:00",
+      "progress_pct": 0.0
+    }
+  ],
+  "constraints": [
+    "READ_ONLY access to RICK_LIVE_CLEAN",
+    "NO TALIB dependencies allowed",
+    "Stochastic/random approach required",
+    "Charter compliance (RR >= 3.0)",
+    "PIN validation throughout"
+  ],
+  "created": "2025-10-14T04:03:34.709707+00:00",
+  "last_updated": "2025-10-14T04:03:34.915069+00:00",
+  "extractions": [
+    {
+      "component": "StochasticTradingEngine",
+      "source_file": "RICK_LIVE_CLEAN/ghost_trading_engine.py",
+      "target_file": "dev_candidates/rick_extracted/stochastic_engine.py",
+      "status": "extracted",
+      "timestamp": "2025-10-14T04:03:34.740921+00:00",
+      "extraction_type": "READ_ONLY"
+    },
+    {
+      "component": "ProgressManager",
+      "source_file": "RICK_LIVE_CLEAN/foundation/progress.py",
+      "target_file": "dev_candidates/rick_extracted/progress_manager.py",
+      "status": "extracted",
+      "timestamp": "2025-10-14T04:03:34.769731+00:00",
+      "extraction_type": "READ_ONLY"
+    },
+    {
+      "component": "Charter validation",
+      "source_file": "RICK_LIVE_CLEAN/foundation/rick_charter.py",
+      "target_file": "dev_candidates/rick_extracted/stochastic_engine.py",
+      "status": "extracted",
+      "timestamp": "2025-10-14T04:03:34.804641+00:00",
+      "extraction_type": "READ_ONLY"
+    }
+  ]
+}

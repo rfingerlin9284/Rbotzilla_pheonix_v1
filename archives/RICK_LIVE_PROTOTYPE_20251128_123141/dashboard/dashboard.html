@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RICK Trading Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="10">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .mode-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        .mode-off { background: #6c757d; }
+        .mode-ghost { background: #17a2b8; }
+        .mode-canary { background: #ffc107; color: #000; }
+        .mode-live { background: #dc3545; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat:last-child { border-bottom: none; }
+        .stat-label { opacity: 0.8; }
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        .events-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        .event {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .event-type {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .event-time {
+            opacity: 0.6;
+            font-size: 0.85em;
+        }
+        .refresh-notice {
+            text-align: center;
+            opacity: 0.7;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        .timestamp {
+            text-align: center;
+            opacity: 0.5;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 RICK Trading Dashboard</h1>
+            <div class="mode-badge mode-ghost">
+                GHOST MODE
+            </div>
+            <p style="margin-top: 10px; opacity: 0.8;">Ghost mode - 45min validation sessions</p>
+        </div>
+        
+        <div class="grid">
+            <!-- Performance Card -->
+            <div class="card">
+                <h2>📊 Performance</h2>
+                <div class="stat">
+                    <span class="stat-label">Total Trades</span>
+                    <span class="stat-value">6</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Win Rate</span>
+                    <span class="stat-value">83.3%</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Wins / Losses</span>
+                    <span class="stat-value">5 / 1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Net P&L</span>
+                    <span class="stat-value positive">
+                        $118041.55
+                    </span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Total Fees</span>
+                    <span class="stat-value">$3.50</span>
+                </div>
+            </div>
+            
+            <!-- Environment Card -->
+            <div class="card">
+                <h2>🔧 Environment</h2>
+                <div class="stat">
+                    <span class="stat-label">OANDA</span>
+                    <span class="stat-value">practice</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Coinbase</span>
+                    <span class="stat-value">sandbox</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Live Trading</span>
+                    <span class="stat-value positive">
+                        OFF
+                    </span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Toggle File</span>
+                    <span class="stat-value" style="font-size: 0.8em;">.upgrade_toggle</span>
+                </div>
+            </div>
+            
+            <!-- Mode Commands Card -->
+            <div class="card">
+                <h2>⚙️ Mode Commands</h2>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9em;">
+                    <div style="margin-bottom: 8px;"># Switch to GHOST mode</div>
+                    <div style="color: #28a745;">python3 -c "from util.mode_manager import switch_mode; switch_mode('GHOST')"</div>
+                    
+                    <div style="margin: 15px 0 8px;">## Switch to OFF</div>
+                    <div style="color: #28a745;">python3 -c "from util.mode_manager import switch_mode; switch_mode('OFF')"</div>
+                    
+                    <div style="margin: 15px 0 8px;"># Run ghost test</div>
+                    <div style="color: #28a745;">python3 test_ghost_trading.py</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="card">
+            <h2>📝 Recent Activity (Last 10 Events)</h2>
+            <div class="events-list">
+                
+        <div class="event">
+            <span class="event-type">GHOST_SESSION_END</span>
+            <span style="opacity: 0.8;"></span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:20</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Trades: 5 | 
+                        Win Rate: 80.0% | 
+                        P&L: $117999.00
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:20</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.13629 | 
+                        Units: 13201 | 
+                        Latency: 106.8ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:20</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:10</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.10562 | 
+                        Units: 13568 | 
+                        Latency: 84.7ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:10</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | EUR_USD</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:00</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.21454 | 
+                        Units: -12351 | 
+                        Latency: 210.1ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | EUR_USD</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:00</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:52:49</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.22018 | 
+                        Units: 12294 | 
+                        Latency: 244.5ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:52:49</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:52:39</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.18523 | 
+                        Units: 12656 | 
+                        Latency: 70.7ms
+                    </div>
+                
+        </div>
+        
+            </div>
+        </div>
+        
+        <div class="timestamp">
+            Last updated: 2025-10-12 13:33:41
+        </div>
+        
+        <div class="refresh-notice">
+            🔄 Dashboard auto-refreshes every 10 seconds
+        </div>
+    </div>
+</body>
+</html>

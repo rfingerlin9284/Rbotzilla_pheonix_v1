@@ -1,0 +1,176 @@
+{
+  "manifest_version": "3.0",
+  "generated": "2025-11-26",
+  "auth_code": "841921",
+  "classification": "LEGACY",
+  "description": "Reference-only files. NOT for production use. Preserved for historical context.",
+  "warning": "⚠️ DO NOT IMPORT OR EXECUTE THESE FILES IN PRODUCTION",
+  
+  "legacy_directories": [
+    {
+      "path": "_archive_docs/",
+      "purpose": "Historical documentation",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "_archive_scripts/",
+      "purpose": "Deprecated scripts",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "_legacy_code/",
+      "purpose": "Old code versions",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "_CONSOLIDATION_BACKUP_20251107/",
+      "purpose": "Pre-consolidation backup",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "_CONSOLIDATION_BACKUP_20251107_185216/",
+      "purpose": "Pre-consolidation backup (timestamped)",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "_TEMPLATES/",
+      "purpose": "Template files for reference",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "ROLLBACK_SNAPSHOTS/",
+      "purpose": "System rollback points",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "pre_upgrade/",
+      "purpose": "Pre-upgrade state preservation",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "archives/",
+      "purpose": "General archives",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "backups/",
+      "purpose": "Backup files",
+      "status": "READ_ONLY"
+    },
+    {
+      "path": "charter_backups/",
+      "purpose": "Charter version history",
+      "status": "READ_ONLY"
+    }
+  ],
+  
+  "legacy_files": [
+    {
+      "file": "canary_trading_report.json",
+      "reason": "REJECTED TERM: 'Canary' - Replace with 'Paper'",
+      "action": "RENAME to paper_trading_report.json"
+    },
+    {
+      "file": "ghost_charter_progress.json",
+      "reason": "REJECTED TERM: 'Ghost' - Replace with 'Paper'",
+      "action": "RENAME to paper_charter_progress.json"
+    },
+    {
+      "file": "deploy_institutional_charter.py",
+      "reason": "One-time deployment script",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "institutional_charter_agent.py",
+      "reason": "Superseded by foundation/rick_charter.py",
+      "status": "DEPRECATED"
+    },
+    {
+      "file": "rick_institutional_full.py",
+      "reason": "Superseded by run_autonomous_full.py",
+      "status": "DEPRECATED"
+    },
+    {
+      "file": "generate_demo_ohlcv.py",
+      "reason": "Demo data generator - development only",
+      "status": "DEV_ONLY"
+    }
+  ],
+  
+  "temporary_directories": [
+    {
+      "path": "tmp_demo_data/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_demo_data2/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_demo_data3/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_demo_data4/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_demo_rt/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_results/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_results3/",
+      "action": "DELETE_AFTER_FREEZE"
+    },
+    {
+      "path": "tmp_test_data/",
+      "action": "DELETE_AFTER_FREEZE"
+    }
+  ],
+  
+  "zip_snapshots": [
+    {
+      "file": "FROZEN_V2_SNAPSHOT_20251124T055859.zip",
+      "purpose": "V2 frozen state",
+      "status": "KEEP"
+    },
+    {
+      "file": "frozenv2snap.zip",
+      "purpose": "Duplicate of V2 snapshot",
+      "action": "DELETE"
+    },
+    {
+      "file": "PROBLEM_FILES_20251126.zip",
+      "purpose": "Problem files documentation",
+      "status": "REFERENCE"
+    }
+  ],
+  
+  "duplicate_directories": [
+    {
+      "path": "rick_clean_live-copilot-restore-repo-and-clean-errors/",
+      "reason": "Git branch artifact - duplicate of rick_clean_live/",
+      "action": "DELETE_OR_MERGE"
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/",
+      "reason": "Old prototype - superseded",
+      "status": "ARCHIVE"
+    }
+  ],
+  
+  "semantic_violations": {
+    "files_with_canary": [
+      "canary_trading_report.json"
+    ],
+    "files_with_ghost": [
+      "ghost_charter_progress.json",
+      "rick_clean_live/ghost_trading_charter_compliant.py"
+    ],
+    "action": "Rename or refactor to use 'Paper' terminology"
+  }
+}

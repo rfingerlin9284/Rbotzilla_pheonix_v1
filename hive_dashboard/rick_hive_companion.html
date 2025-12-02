@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rick Hive Mind Companion</title>
+    <style>
+        :root {
+            --primary-color: #00ffcc;
+            --secondary-color: #ff6b35;
+            --background-dark: #0a0a0a;
+            --background-medium: #1a1a1a;
+            --background-light: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #333333;
+            --success-color: #00ff00;
+            --error-color: #ff0000;
+            --warning-color: #ffff00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--background-dark);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .companion-container {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            border: 2px solid var(--primary-color);
+        }
+
+        /* Header with Hive Mind controls */
+        .companion-header {
+            background: linear-gradient(90deg, var(--background-medium), var(--background-light));
+            border-bottom: 1px solid var(--primary-color);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hive-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--primary-color);
+        }
+
+        .hive-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .hive-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--background-medium);
+            font-size: 12px;
+        }
+
+        .status-light {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success-color);
+            box-shadow: 0 0 4px var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* AI Provider Tabs */
+        .ai-provider-tabs {
+            background: var(--background-medium);
+            border-bottom: 1px solid var(--border-color);
+            padding: 5px 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-tab {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--background-dark);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .ai-tab:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .ai-tab.active {
+            background: var(--primary-color);
+            color: var(--background-dark);
+            font-weight: bold;
+        }
+
+        /* Narrator Panel (Main Content) */
+        .narrator-panel {
+            background: var(--background-dark);
+            padding: 15px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .narrator-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid var(--primary-color);
+            background: var(--background-medium);
+            border-radius: 0 5px 5px 0;
+        }
+
+        .narrator-timestamp {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .narrator-text {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .ai-provider-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .badge-gpt { background: #10a37f; color: white; }
+        .badge-grok { background: #1da1f2; color: white; }
+        .badge-deepseek { background: #ff6b35; color: white; }
+        .badge-github { background: #24292e; color: white; }
+
+        /* Footer Controls */
+        .companion-footer {
+            background: var(--background-medium);
+            border-top: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .refresh-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refresh-timer {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .timer-input {
+            width: 50px;
+            padding: 3px 5px;
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .control-btn {
+            padding: 6px 12px;
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .control-btn.active {
+            background: var(--primary-color);
+            color: var(--background-dark);
+            font-weight: bold;
+        }
+
+        /* Hidden iframe for AI providers */
+        .hidden-frame {
+            display: none;
+        }
+
+        /* Connection status indicators */
+        .connection-status {
+            display: flex;
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .conn-indicator {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: var(--background-dark);
+        }
+
+        .conn-light {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .conn-online { background: var(--success-color); }
+        .conn-offline { background: var(--error-color); }
+        .conn-connecting { background: var(--warning-color); animation: blink 1s infinite; }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="companion-container">
+        <!-- Header -->
+        <div class="companion-header">
+            <div class="hive-title">🧠 Rick Hive Mind</div>
+            <div class="hive-controls">
+                <div class="hive-status">
+                    <div class="status-light"></div>
+                    <span>ACTIVE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Provider Tabs -->
+        <div class="ai-provider-tabs">
+            <div class="ai-tab active" onclick="selectProvider('narrator')">📢 Narrator</div>
+            <div class="ai-tab" onclick="selectProvider('gpt')">🤖 GPT</div>
+            <div class="ai-tab" onclick="selectProvider('grok')">🧠 Grok</div>
+            <div class="ai-tab" onclick="selectProvider('deepseek')">🔍 DeepSeek</div>
+            <div class="ai-tab" onclick="selectProvider('github')">🐙 GitHub</div>
+        </div>
+
+        <!-- Main Narrator Panel -->
+        <div class="narrator-panel" id="narratorPanel">
+            <div class="narrator-message">
+                <div class="narrator-timestamp">2025-01-02 12:45:23</div>
+                <div class="narrator-text">
+                    <span class="ai-provider-badge badge-gpt">GPT</span>
+                    🎯 Market analysis complete. EUR/USD showing bullish divergence at 1.0850 support level. Confluence with 50-day MA suggests high-probability long setup.
+                </div>
+            </div>
+            <div class="narrator-message">
+                <div class="narrator-timestamp">2025-01-02 12:44:10</div>
+                <div class="narrator-text">
+                    <span class="ai-provider-badge badge-grok">Grok</span>
+                    ⚡ Crypto correlation detected: BTC breaking 42k resistance coincides with DXY weakness. Risk-on sentiment favoring altcoin momentum.
+                </div>
+            </div>
+            <div class="narrator-message">
+                <div class="narrator-timestamp">2025-01-02 12:42:55</div>
+                <div class="narrator-text">
+                    <span class="ai-provider-badge badge-deepseek">DeepSeek</span>
+                    🔬 Deep analysis: Order flow imbalance detected in GBPJPY 4H timeframe. Smart money accumulation suggests reversal incoming.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Controls -->
+        <div class="companion-footer">
+            <div class="refresh-controls">
+                <div class="refresh-timer">
+                    <span>Auto-refresh:</span>
+                    <input type="number" class="timer-input" id="refreshTimer" value="30" min="5" max="300">
+                    <span>sec</span>
+                </div>
+                <div class="control-btn" id="autoRefreshBtn" onclick="toggleAutoRefresh()">▶ START</div>
+                <div class="control-btn" onclick="manualRefresh()">🔄 REFRESH</div>
+            </div>
+            <div class="connection-status">
+                <div class="conn-indicator">
+                    <div class="conn-light conn-online"></div>
+                    <span>GPT</span>
+                </div>
+                <div class="conn-indicator">
+                    <div class="conn-light conn-connecting"></div>
+                    <span>Grok</span>
+                </div>
+                <div class="conn-indicator">
+                    <div class="conn-light conn-online"></div>
+                    <span>DeepSeek</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden iframes for AI providers -->
+    <iframe id="gptFrame" class="hidden-frame" src="about:blank"></iframe>
+    <iframe id="grokFrame" class="hidden-frame" src="about:blank"></iframe>
+    <iframe id="deepseeekFrame" class="hidden-frame" src="about:blank"></iframe>
+
+    <script>
+        class RickHiveCompanion {
+            constructor() {
+                this.autoRefreshEnabled = false;
+                this.autoRefreshInterval = null;
+                this.currentProvider = 'narrator';
+                this.refreshTimer = 30;
+                this.initializeHiveMind();
+            }
+
+            initializeHiveMind() {
+                console.log('🧠 Rick Hive Mind Companion initialized');
+                this.loadNarratorContent();
+                
+                // Set up auto-refresh timer input
+                document.getElementById('refreshTimer').addEventListener('change', (e) => {
+                    this.refreshTimer = parseInt(e.target.value) || 30;
+                    if (this.autoRefreshEnabled) {
+                        this.stopAutoRefresh();
+                        this.startAutoRefresh();
+                    }
+                });
+            }
+
+            selectProvider(provider) {
+                // Update tab active state
+                document.querySelectorAll('.ai-tab').forEach(tab => tab.classList.remove('active'));
+                event.target.classList.add('active');
+                
+                this.currentProvider = provider;
+                
+                if (provider === 'narrator') {
+                    this.showNarratorPanel();
+                } else {
+                    this.showProviderFrame(provider);
+                }
+            }
+
+            showNarratorPanel() {
+                const panel = document.getElementById('narratorPanel');
+                panel.style.display = 'block';
+                // Hide any visible iframes
+                document.querySelectorAll('iframe').forEach(frame => {
+                    frame.style.display = 'none';
+                });
+            }
+
+            showProviderFrame(provider) {
+                const panel = document.getElementById('narratorPanel');
+                panel.style.display = 'none';
+                
+                const frameId = provider + 'Frame';
+                const frame = document.getElementById(frameId);
+                
+                if (frame) {
+                    frame.style.display = 'block';
+                    frame.style.width = '100%';
+                    frame.style.height = '100%';
+                    frame.style.border = 'none';
+                    
+                    // Load provider URL if not already loaded
+                    if (frame.src === 'about:blank') {
+                        const urls = {
+                            'gpt': 'https://chat.openai.com',
+                            'grok': 'https://x.ai/chat',
+                            'deepseek': 'https://chat.deepseek.com'
+                        };
+                        frame.src = urls[provider] || 'about:blank';
+                    }
+                }
+            }
+
+            toggleAutoRefresh() {
+                const btn = document.getElementById('autoRefreshBtn');
+                
+                if (this.autoRefreshEnabled) {
+                    this.stopAutoRefresh();
+                    btn.textContent = '▶ START';
+                    btn.classList.remove('active');
+                } else {
+                    this.startAutoRefresh();
+                    btn.textContent = '⏸ STOP';
+                    btn.classList.add('active');
+                }
+            }
+
+            startAutoRefresh() {
+                this.autoRefreshEnabled = true;
+                this.autoRefreshInterval = setInterval(() => {
+                    if (this.currentProvider === 'narrator') {
+                        this.refreshNarratorContent();
+                    }
+                }, this.refreshTimer * 1000);
+                console.log(`🔄 Auto-refresh started: ${this.refreshTimer}s`);
+            }
+
+            stopAutoRefresh() {
+                this.autoRefreshEnabled = false;
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                    this.autoRefreshInterval = null;
+                }
+                console.log('⏸ Auto-refresh stopped');
+            }
+
+            manualRefresh() {
+                console.log('🔄 Manual refresh triggered');
+                if (this.currentProvider === 'narrator') {
+                    this.refreshNarratorContent();
+                } else {
+                    // Refresh the current provider frame
+                    const frameId = this.currentProvider + 'Frame';
+                    const frame = document.getElementById(frameId);
+                    if (frame && frame.src !== 'about:blank') {
+                        frame.src = frame.src;
+                    }
+                }
+            }
+
+            refreshNarratorContent() {
+                // Simulate fetching new narrator content
+                this.addNarratorMessage(
+                    this.getRandomProvider(),
+                    this.generateRandomMessage()
+                );
+            }
+
+            loadNarratorContent() {
+                // Load initial narrator content (simulated)
+                console.log('📢 Loading narrator content...');
+            }
+
+            addNarratorMessage(provider, message) {
+                const panel = document.getElementById('narratorPanel');
+                const timestamp = new Date().toLocaleString();
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'narrator-message';
+                messageDiv.innerHTML = `
+                    <div class="narrator-timestamp">${timestamp}</div>
+                    <div class="narrator-text">
+                        <span class="ai-provider-badge badge-${provider.toLowerCase()}">${provider}</span>
+                        ${message}
+                    </div>
+                `;
+                
+                panel.insertBefore(messageDiv, panel.firstChild);
+                
+                // Keep only last 20 messages
+                while (panel.children.length > 20) {
+                    panel.removeChild(panel.lastChild);
+                }
+            }
+
+            getRandomProvider() {
+                const providers = ['GPT', 'Grok', 'DeepSeek', 'GitHub'];
+                return providers[Math.floor(Math.random() * providers.length)];
+            }
+
+            generateRandomMessage() {
+                const messages = [
+                    '🎯 New trading opportunity identified in EUR/USD pair',
+                    '⚡ High-frequency pattern detected in crypto markets',
+                    '🔬 Deep learning analysis suggests trend reversal',
+                    '📊 Market sentiment analysis: Bullish momentum building',
+                    '🌊 Liquidity flow analysis indicates smart money accumulation',
+                    '🎪 Volatility spike expected in next 4H session',
+                    '🎲 Risk management protocols activated for position sizing'
+                ];
+                return messages[Math.floor(Math.random() * messages.length)];
+            }
+        }
+
+        // Global functions for onclick handlers
+        let hiveCompanion;
+
+        function selectProvider(provider) {
+            hiveCompanion.selectProvider(provider);
+        }
+
+        function toggleAutoRefresh() {
+            hiveCompanion.toggleAutoRefresh();
+        }
+
+        function manualRefresh() {
+            hiveCompanion.manualRefresh();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            hiveCompanion = new RickHiveCompanion();
+        });
+    </script>
+</body>
+</html>

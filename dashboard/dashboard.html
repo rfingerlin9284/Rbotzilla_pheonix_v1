@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RICK Trading Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="10">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .mode-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        .mode-off { background: #6c757d; }
+        .mode-ghost { background: #17a2b8; }
+        .mode-canary { background: #ffc107; color: #000; }
+        .mode-live { background: #dc3545; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat:last-child { border-bottom: none; }
+        .stat-label { opacity: 0.8; }
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        .events-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        .event {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .event-type {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .event-time {
+            opacity: 0.6;
+            font-size: 0.85em;
+        }
+        .refresh-notice {
+            text-align: center;
+            opacity: 0.7;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        .timestamp {
+            text-align: center;
+            opacity: 0.5;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 RICK Trading Dashboard</h1>
+            <div class="mode-badge mode-ghost">
+                GHOST MODE
+            </div>
+            <p style="margin-top: 10px; opacity: 0.8;">Ghost mode - 45min validation sessions</p>
+        </div>
+        
+        <div class="grid">
+            <!-- Performance Card -->
+            <div class="card">
+                <h2>📊 Performance</h2>
+                <div class="stat">
+                    <span class="stat-label">Total Trades</span>
+                    <span class="stat-value">6</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Win Rate</span>
+                    <span class="stat-value">83.3%</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Wins / Losses</span>
+                    <span class="stat-value">5 / 1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Net P&L</span>
+                    <span class="stat-value positive">
+                        $118041.55
+                    </span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Total Fees</span>
+                    <span class="stat-value">$3.50</span>
+                </div>
+            </div>
+            
+            <!-- Environment Card -->
+            <div class="card">
+                <h2>🔧 Environment</h2>
+                <div class="stat">
+                    <span class="stat-label">OANDA</span>
+                    <span class="stat-value">practice</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Coinbase</span>
+                    <span class="stat-value">sandbox</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Live Trading</span>
+                    <span class="stat-value positive">
+                        OFF
+                    </span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Toggle File</span>
+                    <span class="stat-value" style="font-size: 0.8em;">.upgrade_toggle</span>
+                </div>
+            </div>
+            
+            <!-- Mode Commands Card -->
+            <div class="card">
+                <h2>⚙️ Mode Commands</h2>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9em;">
+                    <div style="margin-bottom: 8px;"># Switch to GHOST mode</div>
+                    <div style="color: #28a745;">python3 -c "from util.mode_manager import switch_mode; switch_mode('GHOST')"</div>
+                    
+                    <div style="margin: 15px 0 8px;">## Switch to OFF</div>
+                    <div style="color: #28a745;">python3 -c "from util.mode_manager import switch_mode; switch_mode('OFF')"</div>
+                    
+                    <div style="margin: 15px 0 8px;"># Run ghost test</div>
+                    <div style="color: #28a745;">python3 test_ghost_trading.py</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SwarmBot Positions -->
+        <div class="card">
+            <h2>🐝 Active SwarmBots</h2>
+            <div id="swarmbot-container">
+                <div style="text-align: center; opacity: 0.7; padding: 20px;">
+                    No active SwarmBots
+                </div>
+            </div>
+        </div>
+        
+        <!-- Broker Status -->
+        <div class="card">
+            <h2>🏦 Broker Status</h2>
+            <div id="brokersList" style="display: grid; gap: 10px;"></div>
+        </div>
+        
+        <!-- Market Regime -->
+        <div class="card">
+            <h2>🌊 Market Regime</h2>
+            <div id="regime-container">
+                <div class="stat">
+                    <span class="stat-label">Current Regime</span>
+                    <span class="stat-value" id="regime-name">UNKNOWN</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Confidence</span>
+                    <span class="stat-value" id="regime-confidence">0%</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Active Positions</span>
+                    <span class="stat-value" id="regime-positions">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Win Rate Today</span>
+                    <span class="stat-value" id="regime-winrate">0%</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">P&L Today</span>
+                    <span class="stat-value" id="regime-pnl">$0.00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="card">
+            <h2>📝 Recent Activity (Last 10 Events)</h2>
+            <div class="events-list">
+                
+        <div class="event">
+            <span class="event-type">GHOST_SESSION_END</span>
+            <span style="opacity: 0.8;"></span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:20</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Trades: 5 | 
+                        Win Rate: 80.0% | 
+                        P&L: $117999.00
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:20</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.13629 | 
+                        Units: 13201 | 
+                        Latency: 106.8ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:20</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:10</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.10562 | 
+                        Units: 13568 | 
+                        Latency: 84.7ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:10</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | EUR_USD</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:00</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.21454 | 
+                        Units: -12351 | 
+                        Latency: 210.1ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | EUR_USD</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:53:00</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:52:49</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.22018 | 
+                        Units: 12294 | 
+                        Latency: 244.5ms
+                    </div>
+                
+        </div>
+        
+        <div class="event">
+            <span class="event-type">NOTIONAL_ADJUSTMENT</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:52:49</div>
+            
+        </div>
+        
+        <div class="event">
+            <span class="event-type">OCO_PLACED</span>
+            <span style="opacity: 0.8;"> | USD_JPY</span>
+            <span style="opacity: 0.6;"> @ oanda</span>
+            <div class="event-time">2025-10-12T12:52:39</div>
+            
+                    <div style="margin-top: 5px; opacity: 0.7; font-size: 0.85em;">
+                        Entry: 1.18523 | 
+                        Units: 12656 | 
+                        Latency: 70.7ms
+                    </div>
+                
+        </div>
+        
+        <!-- ========== LIVE MONITORING SECTIONS ========== -->
+        
+        <!-- Live Status Overview -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>⚡ LIVE TRADING STATUS</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="opacity: 0.7; font-size: 0.9em; margin-bottom: 5px;">Mode</div>
+                    <div id="live-mode" style="font-size: 1.3em; font-weight: bold; color: #28a745;">LIVE</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="opacity: 0.7; font-size: 0.9em; margin-bottom: 5px;">Uptime</div>
+                    <div id="live-uptime" style="font-size: 1.3em; font-weight: bold;">2h 34m</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="opacity: 0.7; font-size: 0.9em; margin-bottom: 5px;">Capital Used</div>
+                    <div style="font-size: 1.1em; font-weight: bold;"><span id="live-capital-used">$2,340</span> / <span id="live-capital-deployed">$5,000</span></div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="opacity: 0.7; font-size: 0.9em; margin-bottom: 5px;">Available</div>
+                    <div id="live-capital-available" style="font-size: 1.3em; font-weight: bold; color: #ffd700;">$2,660</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="opacity: 0.7; font-size: 0.9em; margin-bottom: 5px;">Daily P&L</div>
+                    <div style="font-size: 1.3em; font-weight: bold;"><span id="live-daily-pnl" class="positive">+$1,240</span> <span id="live-daily-pnl-pct" style="font-size: 0.8em;">(24.8%)</span></div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="opacity: 0.7; font-size: 0.9em; margin-bottom: 5px;">Trades / Win Rate</div>
+                    <div style="font-size: 1.1em; font-weight: bold;"><span id="live-trades-count">12</span> / <span id="live-win-rate">68%</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Broker Status Cards -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>🏦 BROKER STATUS</h2>
+            <div id="live-brokers" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Active Positions Table -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>📊 ACTIVE POSITIONS</h2>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid rgba(255,255,255,0.2);">
+                            <th style="padding: 10px; text-align: left;">Symbol</th>
+                            <th style="padding: 10px; text-align: left;">Broker</th>
+                            <th style="padding: 10px; text-align: center;">Side</th>
+                            <th style="padding: 10px; text-align: right;">Size</th>
+                            <th style="padding: 10px; text-align: right;">Entry</th>
+                            <th style="padding: 10px; text-align: right;">Current</th>
+                            <th style="padding: 10px; text-align: right;">P&L</th>
+                            <th style="padding: 10px; text-align: center;">R:R</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-positions">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Risk Metrics Gauges -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>⚠️ RISK METRICS</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <!-- Max Drawdown -->
+                <div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="opacity: 0.8;">Max Drawdown</span>
+                            <span style="font-weight: bold;"><span id="drawdown-value">8.2%</span> / <span id="drawdown-limit">15%</span></span>
+                        </div>
+                        <div id="drawdown-gauge" style="height: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                            <div style="width: 54.7%; height: 100%; background: linear-gradient(90deg, #28a745, #ffc107); border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85em; opacity: 0.6;">🟢 SAFE</div>
+                </div>
+                
+                <!-- Correlation -->
+                <div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="opacity: 0.8;">Correlation</span>
+                            <span style="font-weight: bold;"><span id="correlation-value">0.62</span> / <span id="correlation-limit">0.70</span></span>
+                        </div>
+                        <div id="correlation-gauge" style="height: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                            <div style="width: 88.6%; height: 100%; background: linear-gradient(90deg, #28a745, #ffc107); border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85em; opacity: 0.6;">🟢 SAFE</div>
+                </div>
+                
+                <!-- Daily Loss -->
+                <div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="opacity: 0.8;">Daily Loss Used</span>
+                            <span style="font-weight: bold;">-$<span id="loss-value">145</span> / -$<span id="loss-limit">500</span></span>
+                        </div>
+                        <div id="loss-gauge" style="height: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                            <div style="width: 29%; height: 100%; background: linear-gradient(90deg, #28a745, #ffc107); border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85em; opacity: 0.6;">🟢 SAFE</div>
+                </div>
+                
+                <!-- Margin Used -->
+                <div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="opacity: 0.8;">Margin Used</span>
+                            <span style="font-weight: bold;"><span id="margin-value">46.8%</span> / <span id="margin-limit">60%</span></span>
+                        </div>
+                        <div id="margin-gauge" style="height: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                            <div style="width: 78%; height: 100%; background: linear-gradient(90deg, #28a745, #ffc107); border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85em; opacity: 0.6;">🟢 SAFE</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Trades Log -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>📈 RECENT TRADES</h2>
+            <div id="live-trades" style="display: grid; gap: 10px;">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Alerts & Warnings -->
+        <div class="card" style="grid-column: 1 / -1; background: rgba(0,255,0,0.1); border: 1px solid rgba(0,255,0,0.3);">
+            <h2>✅ SYSTEM ALERTS</h2>
+            <div style="display: grid; gap: 10px;">
+                <div style="padding: 10px; background: rgba(40,167,69,0.2); border-radius: 5px;">✅ All systems nominal</div>
+                <div style="padding: 10px; background: rgba(40,167,69,0.2); border-radius: 5px;">ℹ️ Correlation trending up (currently 62%)</div>
+                <div style="padding: 10px; background: rgba(255,193,7,0.2); border-radius: 5px;">⚠️ Next daily loss trigger: -$500 (current: -$145)</div>
+                <div style="padding: 10px; background: rgba(40,167,69,0.2); border-radius: 5px;">🟢 No margin warnings</div>
+            </div>
+        </div>
+            
+            </div>
+        </div>
+        
+        <div class="timestamp">
+            Last updated: 2025-10-12 13:33:41
+        </div>
+        
+        <div class="refresh-notice">
+            🔄 Dashboard auto-refreshes live monitoring every 3 seconds
+        </div>
+    </div>
+    
+    <script>
+        // Update SwarmBot positions
+        function updateSwarmBots() {
+            fetch('/api/swarmbots')
+                .then(response => response.json())
+                .then(bots => {
+                    const container = document.getElementById('swarmbot-container');
+                    if (!bots || bots.length === 0) {
+                        container.innerHTML = '<div style="text-align: center; opacity: 0.7; padding: 20px;">No active SwarmBots</div>';
+                        return;
+                    }
+                    
+                    let html = '<table style="width: 100%; border-collapse: collapse;">';
+                    html += '<thead><tr style="border-bottom: 2px solid rgba(255,255,255,0.2);">';
+                    html += '<th style="padding: 10px; text-align: left;">Bot ID</th>';
+                    html += '<th style="padding: 10px; text-align: left;">Pair</th>';
+                    html += '<th style="padding: 10px; text-align: center;">Dir</th>';
+                    html += '<th style="padding: 10px; text-align: right;">Entry</th>';
+                    html += '<th style="padding: 10px; text-align: right;">Current</th>';
+                    html += '<th style="padding: 10px; text-align: right;">P&L</th>';
+                    html += '<th style="padding: 10px; text-align: center;">Status</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    bots.forEach(bot => {
+                        const pnlClass = bot.unrealized_pnl >= 0 ? 'positive' : 'negative';
+                        const pnlSign = bot.unrealized_pnl >= 0 ? '+' : '';
+                        const dirColor = bot.direction === 'LONG' ? '#28a745' : '#dc3545';
+                        
+                        html += '<tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">';
+                        html += `<td style="padding: 10px; font-size: 0.85em;">${bot.bot_id}</td>`;
+                        html += `<td style="padding: 10px; font-weight: bold;">${bot.pair}</td>`;
+                        html += `<td style="padding: 10px; text-align: center; color: ${dirColor};">${bot.direction}</td>`;
+                        html += `<td style="padding: 10px; text-align: right;">${bot.entry_price.toFixed(5)}</td>`;
+                        html += `<td style="padding: 10px; text-align: right;">${bot.current_price.toFixed(5)}</td>`;
+                        html += `<td style="padding: 10px; text-align: right;" class="${pnlClass}">${pnlSign}$${bot.unrealized_pnl.toFixed(2)} (${pnlSign}${bot.pnl_pct.toFixed(2)}%)</td>`;
+                        html += `<td style="padding: 10px; text-align: center; font-size: 0.85em;">${bot.status}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                })
+                .catch(err => console.error('Error fetching SwarmBots:', err));
+        }
+        
+        // Update market regime
+        function updateRegime() {
+            fetch('/api/regime')
+                .then(response => response.json())
+                .then(data => {
+                    // Update regime name with color coding
+                    const regimeName = document.getElementById('regime-name');
+                    regimeName.textContent = data.regime;
+                    if (data.regime === 'BULL') {
+                        regimeName.style.color = '#28a745';
+                    } else if (data.regime === 'BEAR') {
+                        regimeName.style.color = '#dc3545';
+                    } else {
+                        regimeName.style.color = '#ffc107';
+                    }
+                    
+                    // Update other regime stats
+                    document.getElementById('regime-confidence').textContent = `${data.confidence.toFixed(1)}%`;
+                    document.getElementById('regime-positions').textContent = data.active_positions;
+                    document.getElementById('regime-winrate').textContent = `${data.win_rate.toFixed(1)}%`;
+                    
+                    // Update P&L with color
+                    const pnlElement = document.getElementById('regime-pnl');
+                    pnlElement.textContent = `$${data.total_pnl_today.toFixed(2)}`;
+                    if (data.total_pnl_today >= 0) {
+                        pnlElement.className = 'stat-value positive';
+                    } else {
+                        pnlElement.className = 'stat-value negative';
+                    }
+                })
+                .catch(err => console.error('Error fetching regime:', err));
+        }
+        
+        // Update broker status
+        function updateBrokerStatus() {
+            fetch('/api/brokers/status')
+                .then(r => r.json())
+                .then(data => {
+                    const list = document.getElementById('brokersList');
+                    
+                    if (!list) return;
+                    
+                    list.innerHTML = data.brokers.map(broker => `
+                        <div style="
+                            background: rgba(${broker.connected ? '46,204,113' : '231,76,60'}, 0.2);
+                            border-left: 3px solid ${broker.connected ? '#2ecc71' : '#e74c3c'};
+                            padding: 10px;
+                            border-radius: 5px;
+                        ">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>${broker.name}</strong>
+                                    <span style="opacity: 0.6; margin-left: 10px;">
+                                        ${broker.connected ? '🟢 Connected' : '🔴 Disconnected'}
+                                    </span>
+                                </div>
+                                ${broker.balance ? `<div style="opacity: 0.8;">Balance: $${broker.balance.toFixed(2)}</div>` : ''}
+                            </div>
+                            ${broker.margin_used ? `<div style="opacity: 0.7; font-size: 0.9em;">Margin: ${broker.margin_used.toFixed(1)}% used</div>` : ''}
+                        </div>
+                    `).join('');
+                })
+                .catch(e => console.error('Broker status error:', e));
+        }
+        
+        // Update every 3 seconds
+        setInterval(() => {
+            updateSwarmBots();
+            updateRegime();
+            updateBrokerStatus();
+        }, 3000);
+        
+        // Initial update
+        updateSwarmBots();
+        updateRegime();
+        updateBrokerStatus();
+        
+        // Event card description templates
+        const eventDescriptions = {
+            'OCO_PLACED': (evt) => {
+                const d = evt.details || {};
+                return `${d.side || '?'} ${d.units || '?'}u @ ${d.entry || '?'} | SL: ${d.sl || '?'}, TP: ${d.tp || '?'}`;
+            },
+            'ORDER_PLACED': (evt) => {
+                const d = evt.details || {};
+                return `${d.side || '?'} ${d.size || '?'} ${d.product_id || '?'}`;
+            },
+            'DUAL_CONNECTOR_INIT': (evt) => {
+                const d = evt.details || {};
+                return `Mode: ${d.mode || '?'} | Live: ${d.live_available ? 'Yes' : 'No'} | Status: ${d.status || 'Ready'}`;
+            },
+            'TRADE_CLOSED': (evt) => {
+                const d = evt.details || {};
+                return `Exit: ${d.exit_price || '?'} | P&L: $${d.net_pnl || '0'}`;
+            },
+            'TRADE_OPENED': (evt) => {
+                const d = evt.details || {};
+                return `Entry: ${d.entry_price || '?'} | Direction: ${d.direction || '?'} | Units: ${d.units || '?'}`;
+            },
+            'PATTERN_DETECTION': (evt) => {
+                const d = evt.details || {};
+                const patterns = d.patterns || [];
+                return `Patterns: ${patterns.join(', ')} | Confidence: ${(d.confidence * 100).toFixed(0)}%`;
+            },
+            'NOTIONAL_ADJUSTMENT': (evt) => {
+                const d = evt.details || {};
+                return `${d.original_units} → ${d.adjusted_units} units`;
+            },
+            'RR_CALCULATION': (evt) => {
+                const d = evt.details || {};
+                return `RR: ${d.rr_ratio || '?'}:1 | Charter: ${d.passes_charter ? 'Yes' : 'No'}`;
+            },
+            'FILTER_CHECK': (evt) => {
+                const d = evt.details || {};
+                return `Filter: ${d.filter_name} | ${d.passed ? 'Pass' : 'Fail'}`;
+            }
+        };
+        
+        // Hive Modal - Click listener for Hive messages
+        document.addEventListener('click', function(e) {
+            const line = e.target.closest('.narration-line');
+            if (!line) return;
+            
+            const text = line.textContent;
+            if (!text.includes('Hive consensus')) return;
+            
+            // Extract symbol from message
+            const match = text.match(/Hive consensus on (\w+):/);
+            if (!match) return;
+            
+            const symbol = match[1];
+            
+            fetch(`/api/hive/analyze?symbol=${symbol}`)
+                .then(r => r.json())
+                .then(data => showHiveModal(data))
+                .catch(e => console.error('Hive analyze error:', e));
+        });
+        
+        function showHiveModal(data) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                z-index: 9999; background: rgba(20,20,40,0.95); border: 2px solid #FFD700;
+                border-radius: 10px; padding: 20px; min-width: 400px; color: #fff;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            `;
+            
+            const backdrop = document.createElement('div');
+            backdrop.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                z-index: 9998; background: rgba(0,0,0,0.7);
+            `;
+            backdrop.onclick = () => { modal.remove(); backdrop.remove(); };
+            
+            const gpt_conf = Math.round(data.agent_votes.gpt.confidence * 100);
+            const grok_conf = Math.round(data.agent_votes.grok.confidence * 100);
+            const ds_conf = Math.round(data.agent_votes.deepseek.confidence * 100);
+            const consensus_conf = Math.round(data.consensus.confidence * 100);
+            
+            modal.innerHTML = `
+                <h2 style="color: #FFD700; margin-bottom: 15px;">Hive Consensus: ${data.symbol}</h2>
+                <div style="margin-bottom: 10px; padding: 10px; background: rgba(255,215,0,0.1); border-left: 3px solid #FFD700; border-radius: 5px;">
+                    <strong>Agent Votes (35% / 35% / 30% weights)</strong>
+                </div>
+                <div style="margin-bottom: 10px; padding: 10px; background: rgba(46,204,113,0.1); border-radius: 5px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>GPT</strong>
+                        <span>${data.agent_votes.gpt.signal} @ ${gpt_conf}%</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px; padding: 10px; background: rgba(46,204,113,0.1); border-radius: 5px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>GROK</strong>
+                        <span>${data.agent_votes.grok.signal} @ ${grok_conf}%</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px; padding: 10px; background: rgba(46,204,113,0.1); border-radius: 5px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>DeepSeek</strong>
+                        <span>${data.agent_votes.deepseek.signal} @ ${ds_conf}%</span>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid #FFD700; padding-top: 10px; margin-bottom: 15px;">
+                    <strong>Final Consensus</strong>: ${data.consensus.direction} @ ${consensus_conf}%
+                </div>
+                <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 15px;">
+                    ${data.consensus.compliant ? '✅ Charter Compliant' : '⚠️ Not Charter Compliant'}
+                </div>
+                <button onclick="this.closest('[style*=z-index: 9999]').remove(); document.querySelector('[style*=z-index: 9998]').remove();"
+                        style="width: 100%; padding: 10px; background: #FFD700; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    Close
+                </button>
+            `;
+            
+            document.body.appendChild(backdrop);
+            document.body.appendChild(modal);
+        }
+        
+        // SSE Streaming for Real-Time Narration Updates
+        let eventSource = null;
+        
+        function initNarrationStream() {
+            if (eventSource) {
+                eventSource.close();
+            }
+            
+            eventSource = new EventSource('/api/narration/stream');
+            
+            eventSource.onmessage = (e) => {
+                try {
+                    const event = JSON.parse(e.data);
+                    addNarrationLine(event);
+                } catch (err) {
+                    console.error('Parse error:', err, e.data);
+                }
+            };
+            
+            eventSource.onerror = (e) => {
+                console.error('Stream error:', e);
+                eventSource.close();
+                
+                // Reconnect after 5 seconds
+                setTimeout(initNarrationStream, 5000);
+            };
+        }
+        
+        function addNarrationLine(event) {
+            const feed = document.getElementById('narration-feed');
+            if (!feed) return;
+            
+            // Create formatted line
+            const timestamp = new Date(event.timestamp).toLocaleTimeString();
+            const rickSays = event.rick_says || `${event.event_type}: ${event.symbol || 'system'}`;
+            
+            const line = document.createElement('div');
+            line.className = 'narration-line new';
+            line.innerHTML = `<span class="narration-timestamp">${timestamp}</span><span class="narration-text">💬 <strong>Rick:</strong> ${rickSays}</span>`;
+            
+            feed.appendChild(line);
+            feed.scrollTop = feed.scrollHeight;
+            
+            // Keep feed to max 100 lines
+            while (feed.children.length > 100) {
+                feed.removeChild(feed.firstChild);
+            }
+        }
+        
+        // Initialize SSE streaming on page load
+        document.addEventListener('DOMContentLoaded', initNarrationStream);
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+        });
+        
+        // ========== LIVE MONITORING DASHBOARD ==========
+        
+        // Update live status metrics
+        async function updateLiveStatus() {
+            try {
+                const response = await fetch('/api/live/status');
+                const data = await response.json();
+                
+                // Update status display
+                document.getElementById('live-mode').textContent = data.mode;
+                document.getElementById('live-uptime').textContent = formatUptime(data.uptime_seconds);
+                document.getElementById('live-capital-deployed').textContent = '$' + data.capital_deployed.toLocaleString();
+                document.getElementById('live-capital-used').textContent = '$' + data.capital_used.toLocaleString();
+                document.getElementById('live-capital-available').textContent = '$' + data.capital_available.toLocaleString();
+                document.getElementById('live-daily-pnl').textContent = '$' + data.daily_pnl.toFixed(2);
+                document.getElementById('live-daily-pnl-pct').textContent = data.daily_pnl_pct.toFixed(1) + '%';
+                document.getElementById('live-trades-count').textContent = data.total_trades_today;
+                document.getElementById('live-win-rate').textContent = data.win_rate.toFixed(1) + '%';
+                
+                // Color code P&L
+                const pnlElement = document.getElementById('live-daily-pnl');
+                pnlElement.className = data.daily_pnl >= 0 ? 'positive' : 'negative';
+            } catch (err) {
+                console.error('Status update error:', err);
+            }
+        }
+        
+        // Update broker status
+        async function updateBrokerStatus() {
+            try {
+                const response = await fetch('/api/live/brokers');
+                const data = await response.json();
+                const container = document.getElementById('live-brokers');
+                container.innerHTML = '';
+                
+                data.brokers.forEach(broker => {
+                    const div = document.createElement('div');
+                    div.className = 'broker-card';
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-weight: bold; font-size: 1.1em;">${broker.symbol} ${broker.name}</span>
+                            <span style="padding: 5px 10px; border-radius: 5px; background: ${broker.status === 'connected' ? '#28a745' : '#dc3545'}; font-size: 0.85em;">
+                                ${broker.status.toUpperCase()}
+                            </span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
+                            <div><strong>Balance:</strong> $${broker.balance.toLocaleString()}</div>
+                            <div><strong>Positions:</strong> ${broker.positions}</div>
+                            <div><strong>P&L:</strong> <span class="${broker.pnl >= 0 ? 'positive' : 'negative'}">$${broker.pnl.toFixed(2)}</span></div>
+                            <div><strong>Latency:</strong> ${broker.latency_ms}ms</div>
+                            <div><strong>Margin:</strong> ${broker.margin_used_pct}%</div>
+                            <div><strong>Spread:</strong> ${broker.max_spread_pips}p</div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error('Broker update error:', err);
+            }
+        }
+        
+        // Update active positions
+        async function updatePositions() {
+            try {
+                const response = await fetch('/api/live/positions');
+                const data = await response.json();
+                const container = document.getElementById('live-positions');
+                container.innerHTML = '';
+                
+                data.positions.forEach(pos => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${pos.symbol}</td>
+                        <td>${pos.broker}</td>
+                        <td style="color: ${pos.side === 'BUY' ? '#28a745' : '#dc3545'};">${pos.side}</td>
+                        <td>${typeof pos.size === 'number' && pos.size < 1 ? pos.size.toFixed(4) : pos.size.toLocaleString()}</td>
+                        <td>${typeof pos.entry === 'number' && pos.entry > 100 ? pos.entry.toLocaleString() : pos.entry.toFixed(4)}</td>
+                        <td>${typeof pos.current === 'number' && pos.current > 100 ? pos.current.toLocaleString() : pos.current.toFixed(4)}</td>
+                        <td class="${pos.pnl >= 0 ? 'positive' : 'negative'}">$${pos.pnl.toFixed(2)} (${pos.pnl_pct > 0 ? '+' : ''}${pos.pnl_pct.toFixed(2)}%)</td>
+                        <td>${pos.rr.toFixed(1)}:1</td>
+                    `;
+                    container.appendChild(row);
+                });
+            } catch (err) {
+                console.error('Positions update error:', err);
+            }
+        }
+        
+        // Update risk metrics
+        async function updateRiskMetrics() {
+            try {
+                const response = await fetch('/api/live/risks');
+                const data = await response.json();
+                
+                // Drawdown gauge
+                updateGauge('drawdown-gauge', data.max_drawdown_pct, 100);
+                document.getElementById('drawdown-value').textContent = data.max_drawdown.toFixed(1) + '%';
+                document.getElementById('drawdown-limit').textContent = data.max_drawdown_limit.toFixed(1) + '%';
+                
+                // Correlation gauge
+                updateGauge('correlation-gauge', data.correlation_pct, 100);
+                document.getElementById('correlation-value').textContent = data.correlation.toFixed(2);
+                document.getElementById('correlation-limit').textContent = data.correlation_limit.toFixed(2);
+                
+                // Daily loss gauge
+                updateGauge('loss-gauge', data.daily_loss_pct, 100);
+                document.getElementById('loss-value').textContent = '$' + Math.abs(data.daily_loss_used).toFixed(0);
+                document.getElementById('loss-limit').textContent = '$' + Math.abs(data.daily_loss_limit).toFixed(0);
+                
+                // Margin gauge
+                updateGauge('margin-gauge', data.margin_used_pct, data.margin_limit_pct);
+                document.getElementById('margin-value').textContent = data.margin_used_pct.toFixed(1) + '%';
+                document.getElementById('margin-limit').textContent = data.margin_limit_pct.toFixed(1) + '%';
+            } catch (err) {
+                console.error('Risk update error:', err);
+            }
+        }
+        
+        // Update recent trades
+        async function updateRecentTrades() {
+            try {
+                const response = await fetch('/api/live/recent_trades');
+                const data = await response.json();
+                const container = document.getElementById('live-trades');
+                container.innerHTML = '';
+                
+                data.trades.forEach(trade => {
+                    const div = document.createElement('div');
+                    div.className = 'trade-item';
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>${trade.timestamp.split('T')[1].split('Z')[0]} <strong>${trade.symbol}</strong> ${trade.side}</span>
+                            <span class="${trade.pnl >= 0 ? 'positive' : 'negative'}">$${trade.pnl.toFixed(2)}</span>
+                        </div>
+                        <div style="font-size: 0.85em; opacity: 0.7;">
+                            @ ${typeof trade.entry === 'number' && trade.entry > 100 ? trade.entry.toLocaleString() : trade.entry.toFixed(4)} | 
+                            ${trade.size} | ${trade.broker} | ${trade.latency_ms}ms | ${trade.strategy}
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error('Trades update error:', err);
+            }
+        }
+        
+        // Helper function to format uptime
+        function formatUptime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `${hours}h ${minutes}m`;
+        }
+        
+        // Helper function to update gauge display
+        function updateGauge(elementId, value, max) {
+            const gauge = document.getElementById(elementId);
+            const percentage = (value / max) * 100;
+            let color = '#28a745'; // green
+            if (percentage > 75) color = '#dc3545'; // red
+            else if (percentage > 50) color = '#ffc107'; // yellow
+            
+            gauge.innerHTML = `<div style="width: ${percentage}%; height: 100%; background: ${color}; border-radius: 10px; transition: all 0.3s ease;"></div>`;
+        }
+        
+        // Initialize live monitoring updates
+        function initLiveMonitoring() {
+            updateLiveStatus();
+            updateBrokerStatus();
+            updatePositions();
+            updateRiskMetrics();
+            updateRecentTrades();
+            
+            // Update every 3 seconds
+            setInterval(() => {
+                updateLiveStatus();
+                updateBrokerStatus();
+                updatePositions();
+                updateRiskMetrics();
+                updateRecentTrades();
+            }, 3000);
+        }
+        
+        // Add live monitoring to page load
+        if (document.readyState !== 'loading') {
+            initLiveMonitoring();
+        }
+    </script>
+</body>
+</html>

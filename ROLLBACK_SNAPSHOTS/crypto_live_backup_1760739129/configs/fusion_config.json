@@ -1,0 +1,10 @@
+{
+  "anchor_threshold": 0.8,
+  "boost_factor": 0.1,
+  "decay_rate": 0.95,
+  "ml_weight": 0.6,
+  "pattern_weight": 0.4,
+  "consensus_bonus": 0.15,
+  "divergence_penalty": 0.1,
+  "memory_retention_days": 30
+}

@@ -1,0 +1,281 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_server
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - agentic_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_server
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: agentic_trading
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - agentic_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  websocket_server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.websocket
+    container_name: websocket_server
+    ports:
+      - "8008:8008"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/agentic_trading
+      REDIS_URL: redis://redis:6379
+      PYTHONPATH: /app
+    working_dir: /app
+    networks:
+      - agentic_network
+
+  orchestrator:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.orchestrator
+    container_name: orchestrator_api
+    ports:
+      - "8007:8007"
+ 	
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/agentic_trading
+      REDIS_URL: redis://redis:6379
+      PYTHONPATH: /app
+    working_dir: /app
+    networks:
+      - agentic_network
+   
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile # Changed from Dockerfile.vite
+      args:
+        # Build with correct WebSocket URL for network access
+        REACT_APP_WS_URL: ws://1websocket_server:3001/ws
+    container_name: trading_frontend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - websocket_server
+    networks:
+      - agentic_network
+    environment:
+      # Consistent environment variable (no conflicting fallback)
+      - REACT_APP_WS_URL=ws://192.168.1.157:3001/ws
+
+  chartanalyst:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.agent
+    container_name: chartanalyst_agent
+    command: python3 -m agents.chartanalyst.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - AI_API_KEY=${OPENROUTER_API_KEY}
+      - AI_API_URL=${OPENROUTER_API_URL}
+      - MODEL_NAME=${CHARTANALYST_MODEL}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+  riskmanager:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.agent
+    container_name: riskmanager_agent
+    command: python3 -m agents.riskmanager.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - AI_API_KEY=${OPENROUTER_API_KEY}
+      - AI_API_URL=${OPENROUTER_API_URL}
+      - MODEL_NAME=${RISKMGR_MODEL}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+  marketsentinel:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.agent
+    container_name: marketsentinel_agent
+    command: python3 -m agents.marketsentinel.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - AI_API_KEY=${OPENROUTER_API_KEY}
+      - AI_API_URL=${OPENROUTER_API_URL}
+      - MODEL_NAME=${MARKETSENTINEL_MODEL}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+  macroforecaster:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.agent
+    container_name: macroforecaster_agent
+    command: python3 -m agents.macroforecaster.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - AI_API_KEY=${OPENROUTER_API_KEY}
+      - AI_API_URL=${OPENROUTER_API_URL}
+      - MODEL_NAME=${MACROFORECASTER_MODEL}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+  tacticbot:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.agent
+    container_name: tacticbot_agent
+    command: python3 -m agents.tacticbot.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - AI_API_KEY=${OPENROUTER_API_KEY}
+      - AI_API_URL=${OPENROUTER_API_URL}
+      - MODEL_NAME=${TACTICBOT_MODEL}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+  platformpilot:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.agent
+    container_name: platformpilot_agent
+    command: python3 -m agents.platformpilot.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - AI_API_KEY=${OPENROUTER_API_KEY}
+      - AI_API_URL=${OPENROUTER_API_URL}
+      - MODEL_NAME=${PLATFORMPILOT_MODEL}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+  marketdatafetcher:
+    build:
+      context: ./backend
+      dockerfile: agents/marketdatafetcher/Dockerfile
+    container_name: marketdatafetcher_agent
+    command: python3 -m backend.agents.marketdatafetcher.main
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      websocket_server:
+        condition: service_started
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+      - PYTHONPATH=/app
+    networks:
+      - agentic_network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  agentic_network:
+    driver: bridge

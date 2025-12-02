@@ -1,0 +1,12 @@
+pandas
+numpy
+scipy
+pytest
+scikit-learn
+requests
+praw
+vaderSentiment
+feedparser
+
+# Optional: Dotenv for local env file support
+python-dotenv

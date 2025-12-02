@@ -1,0 +1,51 @@
+🔧 IB Gateway API Configuration Fix
+=====================================
+
+PROBLEM: Connection times out - API socket not properly enabled
+
+SOLUTION: Enable API in IB Gateway on Windows
+
+📋 STEP-BY-STEP FIX:
+
+1️⃣ In IB Gateway on Windows:
+   • Click "Configure" menu → "Global Configuration"
+   • OR right-click in the main window → "Global Configuration"
+
+2️⃣ In Global Configuration window:
+   • Look for "API" section in the left sidebar
+   • Click on "Settings" under API
+
+3️⃣ Enable API:
+   • ✅ CHECK: "Enable ActiveX and Socket Clients"
+   • ✅ CHECK: "Allow connections from localhost only" (or uncheck to allow WSL)
+   • Set "Socket Port": 7497
+   • In "Trusted IPs" field, add: 127.0.0.1,172.25.86.11
+   • ✅ CHECK: "Create API message log file"
+
+4️⃣ Advanced Settings:
+   • Set "Master API client ID": 0 (or leave default)
+   • ✅ CHECK: "Download open orders on connection"
+   • Set "Read-Only API": No (unchecked)
+
+5️⃣ Apply Settings:
+   • Click "Apply" button
+   • Click "OK" to close configuration
+   • You may need to restart IB Gateway
+
+📊 Current Status Check:
+   Port 7497 is listening: ✅ YES
+   API responding: ❌ NO (times out)
+   
+🔍 What to Look For:
+   After enabling API, you should see in IB Gateway:
+   • Status line showing "API socket listening on port 7497"
+   • No error messages about API being disabled
+
+🧪 Test After Configuration:
+   From WSL, run: python3 check_ib_balance.py
+
+⚠️ Common Issues:
+   • "Enable ActiveX and Socket Clients" MUST be checked
+   • Port must match (7497)
+   • WSL IP must be in Trusted IPs
+   • May need to restart IB Gateway after changes

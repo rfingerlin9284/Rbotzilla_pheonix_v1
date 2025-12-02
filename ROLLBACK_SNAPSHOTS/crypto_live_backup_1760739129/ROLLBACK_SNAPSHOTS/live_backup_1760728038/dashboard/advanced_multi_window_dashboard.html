@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBOTzilla Multi-Window Trading Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* Main Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            height: 100vh;
+        }
+
+        /* Header spans full width */
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1a1f3a 0%, #2d1b4e 100%);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .charter-status {
+            display: inline-block;
+            background: #00ff8833;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #00ff88;
+        }
+
+        /* Page Info Background (1min refresh) */
+        .page-info {
+            grid-column: 1 / -1;
+            background: #151a2e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2a3f5f;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff88;
+            margin-top: 5px;
+        }
+
+        /* Trading Window Containers */
+        .trading-window {
+            background: #151a2e;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #2a3f5f;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2a3f5f;
+        }
+
+        .window-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .refresh-selector {
+            background: #0a0e1a;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .refresh-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Chart Container */
+        .chart-container {
+            flex: 1;
+            position: relative;
+            min-height: 200px;
+            margin-bottom: 10px;
+        }
+
+        /* Trade Log */
+        .trade-log {
+            max-height: 150px;
+            overflow-y: auto;
+            background: #0a0e1a;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+
+        .trade-log-entry {
+            padding: 5px;
+            border-left: 3px solid #00ff88;
+            margin-bottom: 5px;
+            background: #151a2e;
+        }
+
+        .trade-log-entry.sell {
+            border-left-color: #ff4444;
+        }
+
+        .trade-log-entry .timestamp {
+            color: #888;
+            font-size: 10px;
+        }
+
+        .trade-log-entry .symbol {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .trade-log-entry .price {
+            color: #fff;
+        }
+
+        /* Asset Type Selector */
+        .asset-selector {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .asset-btn {
+            flex: 1;
+            background: #0a0e1a;
+            color: #888;
+            border: 1px solid #2a3f5f;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .asset-btn.active {
+            background: #00ff8833;
+            color: #00ff88;
+            border-color: #00ff88;
+        }
+
+        .asset-btn:hover {
+            border-color: #00ff88;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0a0e1a;
+            border-top: 1px solid #2a3f5f;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0e1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a3f5f;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff88;
+        }
+
+        /* Charter Notice */
+        .charter-notice {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2d1b4e;
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            max-width: 300px;
+            font-size: 11px;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .charter-notice-title {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .charter-notice-text {
+            color: #ccc;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>
+            🤖 RBOTzilla Multi-Window Trading Dashboard
+            <span class="charter-status">PIN: 841921 ✓</span>
+        </h1>
+        <div style="font-size: 12px; color: #888;">
+            Charter-Compliant Independent Refresh System | UI Display Separation Enforced
+        </div>
+    </div>
+
+    <!-- Page Background Info (1min refresh) -->
+    <div class="page-info" id="pageInfo">
+        <div class="info-item">
+            <div class="info-label">Account Balance</div>
+            <div class="info-value">$2,000.00</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Daily P&L</div>
+            <div class="info-value" style="color: #00ff88;">+$0.00</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Active Positions</div>
+            <div class="info-value">0 / 3</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Total Trades</div>
+            <div class="info-value">0</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Win Rate</div>
+            <div class="info-value">0.0%</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">System Status</div>
+            <div class="info-value" style="color: #00ff88;">READY</div>
+        </div>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+        <!-- Micro Trading Window (300ms - 60s) -->
+        <div class="trading-window">
+            <div class="window-header">
+                <div class="window-title">⚡ Micro Trading (HFT Ready)</div>
+                <div class="window-controls">
+                    <select class="refresh-selector" id="microRefresh">
+                        <option value="300">300ms</option>
+                        <option value="500">500ms</option>
+                        <option value="1000">1s</option>
+                        <option value="2000">2s</option>
+                        <option value="5000" selected>5s</option>
+                        <option value="10000">10s</option>
+                        <option value="30000">30s</option>
+                        <option value="60000">60s</option>
+                    </select>
+                    <div class="refresh-indicator" id="microIndicator"></div>
+                </div>
+            </div>
+            
+            <div class="asset-selector">
+                <button class="asset-btn active" data-window="micro" data-asset="forex">FOREX</button>
+                <button class="asset-btn" data-window="micro" data-asset="crypto">CRYPTO</button>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="microChart"></canvas>
+            </div>
+
+            <div class="trade-log" id="microLog">
+                <div style="color: #888; text-align: center; padding: 20px;">
+                    Micro trading window ready<br>
+                    <span style="font-size: 10px;">Charter Note: M1/M5 timeframes rejected - Display only</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intraday Trading Window (M15 - 6hr) -->
+        <div class="trading-window">
+            <div class="window-header">
+                <div class="window-title">📊 Intraday Trading (M15-6HR)</div>
+                <div class="window-controls">
+                    <select class="refresh-selector" id="intradayRefresh">
+                        <option value="5000">5s</option>
+                        <option value="10000">10s</option>
+                        <option value="15000" selected>15s</option>
+                        <option value="30000">30s</option>
+                        <option value="60000">1min</option>
+                        <option value="120000">2min</option>
+                        <option value="300000">5min</option>
+                    </select>
+                    <div class="refresh-indicator" id="intradayIndicator"></div>
+                </div>
+            </div>
+            
+            <div class="asset-selector">
+                <button class="asset-btn active" data-window="intraday" data-asset="forex">FOREX</button>
+                <button class="asset-btn" data-window="intraday" data-asset="crypto">CRYPTO</button>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="intradayChart"></canvas>
+            </div>
+
+            <div class="trade-log" id="intradayLog">
+                <div style="color: #888; text-align: center; padding: 20px;">
+                    Intraday trading active<br>
+                    <span style="font-size: 10px;">Charter Compliant: M15+ timeframes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charter Notice -->
+    <div class="charter-notice">
+        <div class="charter-notice-title">⚖️ Charter UI Separation</div>
+        <div class="charter-notice-text">
+            All refresh rates are for DISPLAY ONLY. Trading timing is determined exclusively by ML logic nodes. UI preferences have ZERO effect on execution timing per Charter Addendum (PIN: 841921).
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="status-dot"></div>
+            <span>OANDA Practice API Connected</span>
+        </div>
+        <div class="status-item">
+            <span>Page Refresh: 60s</span>
+        </div>
+        <div class="status-item">
+            <span>Charter: ENFORCED</span>
+        </div>
+        <div class="status-item">
+            <span>Last Update: <span id="lastUpdate">--:--:--</span></span>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================================
+        // CHARTER ENFORCEMENT: UI Display Separation
+        // =====================================================================
+        // This dashboard is READ-ONLY visualization of trading state
+        // Refresh rates DO NOT affect trading logic timing
+        // Trading decisions made by ML/logic nodes independently
+        // =====================================================================
+
+        // Chart configurations
+        const chartConfig = {
+            micro: null,
+            intraday: null
+        };
+
+        // Refresh intervals
+        let refreshIntervals = {
+            page: null,
+            micro: null,
+            intraday: null
+        };
+
+        // Active asset selections
+        let activeAssets = {
+            micro: 'forex',
+            intraday: 'forex'
+        };
+
+        // Initialize charts
+        function initCharts() {
+            // Micro Chart
+            const microCtx = document.getElementById('microChart').getContext('2d');
+            chartConfig.micro = new Chart(microCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Price',
+                        data: [],
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Micro Trading (HFT Display)',
+                            color: '#888',
+                            font: { size: 12 }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            display: false
+                        },
+                        y: {
+                            ticks: { color: '#888' },
+                            grid: { color: '#2a3f5f' }
+                        }
+                    }
+                }
+            });
+
+            // Intraday Chart
+            const intradayCtx = document.getElementById('intradayChart').getContext('2d');
+            chartConfig.intraday = new Chart(intradayCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Price',
+                        data: [],
+                        borderColor: '#00aaff',
+                        backgroundColor: 'rgba(0, 170, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Intraday Trading (M15-6HR)',
+                            color: '#888',
+                            font: { size: 12 }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#888', maxTicksLimit: 10 },
+                            grid: { color: '#2a3f5f' }
+                        },
+                        y: {
+                            ticks: { color: '#888' },
+                            grid: { color: '#2a3f5f' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart data (simulated for demo)
+        function updateChart(window, newData) {
+            const chart = chartConfig[window];
+            if (!chart) return;
+
+            const now = new Date().toLocaleTimeString();
+            
+            // Add new data
+            chart.data.labels.push(now);
+            chart.data.datasets[0].data.push(newData);
+
+            // Keep last 50 points for micro, 30 for intraday
+            const maxPoints = window === 'micro' ? 50 : 30;
+            if (chart.data.labels.length > maxPoints) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+            }
+
+            chart.update('none'); // Update without animation for performance
+        }
+
+        // Fetch trading data from backend (simulation)
+        async function fetchTradingData(window, asset) {
+            // In production, this would call actual API
+            // For now, simulate price movement
+            const basePrice = asset === 'forex' ? 1.0800 : 43500;
+            const volatility = asset === 'forex' ? 0.0010 : 500;
+            const price = basePrice + (Math.random() - 0.5) * volatility;
+            
+            return {
+                price: price.toFixed(asset === 'forex' ? 5 : 2),
+                timestamp: new Date().toISOString(),
+                asset: asset
+            };
+        }
+
+        // Update trade log
+        function addTradeLog(window, trade) {
+            const logElement = document.getElementById(`${window}Log`);
+            const entry = document.createElement('div');
+            entry.className = `trade-log-entry ${trade.direction}`;
+            entry.innerHTML = `
+                <div class="timestamp">${trade.timestamp}</div>
+                <div>
+                    <span class="symbol">${trade.symbol}</span>
+                    <span class="price">${trade.direction} @ ${trade.price}</span>
+                </div>
+            `;
+            
+            logElement.insertBefore(entry, logElement.firstChild);
+            
+            // Keep last 20 entries
+            while (logElement.children.length > 20) {
+                logElement.removeChild(logElement.lastChild);
+            }
+        }
+
+        // Refresh functions
+        async function refreshMicro() {
+            const data = await fetchTradingData('micro', activeAssets.micro);
+            updateChart('micro', parseFloat(data.price));
+            
+            // Pulse indicator
+            const indicator = document.getElementById('microIndicator');
+            indicator.style.animation = 'none';
+            setTimeout(() => indicator.style.animation = '', 10);
+        }
+
+        async function refreshIntraday() {
+            const data = await fetchTradingData('intraday', activeAssets.intraday);
+            updateChart('intraday', parseFloat(data.price));
+            
+            // Pulse indicator
+            const indicator = document.getElementById('intradayIndicator');
+            indicator.style.animation = 'none';
+            setTimeout(() => indicator.style.animation = '', 10);
+        }
+
+        async function refreshPageInfo() {
+            // Update page background info (1 minute refresh)
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+            
+            // In production, fetch actual stats from backend
+            // For now, just update timestamp
+        }
+
+        // Set up refresh intervals
+        function setupRefreshIntervals() {
+            // Page info: 1 minute (60000ms)
+            if (refreshIntervals.page) clearInterval(refreshIntervals.page);
+            refreshIntervals.page = setInterval(refreshPageInfo, 60000);
+            refreshPageInfo();
+
+            // Micro trading: user-selected rate
+            if (refreshIntervals.micro) clearInterval(refreshIntervals.micro);
+            const microRate = parseInt(document.getElementById('microRefresh').value);
+            refreshIntervals.micro = setInterval(refreshMicro, microRate);
+            refreshMicro();
+
+            // Intraday trading: user-selected rate
+            if (refreshIntervals.intraday) clearInterval(refreshIntervals.intraday);
+            const intradayRate = parseInt(document.getElementById('intradayRefresh').value);
+            refreshIntervals.intraday = setInterval(refreshIntraday, intradayRate);
+            refreshIntraday();
+        }
+
+        // Asset selector buttons
+        document.querySelectorAll('.asset-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const window = this.dataset.window;
+                const asset = this.dataset.asset;
+                
+                // Update active state
+                this.parentElement.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active asset
+                activeAssets[window] = asset;
+                
+                // Clear chart and refresh
+                chartConfig[window].data.labels = [];
+                chartConfig[window].data.datasets[0].data = [];
+                chartConfig[window].update();
+                
+                // Immediate refresh with new asset
+                if (window === 'micro') refreshMicro();
+                else refreshIntraday();
+            });
+        });
+
+        // Refresh rate change listeners
+        document.getElementById('microRefresh').addEventListener('change', function() {
+            setupRefreshIntervals();
+            console.log('Charter Compliance: Micro refresh rate changed to', this.value, 'ms - Display only, no effect on trading logic');
+        });
+
+        document.getElementById('intradayRefresh').addEventListener('change', function() {
+            setupRefreshIntervals();
+            console.log('Charter Compliance: Intraday refresh rate changed to', this.value, 'ms - Display only, no effect on trading logic');
+        });
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            console.log('🤖 RBOTzilla Multi-Window Dashboard Initialized');
+            console.log('⚖️ Charter UI Separation Enforced: Display rates independent of trading logic');
+            initCharts();
+            setupRefreshIntervals();
+        });
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', function() {
+            Object.values(refreshIntervals).forEach(interval => {
+                if (interval) clearInterval(interval);
+            });
+        });
+    </script>
+</body>
+</html>

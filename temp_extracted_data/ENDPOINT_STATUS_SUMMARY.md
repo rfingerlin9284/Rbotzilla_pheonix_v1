@@ -1,0 +1,1 @@
+# Placeholder for extracted content from ENDPOINT_STATUS_SUMMARY.md

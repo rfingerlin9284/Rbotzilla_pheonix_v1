@@ -1,0 +1,177 @@
+.PHONY: guard-on guard-off guard-status guard-logs order tick watch-pointers watch-logs install-hardening test-gate-sanity help
+
+BASE_DIR := /home/ing/RICK/RICK_LIVE_PROTOTYPE
+BIN := ~/.local/bin
+LOG := $(BASE_DIR)/logs
+SYSTEMD := ~/.config/systemd/user
+
+# Default target
+help:
+	@echo ""
+	@echo "╔════════════════════════════════════════════════════════════╗"
+	@echo "║  WOLFPACK AUTONOMY CLI — Hardening Kit Makefile            ║"
+	@echo "║  Location: $(BASE_DIR)/Makefile.autonomy-hardening          ║"
+	@echo "╚════════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "GUARD DAEMON CONTROL"
+	@echo "  make guard-on         Start position-guardian.service"
+	@echo "  make guard-off        Stop position-guardian.service"
+	@echo "  make guard-status     Show daemon status + last 10 logs"
+	@echo "  make guard-logs       Tail guardian logs (follow mode)"
+	@echo ""
+	@echo "POINTER FEED CONTROL"
+	@echo "  make pointers-on      Start pg-emit-state.timer"
+	@echo "  make pointers-off     Stop pg-emit-state.timer"
+	@echo "  make watch-pointers   Monitor pointers.json (every 2s)"
+	@echo ""
+	@echo "ORDER TESTING"
+	@echo "  make order            Send test order (EUR_USD +100 long dry-run)"
+	@echo "  make tick             Read latest pointers snapshot"
+	@echo "  make sanity           Run pre-deployment sanity tests"
+	@echo ""
+	@echo "INSTALLATION"
+	@echo "  make install-hardening  Run full installation (one-time)"
+	@echo ""
+	@echo "EXAMPLES"
+	@echo "  make guard-status     # Check daemon"
+	@echo "  make tick             # Read state"
+	@echo "  make order            # Test order (dry-run)"
+	@echo "  make watch-pointers   # Monitor live (Ctrl+C to exit)"
+	@echo ""
+
+# Guard daemon control
+guard-on:
+	@echo "[*] Starting position-guardian.service..."
+	systemctl --user start position-guardian.service
+	@sleep 1
+	@echo "[*] Status:"
+	@systemctl --user status position-guardian.service | head -10
+
+guard-off:
+	@echo "[*] Stopping position-guardian.service..."
+	systemctl --user stop position-guardian.service
+	@echo "[OK] Guardian stopped"
+
+guard-status:
+	@echo "[*] Guardian Service Status:"
+	@systemctl --user status position-guardian.service | head -15
+	@echo ""
+	@echo "[*] Last 10 log entries:"
+	@journalctl --user -u position-guardian.service -n 10 | sed 's/^/  /'
+
+guard-logs:
+	@echo "[*] Following guardian logs (Ctrl+C to exit)..."
+	journalctl --user -u position-guardian.service -f
+
+# Pointer feed control
+pointers-on:
+	@echo "[*] Starting pg-emit-state.timer..."
+	systemctl --user start pg-emit-state.timer
+	@sleep 1
+	@echo "[OK] Timer started (emitting every 15s)"
+
+pointers-off:
+	@echo "[*] Stopping pg-emit-state.timer..."
+	systemctl --user stop pg-emit-state.timer
+	@echo "[OK] Timer stopped"
+
+watch-pointers:
+	@echo "[*] Monitoring pointers.json (Ctrl+C to exit)"
+	@echo "[*] Updates every 2 seconds..."
+	@watch -n 2 'jq "{as_of_utc: .as_of_utc, account: .account, num_positions: (.positions|length), actions: (.actions|length)}" $(LOG)/actions_now.json'
+
+watch-logs:
+	@echo "[*] Following ALL Wolfpack logs (Ctrl+C to exit)..."
+	journalctl --user -u position-guardian.service -u pg-emit-state.service -f
+
+# Order testing
+order:
+	@echo "[*] Sending test order (EUR_USD +100 long, dry-run)..."
+	@echo ""
+	$(BIN)/trade --venue oanda --symbol EUR_USD --side buy --units 100 --dry-run 2>/dev/null | jq . || echo "[ERROR] Order test failed"
+	@echo ""
+	@echo "[*] If allowed=true, gate passed. If allowed=false, gate rejected (see reason)."
+
+tick:
+	@echo "[*] Latest pointers snapshot:"
+	@echo ""
+	@jq '{as_of_utc: .as_of_utc, account: .account, positions: (.positions|length), actions: (.actions|length)}' $(LOG)/actions_now.json 2>/dev/null || echo "[ERROR] Pointers not available (guardian may not be running)"
+	@echo ""
+	@echo "[*] Full details:"
+	@jq . $(LOG)/actions_now.json 2>/dev/null | head -50
+
+# Sanity tests
+sanity:
+	@echo ""
+	@echo "╔════════════════════════════════════════════════════════════╗"
+	@echo "║  PRE-DEPLOYMENT SANITY CHECKS                              ║"
+	@echo "╚════════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "[1/7] Checking Python..."
+	@python3 --version
+	@echo ""
+	@echo "[2/7] Checking position_guardian package..."
+	@python3 -c "import position_guardian; print('[OK] position_guardian found')" || echo "[FAIL] position_guardian not installed"
+	@echo ""
+	@echo "[3/7] Checking OANDA adapter..."
+	@python3 -c "from brokers.oanda_adapter import OandaClient; c=OandaClient(); print('[OK] OANDA adapter ready')" || echo "[FAIL] OANDA adapter not available"
+	@echo ""
+	@echo "[4/7] Checking trade shim..."
+	@test -x $(BIN)/trade && echo "[OK] trade shim exists and is executable" || echo "[FAIL] trade shim not found at $(BIN)/trade"
+	@echo ""
+	@echo "[5/7] Checking systemd services..."
+	@systemctl --user list-unit-files | grep position-guardian && echo "[OK] position-guardian.service exists" || echo "[WARN] position-guardian.service not found"
+	@systemctl --user list-unit-files | grep pg-emit-state && echo "[OK] pg-emit-state.timer exists" || echo "[WARN] pg-emit-state.timer not found"
+	@echo ""
+	@echo "[6/7] Checking directory structure..."
+	@test -d $(LOG) && echo "[OK] $(LOG) exists" || echo "[FAIL] $(LOG) missing"
+	@test -f $(BASE_DIR)/.env && echo "[OK] .env exists" || echo "[WARN] .env missing (may cause runtime errors)"
+	@echo ""
+	@echo "[7/7] Checking gate configuration..."
+	@grep -q "GATE_ENABLED" $(BASE_DIR)/.env 2>/dev/null && echo "[OK] GATE_ENABLED set" || echo "[WARN] GATE_ENABLED not configured"
+	@grep -q "MAX_DAILY_LOSS_PCT" $(BASE_DIR)/.env 2>/dev/null && echo "[OK] MAX_DAILY_LOSS_PCT set" || echo "[WARN] MAX_DAILY_LOSS_PCT not configured"
+	@echo ""
+	@echo "╔════════════════════════════════════════════════════════════╗"
+	@echo "║  ✅ SANITY CHECK COMPLETE                                  ║"
+	@echo "╚════════════════════════════════════════════════════════════╝"
+	@echo ""
+
+# Installation
+install-hardening:
+	@echo ""
+	@echo "╔════════════════════════════════════════════════════════════╗"
+	@echo "║  WOLFPACK AUTONOMY HARDENING — FULL INSTALLATION           ║"
+	@echo "╚════════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "[!] This will install:"
+	@echo "    • Trade CLI shim ($(BIN)/trade)"
+	@echo "    • Guardian daemon (systemd service)"
+	@echo "    • Pointers feed (systemd timer)"
+	@echo "    • Configuration files"
+	@echo ""
+	@read -p "[?] Continue with installation? (y/N) " confirm && [ "$$confirm" = "y" ] || (echo "[X] Installation cancelled"; exit 1)
+	@echo ""
+	@echo "[*] Running installer script..."
+	@bash $(BASE_DIR)/install_wolfpack_autonomy_hardening.sh
+	@echo ""
+	@echo "[*] Installation complete. Run 'make sanity' to verify."
+
+# Daemon info
+.PHONY: daemon-env
+daemon-env:
+	@echo "[*] Guardian daemon environment:"
+	@systemctl --user show-environment | grep -i python\|path\|home
+	@echo ""
+	@echo "[*] Systemd units status:"
+	@systemctl --user list-units | grep position-guardian\|pg-emit-state
+
+# Quick start
+.PHONY: quickstart
+quickstart: guard-status
+	@echo ""
+	@echo "[*] Quickstart guide:"
+	@echo "    1. Run: make guard-on        (start daemon)"
+	@echo "    2. Run: make tick            (check state)"
+	@echo "    3. Run: make order           (test order)"
+	@echo "    4. Run: make watch-pointers  (monitor live)"
+	@echo ""

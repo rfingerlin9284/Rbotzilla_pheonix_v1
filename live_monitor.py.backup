@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+"""
+RICK Live System Monitor - Continuous Display
+PIN: 841921
+Shows live updates of system status every 5 seconds
+Press Ctrl+C to stop
+"""
+
+import subprocess
+import time
+import os
+from datetime import datetime
+from pathlib import Path
+
+def clear_screen():
+    os.system('clear' if os.name != 'nt' else 'cls')
+
+def get_engine_status():
+    result = subprocess.run(
+        ["pgrep", "-af", "oanda_trading_engine.py"],
+        capture_output=True,
+        text=True
+    )
+    return result.returncode == 0
+
+def get_position_count():
+    try:
+        result = subprocess.run([
+            "python3", "-c",
+            """
+import os, requests
+from pathlib import Path
+
+env_file = Path('.env.oanda_only')
+if env_file.exists():
+    for line in env_file.read_text().splitlines():
+        if '=' in line and not line.startswith('#'):
+            key, value = line.split('=', 1)
+            os.environ[key.strip()] = value.strip()
+
+account_id = os.environ.get('OANDA_PRACTICE_ACCOUNT_ID', '')
+token = os.environ.get('OANDA_PRACTICE_TOKEN', '')
+
+if account_id and token:
+    api = 'https://api-fxpractice.oanda.com'
+    headers = {'Authorization': f'Bearer {token}'}
+    r = requests.get(f'{api}/v3/accounts/{account_id}/openPositions', headers=headers, timeout=5)
+    if r.status_code == 200:
+        positions = r.json().get('positions', [])
+        total_pnl = sum(float(p.get('unrealizedPL', 0)) for p in positions)
+        print(f'{len(positions)}|{total_pnl:.2f}')
+        for p in positions:
+            inst = p.get('instrument', '?')
+            units = p.get('long', {}).get('units', '0')
+            if units == '0':
+                units = p.get('short', {}).get('units', '0')
+            pnl = float(p.get('unrealizedPL', 0))
+            print(f'{inst}|{units}|{pnl:.2f}')
+"""
+        ], capture_output=True, text=True, timeout=10)
+        
+        lines = result.stdout.strip().split('\n')
+        if lines and '|' in lines[0]:
+            count, total_pnl = lines[0].split('|')
+            positions = []
+            for line in lines[1:]:
+                if '|' in line:
+                    parts = line.split('|')
+                    if len(parts) == 3:
+                        positions.append({
+                            'instrument': parts[0],
+                            'units': parts[1],
+                            'pnl': float(parts[2])
+                        })
+            return int(count), float(total_pnl), positions
+    except:
+        pass
+    
+    return 0, 0.0, []
+
+def draw_banner():
+    print("╔" + "="*78 + "╗")
+    print("║" + " "*20 + "🤖 RICK LIVE TRADING MONITOR" + " "*29 + "║")
+    print("║" + " "*25 + "PIN: 841921" + " "*42 + "║")
+    print("╚" + "="*78 + "╝")
+
+def main():
+    print("\n🔄 Starting live monitor... (Press Ctrl+C to stop)\n")
+    time.sleep(1)
+    
+    try:
+        while True:
+            clear_screen()
+            draw_banner()
+            
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"\n⏰ Current Time: {now}\n")
+            
+            # Check engine
+            engine_running = get_engine_status()
+            if engine_running:
+                print("🟢 ENGINE: RUNNING")
+            else:
+                print("🔴 ENGINE: STOPPED")
+            
+            # Check positions
+            try:
+                count, total_pnl, positions = get_position_count()
+                
+                if count == 0:
+                    print("📊 POSITIONS: 0 (No active trades)")
+                else:
+                    # Format total P&L: ($123.45) for negative, +$123.45 for positive
+                    if total_pnl < 0:
+                        pnl_display = f"(${abs(total_pnl):.2f})"
+                    else:
+                        pnl_display = f"+${total_pnl:.2f}"
+                    
+                    pnl_color = "🟢" if total_pnl >= 0 else "🔴"
+                    print(f"📊 POSITIONS: {count} active | Total P&L: {pnl_color} {pnl_display}")
+                    
+                    print("\n" + "-"*80)
+                    print(f"{'INSTRUMENT':<15} {'UNITS':<15} {'P&L':<15}")
+                    print("-"*80)
+                    
+                    for pos in positions:
+                        # Format P&L: ($123.45) for negative, +$123.45 for positive
+                        if pos['pnl'] < 0:
+                            pnl_str = f"(${abs(pos['pnl']):.2f})"
+                        else:
+                            pnl_str = f"+${pos['pnl']:.2f}"
+                        
+                        # Format units: (32,900) for negative (short), 32,900 for positive (long)
+                        units_float = float(pos['units'])
+                        if units_float < 0:
+                            units_str = f"({abs(units_float):,.0f})"
+                        else:
+                            units_str = f"{units_float:,.0f}"
+                        
+                        pnl_icon = "🟢" if pos['pnl'] >= 0 else "🔴"
+                        print(f"{pos['instrument']:<15} {units_str:<15} {pnl_icon} {pnl_str}")
+                    print("-"*80)
+                    
+            except Exception as e:
+                print(f"⚠️  POSITIONS: Error checking - {str(e)}")
+            
+            # Overall status
+            print("\n" + "="*80)
+            if engine_running and count > 0:
+                print("✅ STATUS: Bot is ACTIVE and managing trades")
+            elif engine_running and count == 0:
+                print("✅ STATUS: Bot is RUNNING but no positions open")
+            else:
+                print("❌ STATUS: Bot is STOPPED - not trading")
+            print("="*80)
+            
+            print("\n⏳ Next update in 5 seconds... (Ctrl+C to exit)")
+            
+            time.sleep(5)
+            
+    except KeyboardInterrupt:
+        clear_screen()
+        print("\n✅ Monitor stopped.\n")
+        print("To check status: python3 check_system_status.py")
+        print("To restart monitor: python3 live_monitor.py\n")
+
+if __name__ == "__main__":
+    main()

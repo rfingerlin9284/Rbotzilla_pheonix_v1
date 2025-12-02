@@ -1,0 +1,18 @@
+# Environment local config
+.env
+.env.local
+.env.*.local
+
+# Python/Pycache
+__pycache__/
+*.pyc
+
+# VSCode
+.vscode/
+
+# Logs
+logs/
+*.log
+PHOENIX_V2_CONSOLIDATED.zip
+a_zip_file_segments/rick_system_zip/UNIBOT_DEVELOPER_CORE_20250903_120537.tar.gz
+docs/hedge_restore_commit/diffs/0001-Restore-hedging-Always-on-quant-hedger-ML-3-1-filter.patch

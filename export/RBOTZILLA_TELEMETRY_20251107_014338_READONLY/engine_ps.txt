@@ -1,0 +1,1 @@
+2754518  100485  0.7  0.2 python3 -u oanda_trading_engine.py

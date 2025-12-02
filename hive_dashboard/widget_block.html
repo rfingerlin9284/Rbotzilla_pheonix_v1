@@ -1,0 +1,39 @@
+<div id="dashboard">
+  <div class="widget" id="strategy-widget">📊 Strategy Map</div>
+  <div class="widget" id="ml-widget">🧠 ML Predictions</div>
+  <div class="widget" id="pnl-widget">💸 P&L Summary</div>
+  <div class="widget" id="latency-widget">🚦 Latency Monitor</div>
+  <div class="widget" id="rick-widget">🤖 Rick Status</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script>
+interact(".widget").draggable({
+  listeners: {
+    move (event) {
+      const target = event.target
+      const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx
+      const y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy
+      target.style.transform = `translate(${x}px, ${y}px)`
+      target.setAttribute("data-x", x)
+      target.setAttribute("data-y", y)
+    }
+  }
+})
+</script>
+<style>
+.widget {
+  width: 260px;
+  height: 140px;
+  border: 2px solid #00ff88;
+  background: #111;
+  color: #0f0;
+  font-family: Orbitron, monospace;
+  padding: 10px;
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  cursor: move;
+  box-shadow: 0 0 15px #00ff88;
+  z-index: 1000;
+}
+</style>

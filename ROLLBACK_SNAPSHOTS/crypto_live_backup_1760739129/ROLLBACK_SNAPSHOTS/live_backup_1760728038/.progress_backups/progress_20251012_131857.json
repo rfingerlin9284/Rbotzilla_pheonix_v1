@@ -1,0 +1,250 @@
+{
+  "initialized": "2025-10-12T13:18:57.336858+00:00",
+  "pin": "841921",
+  "phases": [
+    {
+      "phase": "Path Corrections (R_H_UNI \u2192 RICK_LIVE_CLEAN)",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.336879+00:00",
+      "description": "Fixed all legacy path references across codebase",
+      "files_modified": [
+        "ghost_trading_engine.py",
+        "canary_to_live.py",
+        "hive/rick_hive_mind.py",
+        "foundation/rick_charter.py",
+        "brokers/oanda_connector.py",
+        "brokers/coinbase_connector.py"
+      ],
+      "key_features": [
+        "All R_H_UNI paths updated to RICK_LIVE_CLEAN",
+        "Ghost trading engine paths validated",
+        "Promotion logic paths corrected",
+        "Charter imports working across all modules"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "Charter Risk/Reward Ratio Update (3.0 \u2192 3.2)",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.337284+00:00",
+      "description": "Updated minimum risk/reward ratio and fixed validation",
+      "files_modified": [
+        "foundation/rick_charter.py"
+      ],
+      "key_features": [
+        "MIN_RISK_REWARD_RATIO increased from 3.0 to 3.2",
+        "Self-test assertions updated to accept 3.2",
+        "Charter validates successfully on import",
+        "Immutable constant protection maintained"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "Narration Logging Infrastructure",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.337663+00:00",
+      "description": "Created centralized event and P&L logging system",
+      "files_modified": [
+        "util/narration_logger.py",
+        "brokers/oanda_connector.py",
+        "brokers/coinbase_connector.py"
+      ],
+      "key_features": [
+        "log_narration() for trading events",
+        "log_pnl() for trade P&L tracking",
+        "get_session_summary() for aggregated metrics",
+        "Wired into both OANDA and Coinbase connectors",
+        "Fallback import chain: relative \u2192 absolute \u2192 stub",
+        "Logs to pre_upgrade/headless/logs/narration.jsonl and pnl.jsonl"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "OANDA Min-Notional Auto-Upsize",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.338089+00:00",
+      "description": "Added $15k minimum notional enforcement to OANDA connector",
+      "files_modified": [
+        "brokers/oanda_connector.py"
+      ],
+      "key_features": [
+        "Auto-raises units to meet $15k minimum (500 \u2192 12,907 units)",
+        "Preserves order sign for sell orders",
+        "Logs NOTIONAL_ADJUSTMENT events to narration.jsonl",
+        "Parity achieved with Coinbase connector",
+        "Charter MIN_NOTIONAL_USD constant enforced"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "Mode Manager & .upgrade_toggle Integration",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.338440+00:00",
+      "description": "Dynamic mode switching with connector auto-detection",
+      "files_modified": [
+        "util/mode_manager.py",
+        "brokers/oanda_connector.py",
+        "brokers/coinbase_connector.py",
+        ".upgrade_toggle"
+      ],
+      "key_features": [
+        "OFF/GHOST/CANARY/LIVE mode mapping",
+        "Connector environment auto-detection (environment=None)",
+        "PIN validation for LIVE mode (841921)",
+        "SimpleLogger class to avoid util/logging.py conflict",
+        "Mode-specific environment selection (practice/sandbox/live)",
+        "switch_mode() writes .upgrade_toggle atomically"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "Ghost Trading Test Suite (2-minute validation)",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.338842+00:00",
+      "description": "Created and executed comprehensive ghost trading test",
+      "files_modified": [
+        "test_ghost_trading.py"
+      ],
+      "key_features": [
+        "2-minute ghost trading simulation",
+        "5 trades executed: 4 wins, 1 loss (80% win rate)",
+        "$118k simulated P&L",
+        "Verified mode switching: OFF \u2194 GHOST",
+        "Verified connector auto-detection",
+        "Verified OCO placement logging",
+        "Verified dual logging (narration.jsonl + pnl.jsonl)",
+        "GHOST_SESSION_START/END events logged"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "P&L Logging Writers Activated",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.339203+00:00",
+      "description": "Verified P&L logging working through ghost trading test",
+      "files_modified": [
+        "pre_upgrade/headless/logs/pnl.jsonl",
+        "util/narration_logger.py"
+      ],
+      "key_features": [
+        "pnl.jsonl populated with trade entries",
+        "Structure: gross_pnl, fees, net_pnl, outcome, duration",
+        "6 trades logged with 83.3% win rate",
+        "get_session_summary() aggregates metrics correctly",
+        "Integration with ghost trading validated"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "Dashboard UI Enhancement (Static HTML)",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.339602+00:00",
+      "description": "Created comprehensive static HTML dashboard with auto-refresh",
+      "files_modified": [
+        "dashboard/generate_dashboard.py",
+        "dashboard/dashboard.html"
+      ],
+      "key_features": [
+        "Static HTML generator (no Flask dependency)",
+        "Mode badges: OFF/GHOST/CANARY/LIVE color-coded",
+        "Performance card: trades, win rate, P&L, fees",
+        "Environment card: OANDA/Coinbase env status",
+        "Recent activity: last 10 events from narration.jsonl",
+        "Auto-refresh every 10 seconds",
+        "Quick command reference for mode switching",
+        "Gradient UI with glassmorphism effects"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "phase": "Ghost Trading Engine Corrections",
+      "status": "COMPLETED",
+      "timestamp": "2025-10-12T13:18:57.340013+00:00",
+      "description": "Removed fake Binance references, FX-only symbols",
+      "files_modified": [
+        "ghost_trading_engine.py"
+      ],
+      "key_features": [
+        "Removed fake Binance/WebSocket connection logging",
+        "Symbols limited to OANDA FX pairs only (EUR_USD, GBP_USD, USD_JPY, AUD_USD, USD_CAD)",
+        "Simplified market price simulation (no crypto)",
+        "Honest logging: OANDA practice + Coinbase sandbox only",
+        "Accurate connection status reporting"
+      ],
+      "verification_status": "PENDING"
+    }
+  ],
+  "active_files": {
+    "ghost_trading_engine.py": {
+      "last_updated": "2025-10-12T13:18:57.340016+00:00",
+      "phase": "Ghost Trading Engine Corrections",
+      "status": "ACTIVE"
+    },
+    "canary_to_live.py": {
+      "last_updated": "2025-10-12T13:18:57.336885+00:00",
+      "phase": "Path Corrections (R_H_UNI \u2192 RICK_LIVE_CLEAN)",
+      "status": "ACTIVE"
+    },
+    "hive/rick_hive_mind.py": {
+      "last_updated": "2025-10-12T13:18:57.336887+00:00",
+      "phase": "Path Corrections (R_H_UNI \u2192 RICK_LIVE_CLEAN)",
+      "status": "ACTIVE"
+    },
+    "foundation/rick_charter.py": {
+      "last_updated": "2025-10-12T13:18:57.337288+00:00",
+      "phase": "Charter Risk/Reward Ratio Update (3.0 \u2192 3.2)",
+      "status": "ACTIVE"
+    },
+    "brokers/oanda_connector.py": {
+      "last_updated": "2025-10-12T13:18:57.338444+00:00",
+      "phase": "Mode Manager & .upgrade_toggle Integration",
+      "status": "ACTIVE"
+    },
+    "brokers/coinbase_connector.py": {
+      "last_updated": "2025-10-12T13:18:57.338445+00:00",
+      "phase": "Mode Manager & .upgrade_toggle Integration",
+      "status": "ACTIVE"
+    },
+    "util/narration_logger.py": {
+      "last_updated": "2025-10-12T13:18:57.339208+00:00",
+      "phase": "P&L Logging Writers Activated",
+      "status": "ACTIVE"
+    },
+    "util/mode_manager.py": {
+      "last_updated": "2025-10-12T13:18:57.338443+00:00",
+      "phase": "Mode Manager & .upgrade_toggle Integration",
+      "status": "ACTIVE"
+    },
+    ".upgrade_toggle": {
+      "last_updated": "2025-10-12T13:18:57.338446+00:00",
+      "phase": "Mode Manager & .upgrade_toggle Integration",
+      "status": "ACTIVE"
+    },
+    "test_ghost_trading.py": {
+      "last_updated": "2025-10-12T13:18:57.338845+00:00",
+      "phase": "Ghost Trading Test Suite (2-minute validation)",
+      "status": "ACTIVE"
+    },
+    "pre_upgrade/headless/logs/pnl.jsonl": {
+      "last_updated": "2025-10-12T13:18:57.339206+00:00",
+      "phase": "P&L Logging Writers Activated",
+      "status": "ACTIVE"
+    },
+    "dashboard/generate_dashboard.py": {
+      "last_updated": "2025-10-12T13:18:57.339605+00:00",
+      "phase": "Dashboard UI Enhancement (Static HTML)",
+      "status": "ACTIVE"
+    },
+    "dashboard/dashboard.html": {
+      "last_updated": "2025-10-12T13:18:57.339607+00:00",
+      "phase": "Dashboard UI Enhancement (Static HTML)",
+      "status": "ACTIVE"
+    }
+  },
+  "system_constants": {
+    "MIN_RISK_REWARD_RATIO": 3.2,
+    "MIN_NOTIONAL_USD": 15000,
+    "PIN": 841921,
+    "MAX_PLACEMENT_LATENCY_MS": 300
+  }
+}

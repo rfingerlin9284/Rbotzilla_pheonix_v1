@@ -1,0 +1,6 @@
+pandas
+numpy
+requests
+pyyaml
+python-dotenv
+ib_insync

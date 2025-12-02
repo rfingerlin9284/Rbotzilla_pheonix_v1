@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Pre-commit hook: block changes to locked files unless valid PIN is provided
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+LOCKS_FILE="$ROOT/.locks/locked_files.json"
+
+if [ ! -f "$LOCKS_FILE" ]; then
+  exit 0
+fi
+
+staged=$(git diff --cached --name-only)
+locked=$(jq -r '.locked[]' "$LOCKS_FILE")
+for f in $staged; do
+  for lk in $locked; do
+    if [ "$f" = "$lk" ]; then
+      echo "Locked file staged for commit: $f"
+      if [ -z "$RICK_PIN" ]; then
+        echo "You must set RICK_PIN to validate the commit or run scripts/unlock_repo.py to unlock."
+        exit 1
+      fi
+      # Check for renames affecting locked files
+      python3 "$ROOT/pin_protection.py" --check-rename
+      if [ $? -eq 1 ]; then
+        echo "Renames affecting locked files found. RICK_PIN environment var must be set to allow override."
+        if [ -z "$RICK_PIN" ]; then
+          echo "RICK_PIN not found - commit blocked"
+          exit 1
+        fi
+        # Programmatically validate PIN via pin_protection CLI (noninteractive)
+        python3 - <<PY
+import os, sys
+from pin_protection import PINProtection
+pp = PINProtection()
+valid = pp.validate_pin_noninteractive(os.getenv('RICK_PIN'))
+sys.exit(0 if valid else 1)
+PY
+        if [ $? -ne 0 ]; then
+          echo "RICK_PIN invalid - commit blocked"
+          exit 1
+        fi
+      fi
+      if [ $? -ne 0 ]; then
+        echo "Invalid RICK_PIN - commit blocked"
+        exit 1
+      fi
+      echo "PIN validated, allowing commit to locked file $f"
+    fi
+  done
+done
+
+exit 0

@@ -1,0 +1,21 @@
+{
+  "mode": "CANARY",
+  "oanda_practice": "skipped",
+  "charter": {
+    "min_notional_usd": 15000,
+    "min_rr": 3.2,
+    "oco_required": true
+  },
+  "hive": {
+    "enabled": true,
+    "quorum": 3,
+    "advisors": [
+      "news_filter",
+      "volatility_regime",
+      "trend_bias",
+      "mean_reversion"
+    ]
+  },
+  "entry_points_guarded": null,
+  "violations_detected": 0
+}

@@ -1,0 +1,35 @@
+
+# PROMPT FOR A UI/UX DESIGN & FRONTEND DEVELOPMENT AI (e.g., GPT-4)
+
+"""
+You are an expert UI/UX designer and frontend developer specializing in creating simple, intuitive dashboards for complex systems.
+
+**Objective:**
+Design and provide the complete, single-file source code (HTML with inline CSS and JavaScript) for a simple, clean, and responsive web-based dashboard for a trading bot named "RICK". This dashboard is the graphical version of a text-based Python control center.
+
+**Core Requirements:**
+
+1.  **Simplicity is Key:** The user is non-technical. The interface must be extremely clear, with minimal clutter. Use large, easy-to-read fonts and clear iconography.
+2.  **Single File:** All HTML, CSS, and JavaScript must be contained within a single `index.html` file for portability.
+3.  **Layout:**
+    *   A clean header: "RICK HIVE AGENT - CONTROL CENTER".
+    *   **Left Pane (Status):**
+        *   **System Status:** A large indicator (e.g., a colored circle) that is either GREEN ("ONLINE") or RED ("OFFLINE").
+        *   **Current Parameters:** A simple, non-editable display of the key trading parameters (Max Positions, Min Confidence, Min Sharpe Ratio).
+    *   **Right Pane (Actions):**
+        *   A series of large, clearly labeled buttons for primary actions:
+            *   `[▶️] START SYSTEM`
+            *   `[⏹️] SAFE SHUTDOWN`
+            *   `[⚙️] ADJUST SETTINGS`
+            *   `[📄] VIEW LIVE LOGS`
+4.  **Functionality (JavaScript):**
+    *   The JavaScript does **NOT** need to perform the actions itself.
+    *   Instead, when a button is clicked, it should show a clear "copy-able" command for the user to paste into their terminal.
+    *   For example, clicking "START SYSTEM" should pop up a modal or a text area displaying: `Command to run in terminal: ./start_phoenix.sh` with a "Copy to Clipboard" button.
+5.  **Styling:**
+    *   Use a modern, clean, dark-themed aesthetic.
+    *   Colors: Dark grays for the background, white/light-gray text, green for "ON/SUCCESS", red for "OFF/STOP", and a primary color (like a calm blue or purple) for buttons and highlights.
+
+**Deliverable:**
+Provide the complete and final `index.html` file containing all the necessary code to create this dashboard.
+"""

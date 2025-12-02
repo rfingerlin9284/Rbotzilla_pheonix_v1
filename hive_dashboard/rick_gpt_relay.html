@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rick GPT/Grok Relay</title>
+    <style>
+        body { margin: 0; background: #000; color: #0f0; font-family: 'Orbitron', monospace; }
+        .relay-container { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+        .gpt-panel, .grok-panel { border: 1px solid #0f0; }
+        .relay-controls { position: fixed; top: 10px; left: 10px; z-index: 1000; }
+        .relay-controls button { margin: 5px; padding: 10px; background: #0f0; color: #000; border: none; font-weight: bold; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+    <div class="relay-controls">
+        <button onclick="toggleGPT()">🤖 GPT</button>
+        <button onclick="toggleGrok()">🧠 Grok</button>
+        <button onclick="toggleSplit()">⚡ Split</button>
+    </div>
+    
+    <div class="relay-container" id="relay-container">
+        <div class="gpt-panel" id="gpt-panel" style="display: none;">
+            <iframe src="https://chat.openai.com" title="GPT Relay"></iframe>
+        </div>
+        <div class="grok-panel" id="grok-panel" style="display: none;">
+            <iframe src="https://x.ai/chat" title="Grok Relay"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        let currentMode = 'split';
+        
+        function toggleGPT() {
+            document.getElementById('gpt-panel').style.display = 'block';
+            document.getElementById('grok-panel').style.display = 'none';
+            document.getElementById('relay-container').style.gridTemplateColumns = '1fr';
+            currentMode = 'gpt';
+        }
+        
+        function toggleGrok() {
+            document.getElementById('gpt-panel').style.display = 'none';
+            document.getElementById('grok-panel').style.display = 'block';
+            document.getElementById('relay-container').style.gridTemplateColumns = '1fr';
+            currentMode = 'grok';
+        }
+        
+        function toggleSplit() {
+            document.getElementById('gpt-panel').style.display = 'block';
+            document.getElementById('grok-panel').style.display = 'block';
+            document.getElementById('relay-container').style.gridTemplateColumns = '1fr 1fr';
+            currentMode = 'split';
+        }
+        
+        // Start in split mode
+        toggleSplit();
+    </script>
+</body>
+</html>

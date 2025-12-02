@@ -1,0 +1,177 @@
+{
+  "manifest_version": "3.0",
+  "generated": "2025-11-26",
+  "auth_code": "841921",
+  "classification": "ACTIVE",
+  "description": "Core engine files required for RICK trading system operation",
+  
+  "core_entry_points": [
+    "run_autonomous.py",
+    "run_autonomous_full.py",
+    "paper_trading_engine.py",
+    "start_paper_trading.sh",
+    "start_paper_with_ibkr.sh"
+  ],
+  
+  "foundation": {
+    "path": "foundation/",
+    "files": [
+      "foundation/rick_charter.py",
+      "foundation/__init__.py"
+    ],
+    "purpose": "Immutable Charter rules and core validation"
+  },
+  
+  "trading_engines": {
+    "oanda": {
+      "path": "rick_clean_live/",
+      "files": [
+        "rick_clean_live/oanda_trading_engine.py",
+        "rick_clean_live/ghost_trading_charter_compliant.py"
+      ],
+      "purpose": "OANDA forex trading engine with Charter compliance"
+    },
+    "ibkr": {
+      "path": "ibkr_gateway/",
+      "files": [
+        "ibkr_gateway/ibkr_connector.py",
+        "ibkr_gateway/ibkr_trading_engine.py"
+      ],
+      "purpose": "Interactive Brokers gateway and trading engine"
+    }
+  },
+  
+  "brokers": {
+    "path": "brokers/",
+    "files": [
+      "brokers/oanda_connector.py",
+      "brokers/ib_connector.py",
+      "brokers/coinbase_connector.py"
+    ],
+    "purpose": "Broker API connectors"
+  },
+  
+  "risk_management": {
+    "path": "risk/",
+    "files": [
+      "risk/dynamic_sizing.py",
+      "risk/position_manager.py"
+    ],
+    "purpose": "Kelly Criterion sizing and risk controls"
+  },
+  
+  "config": {
+    "path": "config/",
+    "files": [
+      "config/aggressive_machine_config.py",
+      "config/trading_params.py"
+    ],
+    "purpose": "Trading parameters and aggressive growth config"
+  },
+  
+  "wolf_packs": {
+    "path": "wolf_packs/",
+    "files": [
+      "wolf_packs/orchestrator.py",
+      "wolf_packs/regime_multipliers.py"
+    ],
+    "purpose": "Wolf Pack regime-based position multipliers"
+  },
+  
+  "logic": {
+    "path": "logic/",
+    "files": [
+      "logic/regime_detector.py",
+      "logic/signal_generator.py"
+    ],
+    "purpose": "Market regime detection and signal generation"
+  },
+  
+  "engine": {
+    "path": "engine/",
+    "files": [
+      "engine/execution_router.py",
+      "engine/order_manager.py"
+    ],
+    "purpose": "Order routing and execution management"
+  },
+  
+  "hive": {
+    "path": "hive/",
+    "files": [
+      "hive/hive_mind.py",
+      "hive/strategy_voter.py"
+    ],
+    "purpose": "Multi-strategy voting and consensus"
+  },
+  
+  "util": {
+    "path": "util/",
+    "files": [
+      "util/connector_adapter.py",
+      "util/terminal_display.py",
+      "util/narration_logger.py"
+    ],
+    "purpose": "Utilities and display helpers"
+  },
+  
+  "controller": {
+    "path": "controller/",
+    "files": [
+      "controller/main_menu.py"
+    ],
+    "purpose": "Interactive control center"
+  },
+  
+  "tests": {
+    "path": "tests/",
+    "files": [
+      "tests/test_gated_logic_connections.py",
+      "tests/test_ibkr_micro_thresholds.py",
+      "tests/test_execution_router_real_ibkr.py",
+      "test_door_files_present.py",
+      "test_run_autonomous_entrypoint.py"
+    ],
+    "purpose": "Unit and integration tests"
+  },
+  
+  "environment": {
+    "files": [
+      ".env",
+      ".env.paper",
+      ".env.live",
+      "paper_acct_env.env"
+    ],
+    "purpose": "Environment configuration (NEVER hardcode keys)"
+  },
+  
+  "system": {
+    "path": ".rick_system/",
+    "files": [
+      ".rick_system/change_tracker.py"
+    ],
+    "purpose": "System monitoring and change tracking"
+  },
+  
+  "scripts": {
+    "path": "scripts/",
+    "files": [
+      "scripts/rick_narration_stream.sh",
+      "scripts/generate_blueprint.py"
+    ],
+    "purpose": "Operational scripts"
+  },
+  
+  "micro_trading_policy": {
+    "enabled": false,
+    "min_timeframe": "M15",
+    "override_flag": "ALLOW_NOISE_TRADING",
+    "notes": "Sub-standard lot sizes DISABLED by default. M1/M5 blocked."
+  },
+  
+  "semantic_rules": {
+    "rejected_terms": ["Canary", "Ghost"],
+    "replacement": "Paper",
+    "exception": "ghost-feed logic in specific data streaming contexts"
+  }
+}

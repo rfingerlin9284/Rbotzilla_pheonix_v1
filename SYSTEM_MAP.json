@@ -1,0 +1,599 @@
+{
+  "generated_at": "2025-10-13T15:20:08.318174",
+  "root_directory": "/home/ing/RICK/RICK_LIVE_CLEAN",
+  "nodes": {
+    "Dashboard_UI": {
+      "name": "Dashboard_UI",
+      "type": "endpoint",
+      "layer": "frontend",
+      "connections_out": [
+        "API_Status",
+        "API_Narration"
+      ],
+      "connections_in": [],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.315661",
+      "metadata": {
+        "route": "/",
+        "file": "dashboard/app.py",
+        "description": "Main trading dashboard with live metrics"
+      }
+    },
+    "API_Status": {
+      "name": "API_Status",
+      "type": "endpoint",
+      "layer": "frontend",
+      "connections_out": [
+        "Mode_Manager",
+        "Narration_Logger"
+      ],
+      "connections_in": [
+        "Dashboard_UI"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.315745",
+      "metadata": {
+        "route": "/api/status",
+        "file": "dashboard/app.py"
+      }
+    },
+    "API_Narration": {
+      "name": "API_Narration",
+      "type": "endpoint",
+      "layer": "frontend",
+      "connections_out": [
+        "Narration_Logger"
+      ],
+      "connections_in": [
+        "Dashboard_UI",
+        "Companion_Overlay"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.315819",
+      "metadata": {
+        "route": "/api/narration",
+        "file": "dashboard/app.py"
+      }
+    },
+    "Companion_Overlay": {
+      "name": "Companion_Overlay",
+      "type": "endpoint",
+      "layer": "frontend",
+      "connections_out": [
+        "API_Narration"
+      ],
+      "connections_in": [],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.315863",
+      "metadata": {
+        "component": "JavaScript companion window",
+        "features": [
+          "chat",
+          "hive_mind",
+          "narration"
+        ]
+      }
+    },
+    "Mode_Manager": {
+      "name": "Mode_Manager",
+      "type": "service",
+      "layer": "api",
+      "connections_out": [],
+      "connections_in": [
+        "API_Status"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316049",
+      "metadata": {
+        "module": "util/mode_manager.py",
+        "functions": [
+          "get_mode_info",
+          "switch_mode"
+        ]
+      }
+    },
+    "Narration_Logger": {
+      "name": "Narration_Logger",
+      "type": "service",
+      "layer": "api",
+      "connections_out": [
+        "Narration_File",
+        "PnL_File"
+      ],
+      "connections_in": [
+        "API_Status",
+        "API_Narration",
+        "Ghost_Engine",
+        "Canary_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316198",
+      "metadata": {
+        "module": "util/narration_logger.py",
+        "functions": [
+          "log_narration",
+          "log_pnl",
+          "get_latest_narration",
+          "get_session_summary"
+        ]
+      }
+    },
+    "Capital_Manager": {
+      "name": "Capital_Manager",
+      "type": "service",
+      "layer": "api",
+      "connections_out": [
+        "Capital_Tracking"
+      ],
+      "connections_in": [
+        "Ghost_Engine",
+        "Canary_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316392",
+      "metadata": {
+        "module": "capital_manager.py",
+        "functions": [
+          "get_current_capital",
+          "calculate_leverage",
+          "get_monthly_projection"
+        ]
+      }
+    },
+    "Ghost_Engine": {
+      "name": "Ghost_Engine",
+      "type": "engine",
+      "layer": "business",
+      "connections_out": [
+        "Narration_Logger",
+        "Capital_Manager",
+        "Smart_Logic",
+        "Risk_Control",
+        "Session_Breaker",
+        "OANDA_Connector",
+        "Coinbase_Connector"
+      ],
+      "connections_in": [
+        "Smart_Logic",
+        "Regime_Detector",
+        "Risk_Control",
+        "Session_Breaker"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316518",
+      "metadata": {
+        "engine_file": "ghost_trading_charter_compliant.py",
+        "mode": "GHOST",
+        "description": "Charter-compliant ghost trading with 15 breakpoints"
+      }
+    },
+    "Canary_Engine": {
+      "name": "Canary_Engine",
+      "type": "engine",
+      "layer": "business",
+      "connections_out": [
+        "Narration_Logger",
+        "Capital_Manager",
+        "Smart_Logic",
+        "Risk_Control",
+        "OANDA_Connector",
+        "Coinbase_Connector"
+      ],
+      "connections_in": [],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316673",
+      "metadata": {
+        "engine_file": "canary_trading_engine.py",
+        "mode": "CANARY",
+        "description": "45-minute validation session"
+      }
+    },
+    "Smart_Logic": {
+      "name": "Smart_Logic",
+      "type": "service",
+      "layer": "business",
+      "connections_out": [
+        "Ghost_Engine"
+      ],
+      "connections_in": [
+        "Ghost_Engine",
+        "Canary_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316855",
+      "metadata": {
+        "module": "logic/smart_logic.py",
+        "description": "Trade decision logic and signal processing"
+      }
+    },
+    "Regime_Detector": {
+      "name": "Regime_Detector",
+      "type": "service",
+      "layer": "business",
+      "connections_out": [
+        "Ghost_Engine"
+      ],
+      "connections_in": [],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.316953",
+      "metadata": {
+        "module": "logic/regime_detector.py",
+        "description": "Market regime detection"
+      }
+    },
+    "Risk_Control": {
+      "name": "Risk_Control",
+      "type": "service",
+      "layer": "business",
+      "connections_out": [
+        "Ghost_Engine"
+      ],
+      "connections_in": [
+        "Ghost_Engine",
+        "Canary_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317052",
+      "metadata": {
+        "module": "risk/risk_control_center.py",
+        "description": "Charter compliance and risk management"
+      }
+    },
+    "Session_Breaker": {
+      "name": "Session_Breaker",
+      "type": "service",
+      "layer": "business",
+      "connections_out": [
+        "Ghost_Engine"
+      ],
+      "connections_in": [
+        "Ghost_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317168",
+      "metadata": {
+        "module": "risk/session_breaker.py",
+        "description": "Stop-loss and session termination"
+      }
+    },
+    "Narration_File": {
+      "name": "Narration_File",
+      "type": "logger",
+      "layer": "data",
+      "connections_out": [],
+      "connections_in": [
+        "Narration_Logger"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317332",
+      "metadata": {
+        "log_file": "narration.jsonl",
+        "format": "JSON Lines",
+        "purpose": "Event logging"
+      }
+    },
+    "PnL_File": {
+      "name": "PnL_File",
+      "type": "logger",
+      "layer": "data",
+      "connections_out": [],
+      "connections_in": [
+        "Narration_Logger"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317414",
+      "metadata": {
+        "log_file": "pnl.jsonl",
+        "format": "JSON Lines",
+        "purpose": "Trade P&L tracking"
+      }
+    },
+    "Progress_File": {
+      "name": "Progress_File",
+      "type": "logger",
+      "layer": "data",
+      "connections_out": [],
+      "connections_in": [],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317503",
+      "metadata": {
+        "log_file": "foundation/progress.json",
+        "format": "JSON",
+        "purpose": "System progress tracking"
+      }
+    },
+    "Capital_Tracking": {
+      "name": "Capital_Tracking",
+      "type": "logger",
+      "layer": "data",
+      "connections_out": [],
+      "connections_in": [
+        "Capital_Manager"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317639",
+      "metadata": {
+        "log_file": "capital_tracking.json",
+        "format": "JSON",
+        "purpose": "Capital and leverage tracking"
+      }
+    },
+    "OANDA_Connector": {
+      "name": "OANDA_Connector",
+      "type": "connector",
+      "layer": "external",
+      "connections_out": [],
+      "connections_in": [
+        "Ghost_Engine",
+        "Canary_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317750",
+      "metadata": {
+        "module": "brokers/oanda_connector.py",
+        "environment": "Practice",
+        "api": "OANDA v20 REST API"
+      }
+    },
+    "Coinbase_Connector": {
+      "name": "Coinbase_Connector",
+      "type": "connector",
+      "layer": "external",
+      "connections_out": [],
+      "connections_in": [
+        "Ghost_Engine",
+        "Canary_Engine"
+      ],
+      "status": "operational",
+      "last_check": "2025-10-13T15:20:08.317860",
+      "metadata": {
+        "module": "brokers/coinbase_connector.py",
+        "environment": "Sandbox",
+        "api": "Coinbase Advanced Trade API"
+      }
+    }
+  },
+  "data_flows": [
+    {
+      "from": "Dashboard_UI",
+      "to": "API_Status",
+      "type": "request",
+      "timestamp": "2025-10-13T15:20:08.314603"
+    },
+    {
+      "from": "Dashboard_UI",
+      "to": "API_Narration",
+      "type": "request",
+      "timestamp": "2025-10-13T15:20:08.314648"
+    },
+    {
+      "from": "Companion_Overlay",
+      "to": "API_Narration",
+      "type": "request",
+      "timestamp": "2025-10-13T15:20:08.314689"
+    },
+    {
+      "from": "API_Status",
+      "to": "Mode_Manager",
+      "type": "query",
+      "timestamp": "2025-10-13T15:20:08.314753"
+    },
+    {
+      "from": "API_Status",
+      "to": "Narration_Logger",
+      "type": "query",
+      "timestamp": "2025-10-13T15:20:08.314806"
+    },
+    {
+      "from": "API_Narration",
+      "to": "Narration_Logger",
+      "type": "query",
+      "timestamp": "2025-10-13T15:20:08.314844"
+    },
+    {
+      "from": "Narration_Logger",
+      "to": "Narration_File",
+      "type": "write",
+      "timestamp": "2025-10-13T15:20:08.314875"
+    },
+    {
+      "from": "Narration_Logger",
+      "to": "PnL_File",
+      "type": "write",
+      "timestamp": "2025-10-13T15:20:08.314906"
+    },
+    {
+      "from": "Capital_Manager",
+      "to": "Capital_Tracking",
+      "type": "write",
+      "timestamp": "2025-10-13T15:20:08.314937"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "Narration_Logger",
+      "type": "log_event",
+      "timestamp": "2025-10-13T15:20:08.314968"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "Capital_Manager",
+      "type": "query",
+      "timestamp": "2025-10-13T15:20:08.314999"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "Smart_Logic",
+      "type": "signal_processing",
+      "timestamp": "2025-10-13T15:20:08.315030"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "Risk_Control",
+      "type": "compliance_check",
+      "timestamp": "2025-10-13T15:20:08.315053"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "Session_Breaker",
+      "type": "stop_check",
+      "timestamp": "2025-10-13T15:20:08.315077"
+    },
+    {
+      "from": "Canary_Engine",
+      "to": "Narration_Logger",
+      "type": "log_event",
+      "timestamp": "2025-10-13T15:20:08.315100"
+    },
+    {
+      "from": "Canary_Engine",
+      "to": "Capital_Manager",
+      "type": "query",
+      "timestamp": "2025-10-13T15:20:08.315131"
+    },
+    {
+      "from": "Canary_Engine",
+      "to": "Smart_Logic",
+      "type": "signal_processing",
+      "timestamp": "2025-10-13T15:20:08.315161"
+    },
+    {
+      "from": "Canary_Engine",
+      "to": "Risk_Control",
+      "type": "compliance_check",
+      "timestamp": "2025-10-13T15:20:08.315192"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "OANDA_Connector",
+      "type": "place_trade",
+      "timestamp": "2025-10-13T15:20:08.315247"
+    },
+    {
+      "from": "Ghost_Engine",
+      "to": "Coinbase_Connector",
+      "type": "get_price",
+      "timestamp": "2025-10-13T15:20:08.315308"
+    },
+    {
+      "from": "Canary_Engine",
+      "to": "OANDA_Connector",
+      "type": "place_trade",
+      "timestamp": "2025-10-13T15:20:08.315343"
+    },
+    {
+      "from": "Canary_Engine",
+      "to": "Coinbase_Connector",
+      "type": "get_price",
+      "timestamp": "2025-10-13T15:20:08.315380"
+    },
+    {
+      "from": "Smart_Logic",
+      "to": "Ghost_Engine",
+      "type": "signal",
+      "timestamp": "2025-10-13T15:20:08.315405"
+    },
+    {
+      "from": "Regime_Detector",
+      "to": "Ghost_Engine",
+      "type": "regime_info",
+      "timestamp": "2025-10-13T15:20:08.315439"
+    },
+    {
+      "from": "Risk_Control",
+      "to": "Ghost_Engine",
+      "type": "risk_limits",
+      "timestamp": "2025-10-13T15:20:08.315464"
+    },
+    {
+      "from": "Session_Breaker",
+      "to": "Ghost_Engine",
+      "type": "stop_signal",
+      "timestamp": "2025-10-13T15:20:08.315499"
+    }
+  ],
+  "validation_results": {
+    "total_nodes": 19,
+    "operational": 19,
+    "failed": 0,
+    "errors": 0,
+    "timestamp": "2025-10-13T15:20:08.315606",
+    "details": {
+      "Dashboard_UI": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.315661"
+      },
+      "API_Status": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.315745"
+      },
+      "API_Narration": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.315819"
+      },
+      "Companion_Overlay": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.315863"
+      },
+      "Mode_Manager": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316049"
+      },
+      "Narration_Logger": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316198"
+      },
+      "Capital_Manager": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316392"
+      },
+      "Ghost_Engine": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316518"
+      },
+      "Canary_Engine": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316673"
+      },
+      "Smart_Logic": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316855"
+      },
+      "Regime_Detector": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.316953"
+      },
+      "Risk_Control": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317052"
+      },
+      "Session_Breaker": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317168"
+      },
+      "Narration_File": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317332"
+      },
+      "PnL_File": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317414"
+      },
+      "Progress_File": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317503"
+      },
+      "Capital_Tracking": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317639"
+      },
+      "OANDA_Connector": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317750"
+      },
+      "Coinbase_Connector": {
+        "status": "operational",
+        "last_check": "2025-10-13T15:20:08.317860"
+      }
+    }
+  }
+}

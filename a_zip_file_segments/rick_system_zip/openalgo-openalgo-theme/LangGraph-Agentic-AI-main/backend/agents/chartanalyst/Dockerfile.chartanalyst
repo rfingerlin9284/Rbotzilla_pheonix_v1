@@ -1,0 +1,54 @@
+# ChartAnalyst Docker Container
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies for TA-Lib
+RUN apt-get update && apt-get install -y \
+    wget \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install TA-Lib from source
+RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
+    tar -xvzf ta-lib-0.4.0-src.tar.gz && \
+    cd ta-lib/ && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY chartanalyst.main.py .
+COPY testchartanalyst.py .
+COPY .env.example .env
+
+# Create a non-root user
+RUN useradd -m -u 1000 chartanalyst && \
+    chown -R chartanalyst:chartanalyst /app
+USER chartanalyst
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python -c "from chartanalyst_main import ChartAnalyst; ChartAnalyst()" || exit 1
+
+# Default command
+CMD ["python", "chartanalyst.main.py"]
+
+# Labels
+LABEL maintainer="ChartAnalyst Team"
+LABEL version="1.0.0"
+LABEL description="Technical Analysis Agent for Market Pattern Detection"

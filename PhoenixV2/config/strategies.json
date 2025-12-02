@@ -1,0 +1,96 @@
+{
+    "configuration_locked": true,
+    "strategies": [
+        {
+            "name": "momentum",
+            "enabled": true,
+            "description": "Momentum-based strategy (Inline)"
+        },
+        {
+            "name": "mean_reversion",
+            "enabled": true,
+            "description": "Mean reversion strategy (Inline)"
+        },
+        {
+            "name": "breakout",
+            "enabled": true,
+            "description": "Breakout detection strategy (Inline)"
+        },
+        {
+            "name": "trend_follow",
+            "enabled": true,
+            "description": "Trend following strategy (Inline)"
+        },
+        {
+            "name": "range",
+            "enabled": true,
+            "description": "Range-bound trading strategy (Inline)"
+        },
+        {
+            "name": "liquidity_sweep",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "LiquiditySweepWolf"
+        },
+        {
+            "name": "supply_demand",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "SupplyDemandWolf"
+        },
+        {
+            "name": "multi_tf_confluence",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "MultiTFConfluenceWolf"
+        },
+        {
+            "name": "supply_demand_multi_tap",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "SupplyDemandMultiTapWolf"
+        },
+        {
+            "name": "chart_pattern_break",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "ChartPatternBreakWolf"
+        },
+        {
+            "name": "range_midline_bounce",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "RangeMidlineBounceWolf"
+        },
+        {
+            "name": "long_wick_reversal",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "LongWickReversalWolf"
+        },
+        {
+            "name": "momentum_shift",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "MomentumShiftWolf"
+        },
+        {
+            "name": "cci_divergence",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.high_probability_core",
+            "class": "CCIDivergenceWolf"
+        },
+        {
+            "name": "ema_scalper",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.ema_scalper",
+            "class": "EMAScalperWolf"
+        },
+        {
+            "name": "correlation_wolf",
+            "enabled": true,
+            "module": "PhoenixV2.brain.strategies.correlation_wolf",
+            "class": "CorrelationWolf"
+        }
+    ]
+}

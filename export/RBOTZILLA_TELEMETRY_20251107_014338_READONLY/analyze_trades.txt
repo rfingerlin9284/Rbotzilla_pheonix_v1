@@ -1,0 +1,13 @@
+/home/ing/RICK/RICK_LIVE_CLEAN/analyze_trades.py:30: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  since = (datetime.utcnow() - timedelta(days=30)).isoformat() + 'Z'
+================================================================================
+📊 TRADE PERFORMANCE ANALYSIS
+================================================================================
+
+📋 Found 0 order fills in last 30 days
+
+✅ Winning Trades: 0
+❌ Losing Trades: 0
+➖ Breakeven Trades: 0
+
+================================================================================

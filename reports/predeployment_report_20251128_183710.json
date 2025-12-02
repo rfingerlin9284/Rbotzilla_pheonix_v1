@@ -1,0 +1,132 @@
+{
+  "timestamp": "2025-11-28T18:37:10.615125",
+  "repo_root": "/home/ing/RICK/RICK_PHOENIX",
+  "results": [
+    {
+      "name": "detect_unsafe_place_order",
+      "status": "PASS",
+      "duration_ms": 356.74,
+      "details": {
+        "unsafe_count": 0,
+        "unsafe_samples": []
+      },
+      "exception": null
+    },
+    {
+      "name": "readiness_checks",
+      "status": "PASS",
+      "duration_ms": 346.04,
+      "details": {
+        "returncode": 0,
+        "stdout": "No unsafe place_order occurrences found (scan ok)\nRunning: python3 scripts/detect_unsafe_place_order.py\nRunning: python3 tests/test_safe_place_order.py\nRunning: python3 tests/test_router_safe_orders.py\n\nAll readiness checks passed (local).\n",
+        "stderr": ""
+      },
+      "exception": null
+    },
+    {
+      "name": "safe_place_order_behavior",
+      "status": "PASS",
+      "duration_ms": 5.1,
+      "details": {
+        "paper_ok": true,
+        "paper_resp_keys": [
+          "simulated",
+          "order_id",
+          "status",
+          "details",
+          "success"
+        ],
+        "live_ok": true,
+        "live_resp_keys": [
+          "ok",
+          "id",
+          "success"
+        ]
+      },
+      "exception": null
+    },
+    {
+      "name": "router_and_demo",
+      "status": "PASS",
+      "duration_ms": 40.85,
+      "details": {
+        "status": {
+          "OANDA": "\u2705 Connected",
+          "IBKR": "\u2705 Connected",
+          "Coinbase": "\u2705 Connected"
+        },
+        "ibkr_ok": true,
+        "ibkr_resp_keys": [
+          "success",
+          "order_id",
+          "trades"
+        ],
+        "oanda_ok": true,
+        "oanda_resp_keys": [
+          "simulated",
+          "order_id",
+          "status",
+          "details",
+          "success"
+        ],
+        "coin_ok": true,
+        "coin_resp_keys": [
+          "simulated",
+          "order_id",
+          "status",
+          "details",
+          "success"
+        ]
+      },
+      "exception": null
+    },
+    {
+      "name": "alerting_config",
+      "status": "PASS",
+      "duration_ms": 1.37,
+      "details": {
+        "missing": [
+          "USER_PHONE_NUMBER"
+        ],
+        "configured": {
+          "ALERT_PHONE_NUMBER": "+160...6119",
+          "ALERT_EMAIL": "+160....net",
+          "SMS_GATEWAY": "+160....net",
+          "USER_PHONE_NUMBER": "<MISSING>",
+          "TELEGRAM_CHAT_ID": "7546...4370",
+          "TELEGRAM_BOT_TOKEN": "5260...WFbQ",
+          "DISCORD_WEBHOOK_URL": "http...ZM8K"
+        }
+      },
+      "exception": null
+    },
+    {
+      "name": "quant_hedge_performance",
+      "status": "WARN",
+      "duration_ms": 4377.61,
+      "details": {
+        "duration_ms": 4274.34,
+        "severity_score": 0.5185714285714286,
+        "primary_action": "pause_trading",
+        "confidence": 0.7
+      },
+      "exception": null
+    },
+    {
+      "name": "connectors_basic",
+      "status": "PASS",
+      "duration_ms": 165.98,
+      "details": {
+        "oanda_connect_ok": false,
+        "coinbase_connect_ok": false,
+        "ibkr_class_present": true
+      },
+      "exception": null
+    }
+  ],
+  "summary": {
+    "pass": 6,
+    "warn": 1,
+    "fail": 0
+  }
+}

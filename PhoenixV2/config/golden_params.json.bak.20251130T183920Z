@@ -1,0 +1,7 @@
+{
+    "LiquiditySweepWolf": {
+        "sl_mult": 1.5,
+        "rr": 1.5,
+        "lookback": 10
+    }
+}

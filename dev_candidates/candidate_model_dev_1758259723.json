@@ -1,0 +1,10 @@
+{
+  "created": "2025-09-19T05:28:43.982228Z",
+  "source": "/home/ing/RICK/dev_unibot_v001/gs/run/gs-20250919-012843",
+  "model_file": "/home/ing/RICK/dev_unibot_v001/dev_candidates/candidate_model_dev_1758259723.bin",
+  "model_sha256": "07ea68f2b462090ef97feda8001ad0bdca055b1e55c95ca05f0dd203926331c4",
+  "params": {
+    "seed": 42,
+    "dev": true
+  }
+}

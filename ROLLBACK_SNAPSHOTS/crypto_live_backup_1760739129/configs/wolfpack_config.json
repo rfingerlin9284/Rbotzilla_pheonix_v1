@@ -1,0 +1,13 @@
+{
+  "enabled": [
+    {
+      "name": "Liquidity_Sweep_SD",
+      "symbols": ["EURUSD", "GBPUSD", "USDJPY"],
+      "timeframe": "15m",
+      "sessions_utc": {"start": "07:00", "end": "15:00"},
+      "risk_pct": 0.5,
+      "news_guard": true
+    }
+  ],
+  "excluded_instruments": {"futures_micro": true}
+}

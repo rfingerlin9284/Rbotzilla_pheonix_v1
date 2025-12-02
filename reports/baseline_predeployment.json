@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-11-28T17:47:48.406621",
+  "report_file": "/home/ing/RICK/RICK_PHOENIX/reports/predeployment_report_20251128_174748.json",
+  "metrics": {
+    "detect_unsafe_place_order": 136.51,
+    "readiness_checks": 252.77,
+    "safe_place_order_behavior": 3.99,
+    "router_and_demo": 34.72,
+    "quant_hedge_performance": 32.36,
+    "connectors_basic": 137.99
+  }
+}

@@ -1,0 +1,46 @@
+from __future__ import annotations
+from typing import Optional
+
+from .base import BaseStrategy, StrategyContext, ProposedTrade
+
+
+class CryptoBreakoutStrategy(BaseStrategy):
+    """
+    Simple crypto breakout stub.
+    """
+
+    def decide_entry(
+        self,
+        ctx: StrategyContext,
+    ) -> Optional[ProposedTrade]:
+        if "CRYPTO" not in self.metadata.markets:
+            return None
+        if ctx.timeframe not in self.metadata.base_timeframes:
+            return None
+
+        price = ctx.candles[-1]["close"]
+        atr = ctx.indicators.get("atr", 0.0) or 0.0
+        resistance = ctx.higher_tf_context.get("resistance_level")
+
+        if resistance is None or atr <= 0:
+            return None
+
+        if price <= resistance + 0.5 * atr:
+            return None
+
+        sl = price - 1.2 * atr
+        risk = price - sl
+        tp = price + risk * self.metadata.target_rr
+
+        return ProposedTrade(
+            strategy_code=self.metadata.code,
+            symbol=ctx.symbol,
+            direction="BUY",
+            entry_type="market",
+            entry_price=None,
+            stop_loss_price=sl,
+            take_profit_price=tp,
+            target_rr=self.metadata.target_rr,
+            confidence=0.6,
+            notes={"reason": "breakout above resistance", "resistance": resistance, "atr": atr},
+        )

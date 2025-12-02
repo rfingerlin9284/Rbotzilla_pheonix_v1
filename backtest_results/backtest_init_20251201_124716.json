@@ -1,0 +1,16 @@
+{
+  "backtest_id": "multi_platform_20251201_124716",
+  "start_time": "2025-12-01T12:47:16.537488",
+  "initial_capital": 9000,
+  "monthly_deposits": 3000,
+  "test_period_years": 10,
+  "platforms_tested": 3,
+  "data_sources": {
+    "OANDA_Forex": 0,
+    "Coinbase_Crypto": 0,
+    "IBKR_Stocks": 0
+  },
+  "status": "INITIATED - Full backtest requires extensive computation",
+  "estimated_time": "2-4 hours for complete analysis",
+  "note": "Live trading NOT affected - this is offline analysis only"
+}

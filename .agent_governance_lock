@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+"""
+AGENT GOVERNANCE LOCK - IMMUTABLE SYSTEM PROTECTION
+PIN: 841921 REQUIRED FOR ALL FILE MODIFICATIONS
+Project Root: /home/ing/RICK/RICK_LIVE_CLEAN
+"""
+
+import os
+import sys
+from pathlib import Path
+
+# IMMUTABLE PROJECT ROOT
+LOCKED_ROOT = "/home/ing/RICK/RICK_LIVE_CLEAN"
+REQUIRED_PIN = "841921"
+
+def validate_governance():
+    """
+    Enforce governance rules:
+    1. Must be in correct project root
+    2. Must have PIN 841921 approval
+    3. Cannot create/rename/move files outside root
+    4. Cannot alter folder structure
+    """
+    current_dir = os.getcwd()
+    
+    # Rule 1: Verify working directory
+    if not current_dir.startswith(LOCKED_ROOT):
+        print(f"❌ GOVERNANCE VIOLATION: Working directory {current_dir}")
+        print(f"   REQUIRED: {LOCKED_ROOT}")
+        print(f"   ACTION: BLOCKED - Wrong project folder")
+        return False
+    
+    # Rule 2: Check for PIN in environment or arguments
+    pin_approved = False
+    if f"approved {REQUIRED_PIN}" in " ".join(sys.argv).lower():
+        pin_approved = True
+    if os.environ.get("RICK_PIN_APPROVED") == REQUIRED_PIN:
+        pin_approved = True
+        
+    if not pin_approved:
+        print(f"❌ GOVERNANCE VIOLATION: No PIN approval")
+        print(f"   REQUIRED: 'approved {REQUIRED_PIN}' in command")
+        print(f"   ACTION: BLOCKED - Missing authorization")
+        return False
+    
+    print(f"✅ Governance validated")
+    print(f"   Root: {LOCKED_ROOT}")
+    print(f"   PIN: {REQUIRED_PIN} approved")
+    return True
+
+def check_file_operation(filepath):
+    """Validate file operation is within locked root"""
+    abs_path = os.path.abspath(filepath)
+    if not abs_path.startswith(LOCKED_ROOT):
+        print(f"❌ BLOCKED: File operation outside locked root")
+        print(f"   Attempted: {abs_path}")
+        print(f"   Allowed: {LOCKED_ROOT}/*")
+        return False
+    return True
+
+if __name__ == "__main__":
+    sys.exit(0 if validate_governance() else 1)

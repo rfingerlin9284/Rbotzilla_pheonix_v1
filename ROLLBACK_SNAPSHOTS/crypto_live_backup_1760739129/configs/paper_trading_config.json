@@ -1,0 +1,22 @@
+{
+  "mode": "PAPER",
+  "max_positions": 5,
+  "position_size": 100,
+  "max_capital": 2000,
+  "update_interval": 10,
+  "data_sources": {
+    "forex": "OANDA_PRACTICE",
+    "crypto": "COINBASE_SANDBOX",
+    "news": "CRYPTOPANIC"
+  },
+  "brokers": {
+    "forex_broker": "OANDA_PRACTICE",
+    "crypto_broker": "COINBASE_SANDBOX"
+  },
+  "safety": {
+    "paper_only": true,
+    "prevent_live": true,
+    "max_loss_per_trade": 50,
+    "max_daily_trades": 20
+  }
+}

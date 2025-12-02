@@ -1,0 +1,38 @@
+digraph RICK {
+  rankdir=LR;
+  node [shape=box, style=rounded, fontsize=11];
+
+  subgraph cluster_ingest {
+    label="Ingest"; style=dashed;
+    market[ label="Market Polling (750ms)\nOANDA/IBKR/Coinbase" ];
+    smart[ label="Smart Logic (5 filters)\nFVG/Fib/Volume/Momentum/RR" ];
+    market -> smart;
+  }
+
+  subgraph cluster_hive {
+    label="Hive + ML"; style=dashed;
+    hive[label="Hive Mind (3 agents)\nWeighted consensus ≥65%" ];
+    ml[label="ML Tally (8 factors)\nHIGH≥0.75 / OK≥0.65" ];
+    smart -> hive -> ml;
+  }
+
+  subgraph cluster_guardians {
+    label="Guardians"; style=dashed;
+    pguard[label="Position Guardian\nKelly, Volatility, Sharpe, OCO" ];
+    ggate[label="Guardian Gates (HARD AND)\nMargin≤35% | ≤3 Positions |\nNo same-side USD | Crypto time+consensus" ];
+    ml -> pguard -> ggate;
+  }
+
+  subgraph cluster_exec {
+    label="Execution"; style=dashed;
+    oanda[label="OANDA Connector\nOCO + trailing + giveback" ];
+    ibkr[label="IBKR Connector (paper)" ];
+    hedger[label="Quant Hedge Rules\nReduce/Inverse/Delta-neutral" ];
+    ggate -> oanda;
+    ggate -> ibkr;
+    pguard -> hedger [style=dotted];
+  }
+
+  dashboard[label="Dashboard + Narration\nlogs/narration.jsonl" shape=note];
+  oanda -> dashboard; ibkr -> dashboard; hedger -> dashboard;
+}

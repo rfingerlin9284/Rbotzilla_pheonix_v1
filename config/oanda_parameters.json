@@ -1,0 +1,16 @@
+{
+  "oanda.practice.token": "1a45b898c57f609f329a0af8f2800e7e-6fcc25eef7c3f94ad79acff6d5f6bfaf",
+  "oanda.practice.account_id": "101-001-31210531-002",
+  "oanda.environment": "practice",
+  "oanda.live.token": "your_live_api_token_here",
+  "oanda.live.account_id": "your_live_account_id_here",
+  "oanda.orders.order_1761023276": {
+    "instrument": "EUR_USD",
+    "entry_price": 1.05,
+    "stop_loss": 1.045,
+    "take_profit": 1.06,
+    "units": 1000,
+    "order_type": "LIMIT",
+    "timestamp": "2025-10-21T01:07:56.573095"
+  }
+}

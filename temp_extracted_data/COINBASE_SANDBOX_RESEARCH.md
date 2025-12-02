@@ -1,0 +1,1 @@
+# Placeholder for extracted content from COINBASE_SANDBOX_RESEARCH.md

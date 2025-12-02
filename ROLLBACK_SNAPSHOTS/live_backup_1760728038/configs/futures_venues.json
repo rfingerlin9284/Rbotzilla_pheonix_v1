@@ -1,0 +1,55 @@
+{
+  "venues": {
+    "binance_futures": {
+      "name": "Binance Futures",
+      "base_url": "https://fapi.binance.com",
+      "max_leverage": 125,
+      "maker_fee": 0.02,
+      "taker_fee": 0.04,
+      "min_notional": 5.0,
+      "supported_pairs": [
+        "BTCUSDT",
+        "ETHUSDT",
+        "ADAUSDT",
+        "SOLUSDT"
+      ],
+      "enabled": true
+    },
+    "bybit_perp": {
+      "name": "Bybit Perpetuals",
+      "base_url": "https://api.bybit.com",
+      "max_leverage": 100,
+      "maker_fee": 0.01,
+      "taker_fee": 0.06,
+      "min_notional": 1.0,
+      "supported_pairs": [
+        "BTCUSDT",
+        "ETHUSDT",
+        "ADAUSDT",
+        "SOLUSDT"
+      ],
+      "enabled": true
+    },
+    "okx_futures": {
+      "name": "OKX Futures",
+      "base_url": "https://www.okx.com",
+      "max_leverage": 125,
+      "maker_fee": 0.02,
+      "taker_fee": 0.05,
+      "min_notional": 1.0,
+      "supported_pairs": [
+        "BTC-USDT-SWAP",
+        "ETH-USDT-SWAP"
+      ],
+      "enabled": true
+    }
+  },
+  "selection_criteria": {
+    "prefer_low_fees": true,
+    "min_liquidity_threshold": 1000000,
+    "max_spread_threshold": 0.1,
+    "health_score_weight": 0.4,
+    "fee_weight": 0.3,
+    "liquidity_weight": 0.3
+  }
+}

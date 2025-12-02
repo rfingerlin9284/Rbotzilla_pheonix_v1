@@ -1,0 +1,738 @@
+{
+    "LiquiditySweepWolf": {
+        "params": {
+            "wick_multiplier": 1.0,
+            "limit_size": 1,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0.3055555555555556,
+            "pnl": -0.0069750000000001755,
+            "trades": 36
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "wick_multiplier": 1.0,
+                        "limit_size": 1
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "wick_multiplier": 1.0,
+                        "limit_size": 1
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "wick_multiplier": 1.0,
+                        "limit_size": 1
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "wick_multiplier": 1.0,
+                        "limit_size": 1
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "wick_multiplier": 1.0,
+                        "limit_size": 1
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "EMAScalperWolf": {
+        "params": {
+            "fast": 10,
+            "slow": 40,
+            "risk_reward": 1.5,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0.3684210526315789,
+            "pnl": 0.002415000000001166,
+            "trades": 19
+        },
+        "validation": {
+            "wfe_ratio": -0.05191122571146003,
+            "avg_train_annualized_return": 0.2442212676613317,
+            "avg_test_annualized_return": -0.012677825349106284,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 39.825728308700775,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "fast": 50,
+                        "slow": 40,
+                        "risk_reward": 1.5
+                    },
+                    "train_ann": 0.279098703987375,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 49.03769402597683,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "fast": 50,
+                        "slow": 40,
+                        "risk_reward": 2.0
+                    },
+                    "train_ann": 0.3436561597340456,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 27.48513873546566,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "fast": 50,
+                        "slow": 40,
+                        "risk_reward": 2.0
+                    },
+                    "train_ann": 0.19261585225814334,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 13.638502681945898,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "fast": 50,
+                        "slow": 40,
+                        "risk_reward": 2.0
+                    },
+                    "train_ann": 0.09557862679507685,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 44.257562147833575,
+                    "test_pnl": -1.8090504208199607,
+                    "best_params": {
+                        "fast": 20,
+                        "slow": 40,
+                        "risk_reward": 1.5
+                    },
+                    "train_ann": 0.31015699553201764,
+                    "test_ann": -0.06338912674553142
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "SupplyDemandWolf": {
+        "params": {
+            "lookback": 10,
+            "sl_mult": 1.0,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 10,
+                        "sl_mult": 1.0
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 10,
+                        "sl_mult": 1.0
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 10,
+                        "sl_mult": 1.0
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 10,
+                        "sl_mult": 1.0
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 10,
+                        "sl_mult": 1.0
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "MultiTFConfluenceWolf": {
+        "params": {
+            "htf_weight": 0.5,
+            "pullback": 0.01,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "htf_weight": 0.5,
+                        "pullback": 0.01
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "htf_weight": 0.5,
+                        "pullback": 0.01
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "htf_weight": 0.5,
+                        "pullback": 0.01
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "htf_weight": 0.5,
+                        "pullback": 0.01
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "htf_weight": 0.5,
+                        "pullback": 0.01
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "SupplyDemandMultiTapWolf": {
+        "params": {
+            "taps": 2,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "taps": 2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "taps": 2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "taps": 2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "taps": 2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "taps": 2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "ChartPatternBreakWolf": {
+        "params": {
+            "min_volume_mult": 1.2,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "min_volume_mult": 1.2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "min_volume_mult": 1.2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "min_volume_mult": 1.2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "min_volume_mult": 1.2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "min_volume_mult": 1.2
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "RangeMidlineBounceWolf": {
+        "params": {
+            "adx_threshold": 20,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "adx_threshold": 20
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "adx_threshold": 20
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "adx_threshold": 20
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "adx_threshold": 20
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "adx_threshold": 20
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "LongWickReversalWolf": {
+        "params": {
+            "body_mult": 1.5,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0.27419354838709675,
+            "pnl": -0.009345000000001935,
+            "trades": 62
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "body_mult": 1.5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "body_mult": 1.5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "body_mult": 1.5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "body_mult": 1.5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "body_mult": 1.5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "MomentumShiftWolf": {
+        "params": {
+            "lookback": 5,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": 0.0,
+            "avg_train_annualized_return": 0.0,
+            "avg_test_annualized_return": 0.0,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                },
+                {
+                    "start": 400,
+                    "train_pnl": 0,
+                    "test_pnl": 0,
+                    "best_params": {
+                        "lookback": 5
+                    },
+                    "train_ann": 0.0,
+                    "test_ann": 0.0
+                }
+            ],
+            "is_stable": false
+        }
+    },
+    "CCIDivergenceWolf": {
+        "params": {
+            "cci_window": 14,
+            "sensitivity": 0.015,
+            "sharpe": 0.0
+        },
+        "metrics": {
+            "win_rate": 0,
+            "pnl": 0,
+            "trades": 0
+        },
+        "validation": {
+            "wfe_ratio": -1.762271493232249,
+            "avg_train_annualized_return": 0.17742868381544616,
+            "avg_test_annualized_return": -0.3126775115696789,
+            "num_windows": 5,
+            "windows": [
+                {
+                    "start": 0,
+                    "train_pnl": 36.18473359409499,
+                    "test_pnl": 24.816659408620477,
+                    "best_params": {
+                        "cci_window": 14,
+                        "sensitivity": 0.015
+                    },
+                    "train_ann": 0.2535826130274177,
+                    "test_ann": 0.8695757456780614
+                },
+                {
+                    "start": 100,
+                    "train_pnl": 52.03043210749244,
+                    "test_pnl": -35.32255799377861,
+                    "best_params": {
+                        "cci_window": 14,
+                        "sensitivity": 0.015
+                    },
+                    "train_ann": 0.36462926820930697,
+                    "test_ann": -1.2377024321020025
+                },
+                {
+                    "start": 200,
+                    "train_pnl": 17.916978149930067,
+                    "test_pnl": -1.8455523464059151,
+                    "best_params": {
+                        "cci_window": 14,
+                        "sensitivity": 0.015
+                    },
+                    "train_ann": 0.1255621828747099,
+                    "test_ann": -0.06466815421806327
+                },
+                {
+                    "start": 300,
+                    "train_pnl": 30.264024747890208,
+                    "test_pnl": 3.6258003874703033,
+                    "best_params": {
+                        "cci_window": 14,
+                        "sensitivity": 0.015
+                    },
+                    "train_ann": 0.21209028543321456,
+                    "test_ann": 0.12704804557695942
+                },
+                {
+                    "start": 400,
+                    "train_pnl": -9.806068845236615,
+                    "test_pnl": -35.89157428034673,
+                    "best_params": {
+                        "cci_window": 14,
+                        "sensitivity": 0.015
+                    },
+                    "train_ann": -0.0687209304674182,
+                    "test_ann": -1.2576407627833495
+                }
+            ],
+            "is_stable": false
+        }
+    }
+}

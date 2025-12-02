@@ -1,0 +1,58 @@
+import random
+import time
+from datetime import datetime
+from util.smart_aggression import MLRewardSystem
+
+class HiveMindBridge:
+    def __init__(self):
+        self.ml_system = MLRewardSystem()
+        self.last_scan = time.time()
+
+    def fetch_inference(self):
+        # Scan every 5 seconds
+        now = time.time()
+        if now - self.last_scan < 5: return None 
+        self.last_scan = now
+
+        # 1. Generate CANDIDATE (Simulated Strategy)
+        # In real life, this comes from Technical Analysis
+        candidate = self._generate_candidate_signal()
+
+        # 2. APPLY 3:1 FILTER
+        is_valid, rr = self.ml_system.evaluate_trade_setup(candidate)
+
+        if is_valid:
+            candidate["ml_note"] = f"APPROVED (RR: {rr:.2f})"
+            return candidate
+        else:
+            # Silently reject bad trades to keep logs clean
+            return None
+
+    def _generate_candidate_signal(self):
+        pair = random.choice(["EUR_USD", "GBP_USD", "USD_JPY"])
+        direction = random.choice(["BUY", "SELL"])
+        base_price = 1.1000 
+        entry = base_price
+        
+        # Randomize Risk/Reward to test the filter
+        # Some will be trash (1:1), some gold (3:1)
+        risk_pips = random.randint(10, 30) * 0.0001
+        reward_pips = random.randint(10, 100) * 0.0001
+        
+        if direction == "BUY":
+            sl = entry - risk_pips
+            tp = entry + reward_pips
+        else:
+            sl = entry + risk_pips
+            tp = entry - reward_pips
+
+        return {
+            "pair": pair,
+            "direction": direction,
+            "confidence": self.ml_system.base_confidence,
+            "timeframe": "M15",
+            "entry": entry,
+            "sl": sl,
+            "tp": tp,
+            "timestamp": datetime.now().isoformat()
+        }

@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "options": { "cwd": "/home/ing/RICK/RICK_LIVE_CLEAN" },
+  "tasks": [
+    { "label": "RICK: Control Center", "type":"shell", "command":"python3", "args":["/home/ing/RICK/RICK_LIVE_CLEAN/controller/main_menu.py"] },
+    { "label": "RICK: Persistent Monitor", "type":"shell", "command":"./rick_persistent_monitor.sh start" },
+    { "label": "RICK: Stop Persistent Monitor", "type":"shell", "command":"./rick_persistent_monitor.sh stop" },
+    { "label": "RICK: Monitor Status", "type":"shell", "command":"./rick_persistent_monitor.sh status" },
+    { "label": "RICK: Ask RICK (Plain English Interface)", "type":"shell", "command":"./ask_rick.sh" }
+  ]
+}

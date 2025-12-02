@@ -1,0 +1,1508 @@
+{
+  "generated": "2025-11-25T20:31:05.380077+00:00",
+  "root": "/home/ing/RICK/RICK_LIVE_CLEAN/rick_clean_live",
+  "total_files": 250,
+  "total_lines": 76041,
+  "files": [
+    {
+      "path": ".system/backups/pre_risk_integration_20251021_091641/canary_trading_engine.py",
+      "lines": 282,
+      "hash": "e03fde4e13a88eb4",
+      "size_kb": 11.4287109375
+    },
+    {
+      "path": ".system/backups/pre_risk_integration_20251021_091641/ghost_trading_charter_compliant.py",
+      "lines": 623,
+      "hash": "5c0befc35bdc0a32",
+      "size_kb": 26.017578125
+    },
+    {
+      "path": ".system/backups/pre_risk_integration_20251021_091641/live_ghost_engine.py",
+      "lines": 362,
+      "hash": "b7f61a1cb1cf3bbb",
+      "size_kb": 14.1396484375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/brokers/oanda_connector.py",
+      "lines": 667,
+      "hash": "f21beb0a2bfde828",
+      "size_kb": 27.001953125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/canary_trading_engine.py",
+      "lines": 282,
+      "hash": "e03fde4e13a88eb4",
+      "size_kb": 11.4287109375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/capital_manager.py",
+      "lines": 232,
+      "hash": "d22ccb439016e3fc",
+      "size_kb": 9.296875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/dashboard/app.py",
+      "lines": 1177,
+      "hash": "1010e654902be644",
+      "size_kb": 43.4140625
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/foundation/rick_charter.py",
+      "lines": 173,
+      "hash": "69e8250ca5096613",
+      "size_kb": 6.572265625
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/ghost_trading_engine.py",
+      "lines": 367,
+      "hash": "234dee998b304131",
+      "size_kb": 14.2841796875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/hive/rick_hive_mind.py",
+      "lines": 118,
+      "hash": "55ec44c035b54d35",
+      "size_kb": 3.9482421875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/live_ghost_engine.py",
+      "lines": 289,
+      "hash": "fbc7f7ea7d45a64f",
+      "size_kb": 10.7685546875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/logic/smart_logic.py",
+      "lines": 824,
+      "hash": "62dbdfe19ca5b4f4",
+      "size_kb": 32.0068359375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/ml_learning/ml_models.py",
+      "lines": 633,
+      "hash": "a9368448c08669a2",
+      "size_kb": 25.423828125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/ml_learning/optimizer.py",
+      "lines": 491,
+      "hash": "21f1e34768e3daa3",
+      "size_kb": 20.62890625
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/ml_learning/pattern_learner.py",
+      "lines": 531,
+      "hash": "c222300479467ec8",
+      "size_kb": 21.60546875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/prototype/trading_manager/integrated_swarm_manager.py",
+      "lines": 566,
+      "hash": "803bc6ec34ebb85b",
+      "size_kb": 20.13671875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/risk/dynamic_sizing.py",
+      "lines": 501,
+      "hash": "ca2168a7c25da74a",
+      "size_kb": 21.5830078125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/risk/oco_validator.py",
+      "lines": 469,
+      "hash": "a5710f1ee8025b6a",
+      "size_kb": 18.564453125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/risk/risk_control_center.py",
+      "lines": 451,
+      "hash": "f90a6c19d3c824cb",
+      "size_kb": 20.85546875
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/scripts/monitor_ghost_session.py",
+      "lines": 147,
+      "hash": "2cc3f093d9315560",
+      "size_kb": 4.9892578125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/scripts/oanda_paper.py",
+      "lines": 229,
+      "hash": "6adbec196be39227",
+      "size_kb": 8.8193359375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/swarm/swarm_bot.py",
+      "lines": 577,
+      "hash": "a62e79543a81cdb3",
+      "size_kb": 22.9365234375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/util/logging.py",
+      "lines": 58,
+      "hash": "b3279b80d965a0cc",
+      "size_kb": 1.912109375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/util/mode_manager.py",
+      "lines": 201,
+      "hash": "5f3bfd8379f0fead",
+      "size_kb": 5.7236328125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/util/narration_logger.py",
+      "lines": 190,
+      "hash": "ef85f848f072e6d4",
+      "size_kb": 5.2080078125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/util/timezone_manager.py",
+      "lines": 306,
+      "hash": "40cd6cf08b1ddfae",
+      "size_kb": 10.16015625
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/wolf_packs/_base.py",
+      "lines": 10,
+      "hash": "f5e20c77b8169966",
+      "size_kb": 0.21484375
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/wolf_packs/extracted_oanda.py",
+      "lines": 37,
+      "hash": "7ff563722389b95d",
+      "size_kb": 1.1611328125
+    },
+    {
+      "path": "RICK_LIVE_PROTOTYPE/wolf_packs/orchestrator.py",
+      "lines": 16,
+      "hash": "d785ba13fd672bf0",
+      "size_kb": 0.419921875
+    },
+    {
+      "path": "ROLLBACK_SNAPSHOTS/pre_restore_1761879894/bridges/oanda_charter_bridge.py",
+      "lines": 198,
+      "hash": "92c400956765c47b",
+      "size_kb": 7.4580078125
+    },
+    {
+      "path": "ROLLBACK_SNAPSHOTS/pre_restore_1761879894/bridges/oanda_live_bridge.py",
+      "lines": 227,
+      "hash": "5b383b06fa61c3c5",
+      "size_kb": 7.830078125
+    },
+    {
+      "path": "ROLLBACK_SNAPSHOTS/pre_restore_1761879894/institutional_charter_agent.py",
+      "lines": 714,
+      "hash": "ae787dc41e1e7c93",
+      "size_kb": 32.1162109375
+    },
+    {
+      "path": "ROLLBACK_SNAPSHOTS/pre_restore_1761879894/rick_charter.py",
+      "lines": 237,
+      "hash": "8c35699f2ad8ad75",
+      "size_kb": 9.9716796875
+    },
+    {
+      "path": "_archive_scripts/canary_trading_engine.py",
+      "lines": 282,
+      "hash": "e03fde4e13a88eb4",
+      "size_kb": 11.4287109375
+    },
+    {
+      "path": "_archive_scripts/check_ib_balance.py",
+      "lines": 54,
+      "hash": "9919ecf72978606d",
+      "size_kb": 1.544921875
+    },
+    {
+      "path": "_archive_scripts/launch_paper_trading.py",
+      "lines": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size_kb": 0.0
+    },
+    {
+      "path": "_archive_scripts/live_monitor.py",
+      "lines": 758,
+      "hash": "202464b5507a576b",
+      "size_kb": 28.720703125
+    },
+    {
+      "path": "_archive_scripts/market_data_diagnostic.py",
+      "lines": 88,
+      "hash": "fae0dab9a0fa75a8",
+      "size_kb": 3.064453125
+    },
+    {
+      "path": "_archive_scripts/multi_broker_engine.py",
+      "lines": 389,
+      "hash": "bde39e901dfe45e9",
+      "size_kb": 14.6396484375
+    },
+    {
+      "path": "_archive_scripts/rbotzilla_client.py",
+      "lines": 421,
+      "hash": "30f7e6c570e522e5",
+      "size_kb": 12.9306640625
+    },
+    {
+      "path": "_archive_scripts/rbotzilla_golden_age.py",
+      "lines": 1078,
+      "hash": "25a1f7cd93d1115c",
+      "size_kb": 42.3603515625
+    },
+    {
+      "path": "_archive_scripts/rbotzilla_golden_age_enhanced.py",
+      "lines": 395,
+      "hash": "122c7a6c6b853d79",
+      "size_kb": 13.384765625
+    },
+    {
+      "path": "_archive_scripts/rbotzilla_unified_10year_sim.py",
+      "lines": 588,
+      "hash": "a3912a63ab2a2444",
+      "size_kb": 20.7333984375
+    },
+    {
+      "path": "_archive_scripts/rick_deep_dive_analyzer.py",
+      "lines": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size_kb": 0.0
+    },
+    {
+      "path": "backend.py",
+      "lines": 644,
+      "hash": "5cf0a2a8a376fda0",
+      "size_kb": 21.7294921875
+    },
+    {
+      "path": "bridges/oanda_charter_bridge.py",
+      "lines": 198,
+      "hash": "92c400956765c47b",
+      "size_kb": 7.4580078125
+    },
+    {
+      "path": "bridges/oanda_live_bridge.py",
+      "lines": 232,
+      "hash": "b1b79cc0152291e5",
+      "size_kb": 8.0126953125
+    },
+    {
+      "path": "brokers/__init__.py",
+      "lines": 1,
+      "hash": "2682efef98657d80",
+      "size_kb": 0.0224609375
+    },
+    {
+      "path": "brokers/coinbase_connector.py",
+      "lines": 757,
+      "hash": "8916af4574e0e5c3",
+      "size_kb": 31.580078125
+    },
+    {
+      "path": "brokers/ib_connector.py",
+      "lines": 581,
+      "hash": "68b730c8b041ab5e",
+      "size_kb": 19.294921875
+    },
+    {
+      "path": "brokers/oanda_connector.py",
+      "lines": 848,
+      "hash": "962f1bd7c330ed6a",
+      "size_kb": 35.87109375
+    },
+    {
+      "path": "brokers/oanda_connector_enhanced.py",
+      "lines": 437,
+      "hash": "d709dd33b51d9cae",
+      "size_kb": 16.0927734375
+    },
+    {
+      "path": "brokers/oanda_connector_proto.py",
+      "lines": 778,
+      "hash": "c11370ccea3ac5cb",
+      "size_kb": 32.0947265625
+    },
+    {
+      "path": "canary_to_live.py",
+      "lines": 351,
+      "hash": "ef46dda3fbdaa172",
+      "size_kb": 14.0029296875
+    },
+    {
+      "path": "canary_trading_engine.py",
+      "lines": 282,
+      "hash": "e03fde4e13a88eb4",
+      "size_kb": 11.4287109375
+    },
+    {
+      "path": "canary_trading_engine_OLD_DEPRECATED.py",
+      "lines": 406,
+      "hash": "63a2a52d7f7d2dee",
+      "size_kb": 17.1640625
+    },
+    {
+      "path": "capital_manager.py",
+      "lines": 232,
+      "hash": "d22ccb439016e3fc",
+      "size_kb": 9.296875
+    },
+    {
+      "path": "check_ib_balance.py",
+      "lines": 55,
+      "hash": "3aa073e86aea8c67",
+      "size_kb": 1.57421875
+    },
+    {
+      "path": "check_integrity.py",
+      "lines": 53,
+      "hash": "4e357a519672d281",
+      "size_kb": 1.533203125
+    },
+    {
+      "path": "check_portfolio.py",
+      "lines": 106,
+      "hash": "55d5da0aed4a240a",
+      "size_kb": 3.255859375
+    },
+    {
+      "path": "compare_golden_age_tests.py",
+      "lines": 381,
+      "hash": "216494c5e14b377b",
+      "size_kb": 13.2431640625
+    },
+    {
+      "path": "connectors/free_market_data.py",
+      "lines": 330,
+      "hash": "26ea5267bbb66128",
+      "size_kb": 11.15625
+    },
+    {
+      "path": "connectors/futures/__init__.py",
+      "lines": 8,
+      "hash": "48e67c62127dd885",
+      "size_kb": 0.251953125
+    },
+    {
+      "path": "connectors/futures/futures_engine.py",
+      "lines": 158,
+      "hash": "ac61ac01bc791fe7",
+      "size_kb": 5.583984375
+    },
+    {
+      "path": "connectors/futures/leverage_calculator.py",
+      "lines": 102,
+      "hash": "34bd102716438441",
+      "size_kb": 3.994140625
+    },
+    {
+      "path": "connectors/futures/venue_manager.py",
+      "lines": 207,
+      "hash": "1b9522de4b346855",
+      "size_kb": 7.591796875
+    },
+    {
+      "path": "connectors/yahoo_cryptopanic_connector.py",
+      "lines": 281,
+      "hash": "f9682d0b88db8e44",
+      "size_kb": 9.1953125
+    },
+    {
+      "path": "dashboard.py",
+      "lines": 510,
+      "hash": "221cea3581d7cd87",
+      "size_kb": 16.1650390625
+    },
+    {
+      "path": "dashboard/app.py",
+      "lines": 1876,
+      "hash": "ff78a1b543982317",
+      "size_kb": 74.3896484375
+    },
+    {
+      "path": "dashboard/app_enhanced.py",
+      "lines": 242,
+      "hash": "9a4adc3561df229d",
+      "size_kb": 9.353515625
+    },
+    {
+      "path": "dashboard/generate_dashboard.py",
+      "lines": 294,
+      "hash": "922a350205ed4f32",
+      "size_kb": 10.3564453125
+    },
+    {
+      "path": "dashboard/websocket_server.py",
+      "lines": 132,
+      "hash": "80ffe28164a948b4",
+      "size_kb": 4.6865234375
+    },
+    {
+      "path": "dashboard_supervisor.py",
+      "lines": 330,
+      "hash": "23c89c10d01d2073",
+      "size_kb": 14.44921875
+    },
+    {
+      "path": "deploy_institutional_charter.py",
+      "lines": 50,
+      "hash": "3268e666d99fb5c6",
+      "size_kb": 1.544921875
+    },
+    {
+      "path": "deploy_rick_paper.py",
+      "lines": 274,
+      "hash": "1953d9cd921ad5ad",
+      "size_kb": 8.7021484375
+    },
+    {
+      "path": "dev_candidates/rick_extracted/enhanced_rick_engine.py",
+      "lines": 491,
+      "hash": "3503cad6c491aa38",
+      "size_kb": 19.3505859375
+    },
+    {
+      "path": "dev_candidates/rick_extracted/progress_manager.py",
+      "lines": 264,
+      "hash": "13700b449c052d21",
+      "size_kb": 9.529296875
+    },
+    {
+      "path": "dev_candidates/rick_extracted/rbotzilla_10year_engine.py",
+      "lines": 724,
+      "hash": "7576ee99d2710724",
+      "size_kb": 28.2236328125
+    },
+    {
+      "path": "dev_candidates/rick_extracted/rbotzilla_aggressive_engine.py",
+      "lines": 511,
+      "hash": "c60ddfe741c23fc9",
+      "size_kb": 20.3974609375
+    },
+    {
+      "path": "dev_candidates/rick_extracted/rbotzilla_deposits_10year.py",
+      "lines": 777,
+      "hash": "39ff803929e7aaa0",
+      "size_kb": 28.9794921875
+    },
+    {
+      "path": "dev_candidates/rick_extracted/rbotzilla_golden_age.py",
+      "lines": 1078,
+      "hash": "25a1f7cd93d1115c",
+      "size_kb": 42.3603515625
+    },
+    {
+      "path": "dev_candidates/rick_extracted/rbotzilla_momentum_trailing.py",
+      "lines": 572,
+      "hash": "633958a61cf646c4",
+      "size_kb": 21.7587890625
+    },
+    {
+      "path": "dev_candidates/rick_extracted/rick_charter.py",
+      "lines": 176,
+      "hash": "5e98fb28c24decaa",
+      "size_kb": 6.7255859375
+    },
+    {
+      "path": "dev_candidates/rick_extracted/stochastic_engine.py",
+      "lines": 358,
+      "hash": "7e093f83fc411c43",
+      "size_kb": 12.9033203125
+    },
+    {
+      "path": "discover_available_data.py",
+      "lines": 128,
+      "hash": "f2ff3bc65797155e",
+      "size_kb": 4.2939453125
+    },
+    {
+      "path": "enhanced_rick_engine.py",
+      "lines": 469,
+      "hash": "e50c42563c579a05",
+      "size_kb": 18.6416015625
+    },
+    {
+      "path": "foundation/__init__.py",
+      "lines": 1,
+      "hash": "42fc4f54d78efe55",
+      "size_kb": 0.025390625
+    },
+    {
+      "path": "foundation/autonomous_charter.py",
+      "lines": 367,
+      "hash": "db9428e559a6259f",
+      "size_kb": 14.841796875
+    },
+    {
+      "path": "foundation/margin_correlation_gate.py",
+      "lines": 487,
+      "hash": "0b7bd528f98fb0d6",
+      "size_kb": 16.3154296875
+    },
+    {
+      "path": "foundation/multi_timeframe.py",
+      "lines": 40,
+      "hash": "113e60a2adbf73c8",
+      "size_kb": 1.6611328125
+    },
+    {
+      "path": "foundation/progress.py",
+      "lines": 377,
+      "hash": "4d0db29ff38a8dbe",
+      "size_kb": 13.8115234375
+    },
+    {
+      "path": "foundation/rick_charter.py",
+      "lines": 241,
+      "hash": "4187883f6b213817",
+      "size_kb": 10.208984375
+    },
+    {
+      "path": "ghost_trading_charter_compliant.py",
+      "lines": 651,
+      "hash": "de2381c4f229415a",
+      "size_kb": 27.3623046875
+    },
+    {
+      "path": "ghost_trading_engine.py",
+      "lines": 381,
+      "hash": "1162e58c1cc2295a",
+      "size_kb": 14.76171875
+    },
+    {
+      "path": "hive/__init__.py",
+      "lines": 1,
+      "hash": "f1f80e7b402cc234",
+      "size_kb": 0.01953125
+    },
+    {
+      "path": "hive/adaptive_rick.py",
+      "lines": 398,
+      "hash": "a80134fc34fe7708",
+      "size_kb": 14.2890625
+    },
+    {
+      "path": "hive/browser_ai_connector.py",
+      "lines": 556,
+      "hash": "e6abbe82f235220e",
+      "size_kb": 20.7265625
+    },
+    {
+      "path": "hive/crypto_entry_gate_system.py",
+      "lines": 550,
+      "hash": "7d12daf003ca085c",
+      "size_kb": 22.478515625
+    },
+    {
+      "path": "hive/guardian_gates.py",
+      "lines": 225,
+      "hash": "f8ea949e8c951e6b",
+      "size_kb": 7.7255859375
+    },
+    {
+      "path": "hive/hive_mind_processor.py",
+      "lines": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size_kb": 0.0
+    },
+    {
+      "path": "hive/quant_hedge_rules.py",
+      "lines": 620,
+      "hash": "3b4cbe14d24b173b",
+      "size_kb": 22.5595703125
+    },
+    {
+      "path": "hive/rick_hive_browser.py",
+      "lines": 357,
+      "hash": "58dcef927f28c827",
+      "size_kb": 12.4228515625
+    },
+    {
+      "path": "hive/rick_hive_mind.py",
+      "lines": 118,
+      "hash": "55ec44c035b54d35",
+      "size_kb": 3.9482421875
+    },
+    {
+      "path": "hive/rick_local_ai.py",
+      "lines": 233,
+      "hash": "c781ad4cdda000b9",
+      "size_kb": 8.0205078125
+    },
+    {
+      "path": "institutional_charter_agent.py",
+      "lines": 714,
+      "hash": "ae787dc41e1e7c93",
+      "size_kb": 32.1162109375
+    },
+    {
+      "path": "integrated_wolf_engine.py",
+      "lines": 462,
+      "hash": "aba3619c37fd194c",
+      "size_kb": 16.544921875
+    },
+    {
+      "path": "launch_paper_trading.py",
+      "lines": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size_kb": 0.0
+    },
+    {
+      "path": "live_ghost_engine.py",
+      "lines": 362,
+      "hash": "b7f61a1cb1cf3bbb",
+      "size_kb": 14.1396484375
+    },
+    {
+      "path": "live_monitor.py",
+      "lines": 758,
+      "hash": "202464b5507a576b",
+      "size_kb": 28.720703125
+    },
+    {
+      "path": "load_env.py",
+      "lines": 62,
+      "hash": "49ab0b84db44fcdf",
+      "size_kb": 2.072265625
+    },
+    {
+      "path": "logic/__init__.py",
+      "lines": 1,
+      "hash": "63340b36df177b7c",
+      "size_kb": 0.0205078125
+    },
+    {
+      "path": "logic/regime_detector.py",
+      "lines": 184,
+      "hash": "4c381a8595de65a7",
+      "size_kb": 6.529296875
+    },
+    {
+      "path": "logic/smart_logic.py",
+      "lines": 824,
+      "hash": "62dbdfe19ca5b4f4",
+      "size_kb": 32.0068359375
+    },
+    {
+      "path": "market_data_diagnostic.py",
+      "lines": 89,
+      "hash": "3490baf08ae8c6f5",
+      "size_kb": 3.09375
+    },
+    {
+      "path": "ml_learning/ml_models.py",
+      "lines": 633,
+      "hash": "a9368448c08669a2",
+      "size_kb": 25.423828125
+    },
+    {
+      "path": "ml_learning/optimizer.py",
+      "lines": 491,
+      "hash": "21f1e34768e3daa3",
+      "size_kb": 20.62890625
+    },
+    {
+      "path": "ml_learning/pattern_learner.py",
+      "lines": 531,
+      "hash": "c222300479467ec8",
+      "size_kb": 21.60546875
+    },
+    {
+      "path": "monitor_3h_checkpoint.py",
+      "lines": 256,
+      "hash": "3a1f27b7a49092c5",
+      "size_kb": 10.462890625
+    },
+    {
+      "path": "multi_broker_engine.py",
+      "lines": 389,
+      "hash": "bde39e901dfe45e9",
+      "size_kb": 14.6396484375
+    },
+    {
+      "path": "oanda_swing_paper_trading.py",
+      "lines": 521,
+      "hash": "eba729119f06831e",
+      "size_kb": 21.6064453125
+    },
+    {
+      "path": "oanda_trading_engine.py",
+      "lines": 1752,
+      "hash": "54d6341fd4a9a205",
+      "size_kb": 79.736328125
+    },
+    {
+      "path": "oanda_trading_engine_proto.py",
+      "lines": 1388,
+      "hash": "38ee43a77aacaa18",
+      "size_kb": 61.3818359375
+    },
+    {
+      "path": "progress_manager.py",
+      "lines": 217,
+      "hash": "315a2db3271c79d9",
+      "size_kb": 7.8779296875
+    },
+    {
+      "path": "rbot_arena/backend/app/__init__.py",
+      "lines": 1,
+      "hash": "cf5949d54aab04fc",
+      "size_kb": 0.021484375
+    },
+    {
+      "path": "rbot_arena/backend/app/agents/__init__.py",
+      "lines": 1,
+      "hash": "63e6f1ba81e8b9f0",
+      "size_kb": 0.0166015625
+    },
+    {
+      "path": "rbot_arena/backend/app/agents/mock_emit.py",
+      "lines": 53,
+      "hash": "33cadb675577c2d8",
+      "size_kb": 1.4814453125
+    },
+    {
+      "path": "rbot_arena/backend/app/auth/__init__.py",
+      "lines": 1,
+      "hash": "aff78e52fb8e0089",
+      "size_kb": 0.025390625
+    },
+    {
+      "path": "rbot_arena/backend/app/auth/jwt.py",
+      "lines": 76,
+      "hash": "b74a5e161987cc16",
+      "size_kb": 2.7421875
+    },
+    {
+      "path": "rbot_arena/backend/app/core/__init__.py",
+      "lines": 1,
+      "hash": "196466b5894c33fe",
+      "size_kb": 0.015625
+    },
+    {
+      "path": "rbot_arena/backend/app/core/bus.py",
+      "lines": 44,
+      "hash": "8bbe3b6d9a98a20b",
+      "size_kb": 1.2578125
+    },
+    {
+      "path": "rbot_arena/backend/app/core/quality.py",
+      "lines": 46,
+      "hash": "5ffdf1ffaba2c8b4",
+      "size_kb": 1.4287109375
+    },
+    {
+      "path": "rbot_arena/backend/app/core/schema.py",
+      "lines": 17,
+      "hash": "c019cc4a2ca382cf",
+      "size_kb": 0.556640625
+    },
+    {
+      "path": "rbot_arena/backend/app/core/tech.py",
+      "lines": 21,
+      "hash": "bb8261a5e1d53a37",
+      "size_kb": 0.5595703125
+    },
+    {
+      "path": "rbot_arena/backend/app/main.py",
+      "lines": 71,
+      "hash": "7af0c575cb2db86b",
+      "size_kb": 2.1650390625
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/__init__.py",
+      "lines": 1,
+      "hash": "51a5cd05f135de31",
+      "size_kb": 0.0146484375
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/auth_router.py",
+      "lines": 48,
+      "hash": "5b9302ff42ceddc7",
+      "size_kb": 1.7177734375
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/brokers_coinbase.py",
+      "lines": 37,
+      "hash": "a891aea5b0903c1b",
+      "size_kb": 1.59765625
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/brokers_coinbase_advanced.py",
+      "lines": 252,
+      "hash": "3bc1baeb94b7c882",
+      "size_kb": 9.560546875
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/brokers_oanda.py",
+      "lines": 57,
+      "hash": "429c9e6f9f1adfee",
+      "size_kb": 2.1396484375
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/brokers_oanda_orders.py",
+      "lines": 200,
+      "hash": "211ebfbf4d6bfb3c",
+      "size_kb": 7.27734375
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/llm_router.py",
+      "lines": 48,
+      "hash": "75ad7b7f49bc17c4",
+      "size_kb": 1.6171875
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/openalgo.py",
+      "lines": 58,
+      "hash": "fc7b777b31da4d31",
+      "size_kb": 2.2294921875
+    },
+    {
+      "path": "rbot_arena/backend/app/routers/orders.py",
+      "lines": 51,
+      "hash": "3dd34425ffe64f05",
+      "size_kb": 1.7705078125
+    },
+    {
+      "path": "rbot_arena/backend/run.py",
+      "lines": 37,
+      "hash": "6134aeb61a3cd3ba",
+      "size_kb": 1.0986328125
+    },
+    {
+      "path": "rbotzilla_client.py",
+      "lines": 421,
+      "hash": "30f7e6c570e522e5",
+      "size_kb": 12.9306640625
+    },
+    {
+      "path": "rbotzilla_golden_age.py",
+      "lines": 1078,
+      "hash": "25a1f7cd93d1115c",
+      "size_kb": 42.3603515625
+    },
+    {
+      "path": "rbotzilla_golden_age_enhanced.py",
+      "lines": 395,
+      "hash": "122c7a6c6b853d79",
+      "size_kb": 13.384765625
+    },
+    {
+      "path": "rbotzilla_unified_10year_sim.py",
+      "lines": 588,
+      "hash": "a3912a63ab2a2444",
+      "size_kb": 20.7333984375
+    },
+    {
+      "path": "rick_charter.py",
+      "lines": 7,
+      "hash": "68136bf08065de73",
+      "size_kb": 0.2275390625
+    },
+    {
+      "path": "rick_deep_dive_analyzer.py",
+      "lines": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size_kb": 0.0
+    },
+    {
+      "path": "rick_institutional_full.py",
+      "lines": 547,
+      "hash": "2c4ae716d4f83e86",
+      "size_kb": 22.6123046875
+    },
+    {
+      "path": "rick_trading_engine.py",
+      "lines": 406,
+      "hash": "63a2a52d7f7d2dee",
+      "size_kb": 17.1640625
+    },
+    {
+      "path": "risk/correlation_monitor.py",
+      "lines": 590,
+      "hash": "ae136fb1acba83e7",
+      "size_kb": 25.1962890625
+    },
+    {
+      "path": "risk/dynamic_sizing.py",
+      "lines": 501,
+      "hash": "ca2168a7c25da74a",
+      "size_kb": 21.5830078125
+    },
+    {
+      "path": "risk/oco_integration_example.py",
+      "lines": 312,
+      "hash": "38e8dff908fb75b3",
+      "size_kb": 11.1259765625
+    },
+    {
+      "path": "risk/oco_validator.py",
+      "lines": 469,
+      "hash": "a5710f1ee8025b6a",
+      "size_kb": 18.564453125
+    },
+    {
+      "path": "risk/phase_14_completion_report.py",
+      "lines": 175,
+      "hash": "aa0c8162c083701d",
+      "size_kb": 7.89453125
+    },
+    {
+      "path": "risk/risk_control_center.py",
+      "lines": 451,
+      "hash": "f90a6c19d3c824cb",
+      "size_kb": 20.85546875
+    },
+    {
+      "path": "risk/session_breaker.py",
+      "lines": 533,
+      "hash": "4fc2955e54614768",
+      "size_kb": 20.7919921875
+    },
+    {
+      "path": "risk/session_breaker_integration.py",
+      "lines": 350,
+      "hash": "30129e9a0e289f79",
+      "size_kb": 13.4931640625
+    },
+    {
+      "path": "runtime_guard/sitecustomize.py",
+      "lines": 272,
+      "hash": "089d81ad95d1942b",
+      "size_kb": 11.529296875
+    },
+    {
+      "path": "scripts/ask_rick.py",
+      "lines": 16,
+      "hash": "ee0ea15c7c9b87d4",
+      "size_kb": 0.59765625
+    },
+    {
+      "path": "scripts/coinbase_sandbox.py",
+      "lines": 70,
+      "hash": "20c0f8f16e4e04a0",
+      "size_kb": 2.1123046875
+    },
+    {
+      "path": "scripts/compare_charter_results.py",
+      "lines": 163,
+      "hash": "b0c9c470eed68955",
+      "size_kb": 6.8330078125
+    },
+    {
+      "path": "scripts/compare_performance.py",
+      "lines": 287,
+      "hash": "03a282044ea59934",
+      "size_kb": 11.95703125
+    },
+    {
+      "path": "scripts/compile_active_components.py",
+      "lines": 586,
+      "hash": "f6f62299901ffd84",
+      "size_kb": 23.1962890625
+    },
+    {
+      "path": "scripts/enforce_immutability.py",
+      "lines": 458,
+      "hash": "e2f11cd33e51dfb1",
+      "size_kb": 16.494140625
+    },
+    {
+      "path": "scripts/generate_blueprint.py",
+      "lines": 398,
+      "hash": "b22504acbe73f911",
+      "size_kb": 15.9443359375
+    },
+    {
+      "path": "scripts/initialize_progress.py",
+      "lines": 219,
+      "hash": "1e30f60b6eff04c7",
+      "size_kb": 8.1845703125
+    },
+    {
+      "path": "scripts/monitor_ghost_session.py",
+      "lines": 147,
+      "hash": "31f481ec1fad53a8",
+      "size_kb": 4.9892578125
+    },
+    {
+      "path": "scripts/oanda_paper.py",
+      "lines": 229,
+      "hash": "6adbec196be39227",
+      "size_kb": 8.8193359375
+    },
+    {
+      "path": "scripts/test_intelligence_stack.py",
+      "lines": 342,
+      "hash": "4fadc71bc682a8ef",
+      "size_kb": 13.3388671875
+    },
+    {
+      "path": "sentinel_mode.py",
+      "lines": 450,
+      "hash": "5c7e9f986d6bd4a6",
+      "size_kb": 16.9892578125
+    },
+    {
+      "path": "services/load_env.py",
+      "lines": 57,
+      "hash": "e0c67a4afa177203",
+      "size_kb": 1.6298828125
+    },
+    {
+      "path": "services/market_data_api.py",
+      "lines": 233,
+      "hash": "f797a9f37085240a",
+      "size_kb": 7.7578125
+    },
+    {
+      "path": "setup_personal_accounts.py",
+      "lines": 258,
+      "hash": "862fd54078ea318b",
+      "size_kb": 9.18359375
+    },
+    {
+      "path": "show_endpoint_status.py",
+      "lines": 222,
+      "hash": "af61009873a451ab",
+      "size_kb": 7.705078125
+    },
+    {
+      "path": "show_golden_age_results.py",
+      "lines": 71,
+      "hash": "8e00ca74c20aa662",
+      "size_kb": 3.03125
+    },
+    {
+      "path": "status_report.py",
+      "lines": 185,
+      "hash": "979b4d40ec74969d",
+      "size_kb": 4.978515625
+    },
+    {
+      "path": "stochastic_engine.py",
+      "lines": 296,
+      "hash": "3ea506e0426b76ca",
+      "size_kb": 10.318359375
+    },
+    {
+      "path": "strategies/__init__.py",
+      "lines": 1,
+      "hash": "1cae3c0403a86526",
+      "size_kb": 0.025390625
+    },
+    {
+      "path": "strategies/bearish_wolf.py",
+      "lines": 488,
+      "hash": "8371990eb9929348",
+      "size_kb": 18.5908203125
+    },
+    {
+      "path": "strategies/bullish_wolf.py",
+      "lines": 464,
+      "hash": "93fbf2722058ecfb",
+      "size_kb": 17.2509765625
+    },
+    {
+      "path": "strategies/sideways_wolf.py",
+      "lines": 561,
+      "hash": "acaea9b8769acbd4",
+      "size_kb": 21.9619140625
+    },
+    {
+      "path": "swarm/swarm_bot.py",
+      "lines": 577,
+      "hash": "a62e79543a81cdb3",
+      "size_kb": 22.9365234375
+    },
+    {
+      "path": "systems/__init__.py",
+      "lines": 1,
+      "hash": "4fb54df556bb92db",
+      "size_kb": 0.0224609375
+    },
+    {
+      "path": "systems/momentum_signals.py",
+      "lines": 57,
+      "hash": "2cfd5c1630990e87",
+      "size_kb": 1.78125
+    },
+    {
+      "path": "temp_extracted_data/deploy_rick_paper.py",
+      "lines": 1,
+      "hash": "60e236364629ebc8",
+      "size_kb": 0.0595703125
+    },
+    {
+      "path": "temp_extracted_data/show_endpoint_status.py",
+      "lines": 1,
+      "hash": "bcb38b9918c4c095",
+      "size_kb": 0.0625
+    },
+    {
+      "path": "temp_extracted_data/test_futures_historical_data.py",
+      "lines": 1,
+      "hash": "588cf73dd777a431",
+      "size_kb": 0.0703125
+    },
+    {
+      "path": "temp_extracted_data/test_historical_data_api.py",
+      "lines": 1,
+      "hash": "f6de4eda2df01428",
+      "size_kb": 0.06640625
+    },
+    {
+      "path": "temp_extracted_data/test_market_data_permissions.py",
+      "lines": 1,
+      "hash": "77e705fa6e23141c",
+      "size_kb": 0.0703125
+    },
+    {
+      "path": "temp_gather_rick_intelligence.py",
+      "lines": 35,
+      "hash": "ea2e22e8f948b5a2",
+      "size_kb": 1.328125
+    },
+    {
+      "path": "test_all_endpoints.py",
+      "lines": 244,
+      "hash": "f86159e790adf702",
+      "size_kb": 8.4931640625
+    },
+    {
+      "path": "test_candle_parsing.py",
+      "lines": 78,
+      "hash": "7ee86a6cc172ce8e",
+      "size_kb": 2.2080078125
+    },
+    {
+      "path": "test_coinbase_live_verification.py",
+      "lines": 174,
+      "hash": "51c3a85e8f4d9a0b",
+      "size_kb": 6.3779296875
+    },
+    {
+      "path": "test_correct_symbols.py",
+      "lines": 159,
+      "hash": "95dd51770bfdd65c",
+      "size_kb": 5.2685546875
+    },
+    {
+      "path": "test_critical_fixes.py",
+      "lines": 132,
+      "hash": "02788c092912ebf5",
+      "size_kb": 4.439453125
+    },
+    {
+      "path": "test_forex_crypto_data.py",
+      "lines": 138,
+      "hash": "c1a8a854bd944aa4",
+      "size_kb": 4.3056640625
+    },
+    {
+      "path": "test_futures_historical_data.py",
+      "lines": 203,
+      "hash": "6344aea5374b816c",
+      "size_kb": 7.17578125
+    },
+    {
+      "path": "test_ghost_trading.py",
+      "lines": 244,
+      "hash": "a05df32cf729ab7d",
+      "size_kb": 8.5771484375
+    },
+    {
+      "path": "test_historical_data_api.py",
+      "lines": 292,
+      "hash": "2f8ebce5cfe2917e",
+      "size_kb": 9.1689453125
+    },
+    {
+      "path": "test_integration.py",
+      "lines": 238,
+      "hash": "b3836e561f30ed95",
+      "size_kb": 6.6962890625
+    },
+    {
+      "path": "test_live_data_verification.py",
+      "lines": 141,
+      "hash": "9179c954eb40b06d",
+      "size_kb": 4.908203125
+    },
+    {
+      "path": "test_live_market_data.py",
+      "lines": 70,
+      "hash": "be12e1a4a594b957",
+      "size_kb": 2.23046875
+    },
+    {
+      "path": "test_market_data_permissions.py",
+      "lines": 114,
+      "hash": "2bb97a9d298fac23",
+      "size_kb": 3.7138671875
+    },
+    {
+      "path": "test_narration.py",
+      "lines": 95,
+      "hash": "3632bd70f53b3ca9",
+      "size_kb": 2.8212890625
+    },
+    {
+      "path": "test_oanda_enhanced.py",
+      "lines": 128,
+      "hash": "e1bd891d5a59866c",
+      "size_kb": 4.353515625
+    },
+    {
+      "path": "test_oanda_paper.py",
+      "lines": 99,
+      "hash": "ab23915c4194e071",
+      "size_kb": 3.099609375
+    },
+    {
+      "path": "test_oanda_paper_trading.py",
+      "lines": 139,
+      "hash": "2f6d1907245b9edc",
+      "size_kb": 4.90234375
+    },
+    {
+      "path": "test_parameter_manager.py",
+      "lines": 66,
+      "hash": "9b67b095a0e98a16",
+      "size_kb": 2.3427734375
+    },
+    {
+      "path": "test_simple.py",
+      "lines": 77,
+      "hash": "fedb89e8a87aa9c0",
+      "size_kb": 2.4287109375
+    },
+    {
+      "path": "test_trademanager_integration.py",
+      "lines": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size_kb": 0.0
+    },
+    {
+      "path": "trading_engine.py",
+      "lines": 161,
+      "hash": "a38c7cc41a4a1ba6",
+      "size_kb": 5.6201171875
+    },
+    {
+      "path": "unified_system_test.py",
+      "lines": 501,
+      "hash": "70221030afa753c6",
+      "size_kb": 18.6982421875
+    },
+    {
+      "path": "unified_system_v1.0/momentum_trailing.py",
+      "lines": 207,
+      "hash": "e24614660a768061",
+      "size_kb": 7.681640625
+    },
+    {
+      "path": "unified_system_v1.0/oanda_connector.py",
+      "lines": 744,
+      "hash": "619019c824905520",
+      "size_kb": 30.654296875
+    },
+    {
+      "path": "unified_system_v1.0/oanda_trading_engine.py",
+      "lines": 919,
+      "hash": "da03f62056da7b11",
+      "size_kb": 40.462890625
+    },
+    {
+      "path": "unified_system_v1.0/rick_charter.py",
+      "lines": 378,
+      "hash": "51f8192fe593a18b",
+      "size_kb": 17.140625
+    },
+    {
+      "path": "util/__init__.py",
+      "lines": 1,
+      "hash": "e9b3093c3c1299d6",
+      "size_kb": 0.01953125
+    },
+    {
+      "path": "util/alert_notifier.py",
+      "lines": 208,
+      "hash": "45c5e5c467396449",
+      "size_kb": 6.8125
+    },
+    {
+      "path": "util/breakpoint_audit.py",
+      "lines": 84,
+      "hash": "34df4ec1da93b4c9",
+      "size_kb": 2.658203125
+    },
+    {
+      "path": "util/correlation_monitor.py",
+      "lines": 590,
+      "hash": "ae136fb1acba83e7",
+      "size_kb": 25.1962890625
+    },
+    {
+      "path": "util/dual_connector.py",
+      "lines": 291,
+      "hash": "f4c587fb25498782",
+      "size_kb": 10.595703125
+    },
+    {
+      "path": "util/market_hours_manager.py",
+      "lines": 446,
+      "hash": "cf34ccc543f07b27",
+      "size_kb": 15.5126953125
+    },
+    {
+      "path": "util/mode_manager.py",
+      "lines": 224,
+      "hash": "c19c9024db152df4",
+      "size_kb": 6.3974609375
+    },
+    {
+      "path": "util/momentum_trailing.py",
+      "lines": 207,
+      "hash": "e24614660a768061",
+      "size_kb": 7.681640625
+    },
+    {
+      "path": "util/narration_logger.py",
+      "lines": 190,
+      "hash": "e30a03a790cf72d5",
+      "size_kb": 5.2705078125
+    },
+    {
+      "path": "util/optimizer.py",
+      "lines": 491,
+      "hash": "21f1e34768e3daa3",
+      "size_kb": 20.62890625
+    },
+    {
+      "path": "util/parameter_manager.py",
+      "lines": 188,
+      "hash": "ed435a7258a9d68f",
+      "size_kb": 8.7060546875
+    },
+    {
+      "path": "util/progress_tracker.py",
+      "lines": 415,
+      "hash": "e46a707f7b1ee8f7",
+      "size_kb": 13.7802734375
+    },
+    {
+      "path": "util/quant_hedge_engine.py",
+      "lines": 286,
+      "hash": "8450e32858b74a84",
+      "size_kb": 9.5009765625
+    },
+    {
+      "path": "util/retry.py",
+      "lines": 33,
+      "hash": "fb44f16a1767a73c",
+      "size_kb": 1.2216796875
+    },
+    {
+      "path": "util/rick_live_monitor.py",
+      "lines": 355,
+      "hash": "a40817d49ef46f82",
+      "size_kb": 13.4326171875
+    },
+    {
+      "path": "util/rick_logging.py",
+      "lines": 58,
+      "hash": "b3279b80d965a0cc",
+      "size_kb": 1.912109375
+    },
+    {
+      "path": "util/rick_narrator.py",
+      "lines": 403,
+      "hash": "e6b8353b0d35625b",
+      "size_kb": 14.64453125
+    },
+    {
+      "path": "util/rick_process_narrator.py",
+      "lines": 339,
+      "hash": "062e413def263dd0",
+      "size_kb": 13.1806640625
+    },
+    {
+      "path": "util/strategy_aggregator.py",
+      "lines": 402,
+      "hash": "6140d9cfc86d292d",
+      "size_kb": 15.955078125
+    },
+    {
+      "path": "util/system_mapper.py",
+      "lines": 540,
+      "hash": "f41beb0da7f4f1a1",
+      "size_kb": 19.6259765625
+    },
+    {
+      "path": "util/terminal_display.py",
+      "lines": 295,
+      "hash": "f4df740fedfcb1d4",
+      "size_kb": 10.0634765625
+    },
+    {
+      "path": "util/timezone_manager.py",
+      "lines": 306,
+      "hash": "40cd6cf08b1ddfae",
+      "size_kb": 10.16015625
+    },
+    {
+      "path": "util/usd_converter.py",
+      "lines": 69,
+      "hash": "e862d9c4083a702a",
+      "size_kb": 2.3642578125
+    },
+    {
+      "path": "verify_all_endpoints.py",
+      "lines": 240,
+      "hash": "0beadc2b350d0cd8",
+      "size_kb": 9.1181640625
+    },
+    {
+      "path": "verify_brokers.py",
+      "lines": 109,
+      "hash": "1daa662ef031e34f",
+      "size_kb": 3.0732421875
+    },
+    {
+      "path": "verify_system.py",
+      "lines": 162,
+      "hash": "34f360ede214d31b",
+      "size_kb": 4.8095703125
+    },
+    {
+      "path": "wolf_packs/__init__.py",
+      "lines": 7,
+      "hash": "c1bccfd254040842",
+      "size_kb": 0.1142578125
+    },
+    {
+      "path": "wolf_packs/_base.py",
+      "lines": 10,
+      "hash": "f5e20c77b8169966",
+      "size_kb": 0.21484375
+    },
+    {
+      "path": "wolf_packs/extracted_oanda.py",
+      "lines": 37,
+      "hash": "7ff563722389b95d",
+      "size_kb": 1.1611328125
+    },
+    {
+      "path": "wolf_packs/orchestrator.py",
+      "lines": 16,
+      "hash": "d785ba13fd672bf0",
+      "size_kb": 0.419921875
+    },
+    {
+      "path": "wolf_packs/stochastic_config.py",
+      "lines": 47,
+      "hash": "3cbb6953d7d96c8a",
+      "size_kb": 1.2900390625
+    }
+  ]
+}

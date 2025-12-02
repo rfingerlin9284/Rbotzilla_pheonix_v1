@@ -1,0 +1,66 @@
+{
+  "backtest_config": {
+    "initial_capital": 5000.0,
+    "monthly_deposit": 1000.0,
+    "period_days": 365,
+    "charter_max_positions": 12,
+    "charter_max_margin": 0.7,
+    "trading_fee_pct": 0.0008
+  },
+  "platform_results": {
+    "OANDA_Forex": {
+      "category": "OANDA_Forex",
+      "total_trades": 1278,
+      "win_rate": 5.164319248826291,
+      "total_pnl": -3126.129991067975,
+      "avg_win": 0.1481552551258902,
+      "avg_loss": -2.587383034576142,
+      "max_drawdown": 62.52259982135938,
+      "sharpe_ratio": -28.079622122619618,
+      "profit_factor": 0.003118154644996017,
+      "final_capital": 1873.8700089320307
+    },
+    "Coinbase_Crypto_Spot": {
+      "category": "Coinbase_Crypto_Spot",
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "profit_factor": 0,
+      "final_capital": 1873.8700089320307
+    },
+    "Crypto_Futures": {
+      "category": "Crypto_Futures",
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "profit_factor": 0,
+      "final_capital": 1873.8700089320307
+    }
+  },
+  "global_results": {
+    "category": "GLOBAL",
+    "total_trades": 1278,
+    "win_rate": 5.164319248826291,
+    "total_pnl": -3126.129991067975,
+    "avg_win": 0.1481552551258902,
+    "avg_loss": -2.587383034576142,
+    "max_drawdown": 62.52259982135938,
+    "sharpe_ratio": -28.079622122619618,
+    "profit_factor": 0.003118154644996017,
+    "final_capital": 14040.536675598696
+  },
+  "final_capital": 14040.536675598696,
+  "total_invested": 17166.666666666664,
+  "net_profit": -3126.12999106797,
+  "roi_pct": -18.210465967386234,
+  "hivemind_integrated": true,
+  "wolfpack_integrated": true
+}

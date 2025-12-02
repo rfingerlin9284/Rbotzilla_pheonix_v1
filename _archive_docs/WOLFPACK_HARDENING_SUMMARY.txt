@@ -1,0 +1,263 @@
+#!/bin/bash
+cat << 'BANNER'
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║           🔒 WOLFPACK AUTONOMY HARDENING - DEPLOYMENT COMPLETE 🔒           ║
+║                                                                              ║
+║              Position Guardian Is Now First-Class System Component           ║
+║                    (Non-Bypassable • Always-On • Orchestration-Aware)        ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  ✅ THREE-LAYER HARDENING SYSTEM BUILT                                      ║
+║  ════════════════════════════════════════                                   ║
+║                                                                              ║
+║  Layer 1: Non-Bypassable Order Path                                         ║
+║  ─────────────────────────────────────                                      ║
+║  All orders MUST use: ~/.local/bin/trade                                    ║
+║  Cannot call broker APIs directly                                           ║
+║  Every order passes through Position Guardian gate                          ║
+║                                                                              ║
+║  Layer 2: Always-On Guardian Daemon                                         ║
+║  ──────────────────────────────────                                         ║
+║  Systemd service: position-guardian.service                                 ║
+║  Auto-restart on crash (Restart=always)                                     ║
+║  Boot-persistent (enabled + linger)                                         ║
+║  No terminal required (user-level systemd)                                  ║
+║                                                                              ║
+║  Layer 3: Live Pointers Feed                                                ║
+║  ──────────────────────────────                                             ║
+║  File: /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json                ║
+║  Refresh: Every 15 seconds (systemd timer)                                  ║
+║  Content: Account state + guardian-computed actions                         ║
+║  Format: Machine-readable JSON for orchestrators                            ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  📦 WHAT WAS DEPLOYED                                                        ║
+║  ═════════════════════                                                      ║
+║                                                                              ║
+║  1. Hardening Script                                                         ║
+║     └─ /home/ing/RICK/RICK_LIVE_CLEAN/scripts/wolfpack_autonomy_hardening.sh║
+║        (Complete deployment: ~400 lines, idempotent)                        ║
+║                                                                              ║
+║  2. Canonical Trade Shim                                                     ║
+║     └─ ~/.local/bin/trade                                                    ║
+║        (Non-bypassable order entry point, Python)                           ║
+║                                                                              ║
+║  3. Pointers Generator                                                       ║
+║     └─ ~/.local/bin/pg_now                                                   ║
+║        (Emit account state + guardian actions, Python)                      ║
+║                                                                              ║
+║  4. Systemd Units                                                            ║
+║     ├─ ~/.config/systemd/user/pg-emit-state.service                         ║
+║     └─ ~/.config/systemd/user/pg-emit-state.timer (runs every 15s)          ║
+║                                                                              ║
+║  5. Orchestration Makefile                                                   ║
+║     └─ /home/ing/RICK/RICK_LIVE_CLEAN/Makefile.wolfpack                     ║
+║        (guard-on, guard-off, order, pointers-watch, tick, bootstrap)        ║
+║                                                                              ║
+║  6. Complete Documentation                                                   ║
+║     ├─ WOLFPACK_AUTONOMY_HARDENING_GUIDE.md (Full technical guide)          ║
+║     └─ WOLFPACK_HARDENING_DEPLOYMENT_READY.md (Deployment summary)          ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🚀 DEPLOYMENT (3 STEPS)                                                    ║
+║  ═════════════════════════                                                  ║
+║                                                                              ║
+║  Step 1: Run the hardening script                                           ║
+║  ────────────────────────────────                                           ║
+║  $ bash /home/ing/RICK/RICK_LIVE_CLEAN/scripts/wolfpack_autonomy_hardening.sh║
+║                                                                              ║
+║  Step 2: Bootstrap the system                                               ║
+║  ──────────────────────────────                                             ║
+║  $ cd /home/ing/RICK/RICK_LIVE_CLEAN                                        ║
+║  $ make -f Makefile.wolfpack bootstrap                                      ║
+║                                                                              ║
+║  Step 3: Verify everything is running                                       ║
+║  ──────────────────────────────────────                                     ║
+║  $ make -f Makefile.wolfpack guard-status                                   ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🔐 WHAT GETS PROTECTED                                                      ║
+║  ════════════════════════                                                   ║
+║                                                                              ║
+║  Every order now passes through these 7 rule systems:                        ║
+║                                                                              ║
+║  ✅ Correlation Gate        (blocks correlated positions > 0.70)             ║
+║  ✅ Margin Gate             (prevents over-leverage > 60%)                   ║
+║  ✅ Volatility Gate         (avoids bad-time entries)                        ║
+║  ✅ Notional Gate           (enforces $15K minimum)                          ║
+║  ✅ Hedging Logic           (auto-applies hedges)                            ║
+║  ✅ Session Filters         (respects time gates)                            ║
+║  ✅ Post-Trade Rules        (auto-BE, ATR trailing, scale-outs)              ║
+║                                                                              ║
+║  No bypasses. All positions managed by guardian. Rules apply universally.   ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  📡 LIVE POINTERS FEED                                                       ║
+║  ═════════════════════                                                      ║
+║                                                                              ║
+║  Location: /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json             ║
+║  Refresh:  Every 15 seconds                                                  ║
+║  Format:   JSON (machine-readable)                                           ║
+║                                                                              ║
+║  Contains:                                                                   ║
+║  • Current account state (NAV, margin, utilization)                         ║
+║  • All open positions (entry, current price, P&L, R:R)                      ║
+║  • Guardian-computed actions (what to do next)                              ║
+║                                                                              ║
+║  Example action types:                                                       ║
+║  • AUTO_BE (automatic breakeven management)                                 ║
+║  • SCALE_OUT (take profits at levels)                                       ║
+║  • CORRELATION_GATE (blocks correlated new trades)                          ║
+║  • MARGIN_GATE (prevents high-margin orders)                                ║
+║  • SESSION_EXIT (close positions at session end)                            ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🛠️  ORCHESTRATION MAKEFILE                                                  ║
+║  ═══════════════════════════                                                ║
+║                                                                              ║
+║  cd /home/ing/RICK/RICK_LIVE_CLEAN                                          ║
+║                                                                              ║
+║  make -f Makefile.wolfpack guard-on                                         ║
+║    └─ Enable + start guardian system                                        ║
+║                                                                              ║
+║  make -f Makefile.wolfpack guard-off                                        ║
+║    └─ Disable guardian system (for maintenance)                             ║
+║                                                                              ║
+║  make -f Makefile.wolfpack guard-status                                     ║
+║    └─ Show current guardian + timer status                                  ║
+║                                                                              ║
+║  make -f Makefile.wolfpack order VENUE=oanda SYMBOL=EUR_USD SIDE=buy ...    ║
+║    └─ Route order through canonical shim (cannot bypass)                    ║
+║                                                                              ║
+║  make -f Makefile.wolfpack pointers-watch                                   ║
+║    └─ Live-tail pointers in watch mode (updates every second)               ║
+║                                                                              ║
+║  make -f Makefile.wolfpack tick                                             ║
+║    └─ Parse + print current actions from pointers                           ║
+║                                                                              ║
+║  make -f Makefile.wolfpack bootstrap                                        ║
+║    └─ One-shot setup: enable + start all services                           ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🔍 QUICK INSPECTION COMMANDS                                                ║
+║  ═══════════════════════════════                                            ║
+║                                                                              ║
+║  Check guardian is running:                                                 ║
+║  $ systemctl --user status position-guardian.service                        ║
+║                                                                              ║
+║  View current account state:                                                ║
+║  $ jq '.account' /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json       ║
+║                                                                              ║
+║  View open positions:                                                        ║
+║  $ jq '.positions' /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json     ║
+║                                                                              ║
+║  View guardian actions:                                                      ║
+║  $ jq '.actions' /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json       ║
+║                                                                              ║
+║  Watch pointers live:                                                        ║
+║  $ watch -n 1 'jq . /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json'   ║
+║                                                                              ║
+║  Test trade shim (dry-run):                                                 ║
+║  $ trade --venue oanda --symbol EUR_USD --side buy --units 1000 --dry-run   ║
+║                                                                              ║
+║  Send real order:                                                            ║
+║  $ trade --venue oanda --symbol EUR_USD --side buy --units 1000             ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🎯 ORCHESTRATOR INTEGRATION                                                 ║
+║  ════════════════════════════                                               ║
+║                                                                              ║
+║  Your swarm/make orchestrator should:                                        ║
+║                                                                              ║
+║  1. Read pointers every 15 seconds:                                         ║
+║     $ jq . /home/ing/RICK/RICK_LIVE_CLEAN/logs/actions_now.json             ║
+║                                                                              ║
+║  2. Check margin headroom:                                                   ║
+║     if margin_utilization > 0.5: skip_new_orders()                          ║
+║                                                                              ║
+║  3. Parse guardian actions:                                                  ║
+║     for action in .actions: process_action(action)                          ║
+║                                                                              ║
+║  4. Send orders through canonical shim:                                     ║
+║     trade --venue $venue --symbol $symbol --side $side --units $units       ║
+║                                                                              ║
+║  5. Let guardian handle everything else:                                    ║
+║     • Correlation gating                                                    ║
+║     • Margin enforcement                                                    ║
+║     • Position management (auto-BE, trailing, scale-outs)                  ║
+║     • All rule enforcement                                                  ║
+║                                                                              ║
+║  Guardian does the hard work. Orchestrator makes decisions. Perfect split! ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  ✅ DEPLOYMENT CHECKLIST                                                     ║
+║  ════════════════════════                                                   ║
+║                                                                              ║
+║  Pre-Deployment:                                                             ║
+║  ☐ Scripts exist in /home/ing/RICK/RICK_LIVE_CLEAN/scripts/                 ║
+║  ☐ Documentation reviewed                                                    ║
+║  ☐ Systemd user session available                                           ║
+║                                                                              ║
+║  Deployment:                                                                 ║
+║  ☐ bash wolfpack_autonomy_hardening.sh (runs without errors)                ║
+║  ☐ make bootstrap (services started)                                        ║
+║  ☐ make guard-status (all green)                                            ║
+║                                                                              ║
+║  Verification:                                                               ║
+║  ☐ Trade shim exists: ls -la ~/.local/bin/trade                             ║
+║  ☐ Guardian running: systemctl --user status position-guardian.service     ║
+║  ☐ Pointers updating: jq '.as_of_utc' actions_now.json                      ║
+║  ☐ Test order works: trade --venue oanda --symbol EUR_USD ... --dry-run     ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🎉 YOU'VE JUST BUILT                                                        ║
+║  ═══════════════════════                                                    ║
+║                                                                              ║
+║  ✅ Non-Bypassable Order Gate                                               ║
+║     All orders locked through Position Guardian. Cannot be bypassed.        ║
+║                                                                              ║
+║  ✅ Always-On Guardian Daemon                                               ║
+║     Persistent, auto-restart, boot-proof. Never dies.                       ║
+║                                                                              ║
+║  ✅ Live Pointers Feed                                                      ║
+║     JSON state + actions for swarm orchestration. Machine-readable.         ║
+║                                                                              ║
+║  ✅ Orchestration Wire-Up                                                   ║
+║     Makefile + examples. Ready for your swarm/make system.                  ║
+║                                                                              ║
+║  Result: Position Guardian is now a first-class autonomous system           ║
+║  component. Wolfpack can operate with full confidence. 🛡️                    ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  🚀 READY TO DEPLOY?                                                         ║
+║  ═══════════════════                                                        ║
+║                                                                              ║
+║  One-liner deployment:                                                       ║
+║  $ bash /home/ing/RICK/RICK_LIVE_CLEAN/scripts/wolfpack_autonomy_hardening.sh║
+║                                                                              ║
+║  Then bootstrap:                                                             ║
+║  $ cd /home/ing/RICK/RICK_LIVE_CLEAN && make -f Makefile.wolfpack bootstrap ║
+║                                                                              ║
+║  Then verify:                                                                ║
+║  $ make -f Makefile.wolfpack guard-status                                   ║
+║                                                                              ║
+║  And you're live with Position Guardian as your autonomous guardian! ✅     ║
+║                                                                              ║
+║  🔒 System Hardened. Wolfpack Ready. Go Live. 🚀                             ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+BANNER

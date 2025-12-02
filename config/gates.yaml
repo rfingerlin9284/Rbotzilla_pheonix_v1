@@ -1,0 +1,4 @@
+version: 1
+rick_hive: { enabled: true, quorum: 3, advisors: [news_filter, volatility_regime, trend_bias, mean_reversion] }
+compliance: { enforce_oco: true }
+connectors: { oanda_practice: { enabled: true, paper: true } }

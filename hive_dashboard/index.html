@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Rick's Trading Cockpit - RBOTzilla Command Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff88;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 255, 136, 0.1);
+            border-bottom: 2px solid #00ff88;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            height: 60px;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            text-shadow: 0 0 20px #00ff88;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .connection-status-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff0040;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .status-led.online {
+            background: #00ff88;
+        }
+
+        /* Main Layout Grid */
+        .cockpit-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            grid-template-rows: 1fr 300px;
+            gap: 15px;
+            padding: 15px;
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+
+        /* Terminal Pane (Left) */
+        .terminal-pane {
+            grid-column: 1;
+            grid-row: 1 / -1;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-header {
+            color: #00ff88;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .terminal-output {
+            height: calc(100% - 80px);
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.3;
+            padding: 10px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            white-space: pre-wrap;
+        }
+
+        .command-input-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .prompt-field {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            border: 1px solid #333;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+
+        .primary-action-button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Rick Chat Interface (Top Right) */
+        .rick-chat-container {
+            grid-column: 2;
+            grid-row: 1;
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .chat-header {
+            color: #00ff88;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-status-indicator {
+            font-size: 0.8em;
+            color: #00ff88;
+        }
+
+        .message-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 200px;
+        }
+
+        .user-message, .ai-response {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .user-message {
+            background: rgba(0, 100, 255, 0.2);
+            text-align: right;
+        }
+
+        .ai-response {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .input-toolbar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input-field {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .utility-icon, .submit-button {
+            background: transparent;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .submit-button:hover, .utility-icon:hover {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        /* Modular Widget Grid (Bottom Right) */
+        .widget-grid {
+            grid-column: 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .modular-pane {
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid #00ff88;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 0.85em;
+            text-align: center;
+            cursor: move;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modular-pane:hover {
+            border-color: #00ffaa;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transform: scale(1.02);
+        }
+
+        .pane-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00ff88;
+        }
+
+        .pane-content {
+            font-size: 0.8em;
+            color: rgba(0, 255, 136, 0.8);
+        }
+
+        /* Command Palette (Suggestion List) */
+        .command-palette {
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
+            z-index: 1500;
+        }
+
+        .command-palette.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        .palette-title {
+            color: #00ff88;
+            font-size: 1em;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .shortcut-list {
+            list-style: none;
+        }
+
+        .shortcut-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            transition: background 0.2s ease;
+        }
+
+        .shortcut-item:hover {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        /* Floating Action Widgets */
+        .floating-widget {
+            position: absolute;
+            width: 200px;
+            height: 120px;
+            background: rgba(0, 255, 136, 0.08);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: move;
+            z-index: 1000;
+            font-size: 0.8em;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .floating-widget.dragging {
+            z-index: 1001;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Animations */
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff88; }
+            to { text-shadow: 0 0 30px #00ff88, 0 0 40px #00ff88; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .suggestion-button {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .suggestion-button:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            transform: translateX(2px);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 136, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Connection Status LEDs -->
+    <header class="header">
+        <h1>🤖 Rick's Trading Cockpit</h1>
+        <div class="connection-status-bar">
+            <span>TMUX</span><div class="status-led online" id="tmuxLED"></div>
+            <span>Rick</span><div class="status-led online" id="rickLED"></div>
+            <span>Markets</span><div class="status-led online" id="marketLED"></div>
+        </div>
+    </header>
+
+    <!-- Main Cockpit Grid -->
+    <div class="cockpit-grid">
+        <!-- Terminal Pane (Left Side) -->
+        <div class="terminal-pane">
+            <div class="terminal-header">📟 Live TMUX Stream - rbotmaster</div>
+            <div class="terminal-output" id="terminalOutput"></div>
+            <div class="command-input-toolbar">
+                <input type="text" class="prompt-field" id="terminalPrompt" placeholder="Enter terminal command..." 
+                       onkeypress="if(event.key==='Enter') sendTerminalCommand()">
+                <button class="primary-action-button" onclick="sendTerminalCommand()">Execute</button>
+                <button class="primary-action-button" onclick="clearTerminal()">Clear</button>
+            </div>
+        </div>
+
+        <!-- Rick Chat Interface (Top Right) -->
+        <div class="rick-chat-container">
+            <div class="chat-header">
+                <span>🤖 Rick AI Assistant</span>
+                <span class="ai-status-indicator" id="rickStatus">Online</span>
+            </div>
+            <div class="message-list" id="rickMessageList">
+                <div class="ai-response">
+                    🤖 <strong>Rick:</strong> Yo! What's good? I'm your street-smart trading AI. Ask me anything about the markets, check some P&L, or just chat. I got you covered! 💪
+                </div>
+            </div>
+            <div class="input-toolbar">
+                <input type="text" class="chat-input-field" id="rickChatInput" placeholder="Chat with Rick..." 
+                       onkeypress="if(event.key==='Enter') sendRickMessage()">
+                <button class="utility-icon" onclick="toggleCommandPalette()" title="Quick Commands">📋</button>
+                <button class="submit-button" onclick="sendRickMessage()" title="Send Message">➤</button>
+            </div>
+        </div>
+
+        <!-- Modular Widget Grid (Bottom Right) -->
+        <div class="widget-grid">
+            <div class="modular-pane" data-widget="oanda">
+                <div class="pane-title">🏦 OANDA</div>
+                <div class="pane-content">
+                    <div>Status: <span style="color: #00ff88;">Connected</span></div>
+                    <div>Session: London</div>
+                    <div>Latency: 45ms</div>
+                </div>
+            </div>
+            
+            <div class="modular-pane" data-widget="coinbase">
+                <div class="pane-title">₿ Coinbase</div>
+                <div class="pane-content">
+                    <div>Status: <span style="color: #00ff88;">Active</span></div>
+                    <div>24/7 Mode</div>
+                    <div>Latency: 38ms</div>
+                </div>
+            </div>
+
+            <div class="modular-pane" data-widget="pnl">
+                <div class="pane-title">💰 P&L</div>
+                <div class="pane-content">
+                    <div>Total: <span style="color: #00ff88;">+$1,247</span></div>
+                    <div>Today: +$156</div>
+                    <div>Open: 3 positions</div>
+                </div>
+            </div>
+
+            <div class="modular-pane" data-widget="strategy">
+                <div class="pane-title">📊 Strategy</div>
+                <div class="pane-content">
+                    <div>Win Rate: 72.4%</div>
+                    <div>Signals: 156</div>
+                    <div>Confidence: 85%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Palette (Suggestion List) -->
+    <div class="command-palette" id="commandPalette">
+        <div class="palette-title">🚀 Quick Commands</div>
+        <ul class="shortcut-list">
+            <li class="shortcut-item" onclick="quickCommand('📝 Daily Summary')">📝 Daily Summary</li>
+            <li class="shortcut-item" onclick="quickCommand('📊 Show P&L Report')">📊 Show P&L Report</li>
+            <li class="shortcut-item" onclick="quickCommand('📅 Weekly Replay')">📅 Weekly Replay</li>
+            <li class="shortcut-item" onclick="quickCommand('🎬 Race Animation Mode')">🎬 Race Animation Mode</li>
+            <li class="shortcut-item" onclick="quickCommand('🕓 Session Analysis')">🕓 Session Analysis</li>
+            <li class="shortcut-item" onclick="quickCommand('🔍 Risk Check')">🔍 Risk Check</li>
+            <li class="shortcut-item" onclick="quickCommand('⚡ Speed Test')">⚡ Speed Test</li>
+            <li class="shortcut-item" onclick="quickCommand('📈 Market Overview')">📈 Market Overview</li>
+        </ul>
+    </div>
+
+    <!-- Floating Draggable Widgets -->
+    <div class="floating-widget" id="mlWidget" style="top: 200px; left: 50px;">
+        <div class="pane-title">🧠 ML Predictions</div>
+        <div class="pane-content">
+            <div>EUR/USD: BUY (75%)</div>
+            <div>BTC/USD: SELL (60%)</div>
+            <div>Model: Active</div>
+        </div>
+    </div>
+
+    <div class="floating-widget" id="sessionWidget" style="top: 350px; left: 50px;">
+        <div class="pane-title">🕐 Session Info</div>
+        <div class="pane-content">
+            <div>Current: London</div>
+            <div>Overlap: NY Soon</div>
+            <div>Weekend Mode: Off</div>
+        </div>
+    </div>
+
+    <!-- Rick's Advanced Components -->
+    <div class="rick-suggestions-panel" id="suggestionsPanel" style="
+        position: fixed;
+        right: 20px;
+        top: 150px;
+        width: 250px;
+        background: rgba(0, 0, 0, 0.95);
+        border: 2px solid #00ff88;
+        border-radius: 8px;
+        padding: 15px;
+        color: #00ff88;
+        font-family: 'Orbitron', monospace;
+        z-index: 1800;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        display: none;
+    ">
+        <h4 style="margin: 0 0 15px 0; color: #00ff88; text-align: center;">🚀 Ask Rick To:</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="suggestion-button" onclick="sendSuggestion('Give me a comic-style trade summary')">
+                📘 Daily Race Recap
+            </button>
+            <button class="suggestion-button" onclick="sendSuggestion('Summarize today\'s OANDA performance')">
+                📊 OANDA Summary
+            </button>
+            <button class="suggestion-button" onclick="sendSuggestion('Show current crypto futures positions')">
+                💸 Futures View
+            </button>
+            <button class="suggestion-button" onclick="sendSuggestion('Check weekend crypto opportunities')">
+                🎲 Weekend Alpha
+            </button>
+            <button class="suggestion-button" onclick="sendSuggestion('Analyze session overlaps')">
+                🕐 Session Intel
+            </button>
+            <button class="suggestion-button" onclick="sendSuggestion('Run risk management check')">
+                🛡️ Risk Audit
+            </button>
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button onclick="toggleSuggestions()" style="
+                background: transparent;
+                color: #00ff88;
+                border: 1px solid #00ff88;
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+            ">Hide</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="rick_voice.js"></script>
+    <script src="rick_comic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script>
+        // WebSocket Connection
+        let ws = null;
+        let commandCount = 0;
+
+        // Initialize WebSocket
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket('ws://localhost:8887');
+                
+                ws.onopen = function() {
+                    console.log('🌊 WebSocket connected to TMUX server');
+                    document.getElementById('tmuxLED').classList.add('online');
+                };
+
+                ws.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleWebSocketMessage(data);
+                    } catch (error) {
+                        console.error('Failed to parse WebSocket message:', error);
+                    }
+                };
+
+                ws.onclose = function() {
+                    console.log('🌊 WebSocket connection closed');
+                    document.getElementById('tmuxLED').classList.remove('online');
+                    setTimeout(connectWebSocket, 3000); // Reconnect
+                };
+
+            } catch (error) {
+                console.error('Failed to create WebSocket connection:', error);
+                document.getElementById('tmuxLED').classList.remove('online');
+            }
+        }
+
+        // Handle WebSocket messages
+        function handleWebSocketMessage(data) {
+            switch (data.type) {
+                case 'tmux_output':
+                    appendToTerminal(data.data);
+                    break;
+                case 'system_message':
+                    appendToTerminal(`\n🔔 ${data.message}\n`);
+                    break;
+                case 'rick_command':
+                    addRickMessage(data.prompt, 'user');
+                    addRickMessage(data.response, 'ai');
+                    break;
+                case 'error':
+                    appendToTerminal(`\n❌ Error: ${data.message}\n`);
+                    break;
+            }
+        }
+
+        // Terminal functions
+        function appendToTerminal(text) {
+            const output = document.getElementById('terminalOutput');
+            output.textContent += text + '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function sendTerminalCommand() {
+            const input = document.getElementById('terminalPrompt');
+            const command = input.value.trim();
+            if (!command || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+            appendToTerminal(`$ ${command}`);
+            ws.send(JSON.stringify({
+                type: 'command',
+                command: command
+            }));
+            input.value = '';
+            commandCount++;
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminalOutput').textContent = '';
+        }
+
+        // Enhanced Rick Chat functions with Voice & Comic Integration
+        function addRickMessage(message, sender) {
+            const messageList = document.getElementById('rickMessageList');
+            const div = document.createElement('div');
+            div.className = sender === 'user' ? 'user-message' : 'ai-response';
+            
+            if (sender === 'user') {
+                div.innerHTML = `👤 <strong>You:</strong> ${message}`;
+            } else {
+                div.innerHTML = `🤖 <strong>Rick:</strong> ${message}`;
+                
+                // Trigger Rick's voice response
+                if (window.rickReply) {
+                    setTimeout(() => window.speakRick(message), 100);
+                }
+            }
+            
+            messageList.appendChild(div);
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        function sendRickMessage() {
+            const input = document.getElementById('rickChatInput');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            addRickMessage(prompt, 'user');
+            input.value = '';
+
+            // Process Rick's personality-driven response with voice support
+            let rickResponse = processRickPersonality(prompt);
+            
+            // Check for special comic/race commands
+            if (prompt.toLowerCase().includes('comic') || prompt.toLowerCase().includes('race') || prompt.toLowerCase().includes('summary')) {
+                rickResponse = "Alright, let me show you today's action in comic style! 🎬";
+                setTimeout(() => {
+                    if (window.renderComic) {
+                        window.renderComic({
+                            pnl: "+$520.36",
+                            trades: 8,
+                            session: "London-NY Overlap"
+                        });
+                    }
+                }, 1000);
+            }
+            
+            addRickMessage(rickResponse, 'ai');
+            
+            // Send to backend if available
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'rick_prompt',
+                    prompt: prompt,
+                    context: { timestamp: Date.now(), source: 'chat' }
+                }));
+            }
+            
+            document.getElementById('rickStatus').textContent = 'Active';
+        }
+
+        // Enhanced Rick Personality Engine with Voice
+        function processRickPersonality(prompt) {
+            const lowerPrompt = prompt.toLowerCase();
+            
+            if (lowerPrompt.includes('help') || lowerPrompt.includes('what can you do')) {
+                return "Alright, listen up! I'm Rick, your street-smart trading wingman. I can check your P&L, analyze market sessions, run backtests, give you comic-style race summaries, or just shoot the shit about crypto and forex. I even talk back now with voice! What's on your mind?";
+            }
+            
+            if (lowerPrompt.includes('pnl') || lowerPrompt.includes('profit')) {
+                return "Looking at those numbers... We're sitting pretty! Total portfolio at +$1,247, today brought in +$156. Got 3 positions still cooking like Sunday dinner. The house always wins when Rick's running the show! 💰";
+            }
+            
+            if (lowerPrompt.includes('session') || lowerPrompt.includes('time')) {
+                return "Time to get tactical! London session is heating up, NY overlap coming in hot around 1PM GMT. Weekend crypto mode is OFF right now, so we're playing smart on the forex majors. Perfect scalping weather!";
+            }
+            
+            if (lowerPrompt.includes('risk') || lowerPrompt.includes('safe')) {
+                return "Smart question! Risk management is where legends are made. Current portfolio risk at 2.3% - healthy and aggressive. Remember: never bet the farm, always have an exit plan, and trust the process. We're locked and loaded!";
+            }
+            
+            if (lowerPrompt.includes('weekend') || lowerPrompt.includes('crypto')) {
+                return "Ah, weekend crypto action! That's where the real alpha lives. BTC futures showing bullish momentum, ETH got that weekend pump energy. Just remember - crypto futures can wreck you faster than a Formula 1 crash! 🏎️💨";
+            }
+            
+            if (lowerPrompt.includes('voice') || lowerPrompt.includes('speak')) {
+                return "You bet I can talk! Rick's got that smooth voice now. I'll speak up whenever I respond - makes this whole trading thing more interactive. Like having a co-pilot in the cockpit!";
+            }
+            
+            if (lowerPrompt.includes('oanda') || lowerPrompt.includes('forex')) {
+                return "OANDA connection is solid green! Latency holding steady at 45ms. EUR/USD looking juicy, GBP/USD showing some volatility. London session overlap is prime time for scalping action. Let's make some pips!";
+            }
+            
+            if (window.getRickResponse) {
+                return window.getRickResponse(prompt);
+            }
+            
+            return "I hear you loud and clear! Let me process that and get back to you with some solid intel... 🤖";
+        }
+
+        // Suggestions Panel Functions
+        function toggleSuggestions() {
+            const panel = document.getElementById('suggestionsPanel');
+            const isVisible = panel.style.display !== 'none';
+            panel.style.display = isVisible ? 'none' : 'block';
+            
+            // Update the command palette button if it exists
+            const paletteButton = document.querySelector('.utility-icon[onclick*="toggleCommandPalette"]');
+            if (paletteButton && !isVisible) {
+                paletteButton.style.background = 'rgba(0, 255, 136, 0.2)';
+            } else if (paletteButton) {
+                paletteButton.style.background = 'transparent';
+            }
+        }
+
+        function sendSuggestion(suggestion) {
+            document.getElementById('rickChatInput').value = suggestion;
+            toggleSuggestions();
+            sendRickMessage();
+        }
+
+        // Enhanced Command Palette with Suggestions
+        function toggleCommandPalette() {
+            const palette = document.getElementById('commandPalette');
+            const suggestions = document.getElementById('suggestionsPanel');
+            
+            // Toggle between command palette and suggestions
+            const paletteVisible = palette.classList.contains('active');
+            const suggestionsVisible = suggestions.style.display !== 'none';
+            
+            if (paletteVisible) {
+                palette.classList.remove('active');
+                suggestions.style.display = 'block';
+            } else if (suggestionsVisible) {
+                suggestions.style.display = 'none';
+                palette.classList.add('active');
+            } else {
+                suggestions.style.display = 'block';
+            }
+        }
+
+        function quickCommand(command) {
+            document.getElementById('rickChatInput').value = command;
+            document.getElementById('commandPalette').classList.remove('active');
+            document.getElementById('suggestionsPanel').style.display = 'none';
+            sendRickMessage();
+        }
+
+        // Make floating widgets draggable
+        interact('.floating-widget').draggable({
+            listeners: {
+                start: (event) => {
+                    event.target.classList.add('dragging');
+                },
+                move: (event) => {
+                    const target = event.target;
+                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+                    
+                    target.style.transform = `translate(${x}px, ${y}px)`;
+                    target.setAttribute('data-x', x);
+                    target.setAttribute('data-y', y);
+                },
+                end: (event) => {
+                    event.target.classList.remove('dragging');
+                }
+            }
+        });
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Rick\'s Trading Cockpit initialized');
+            connectWebSocket();
+            
+            // Close command palette when clicking outside
+            document.addEventListener('click', function(event) {
+                const palette = document.getElementById('commandPalette');
+                const button = event.target.closest('.utility-icon');
+                if (!palette.contains(event.target) && !button) {
+                    palette.classList.remove('active');
+                }
+            });
+        });
+
+        // Hide command palette on escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.getElementById('commandPalette').classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- PHASE 49: Animated P&L HUD Overlay -->
+    <div id="pnl-overlay" style="position:fixed;top:80px;right:20px;background:rgba(17,17,17,0.95);border:2px solid #0f0;border-radius:8px;padding:15px;color:#0f0;font-family:'Orbitron',monospace;z-index:999;width:280px;box-shadow:0 0 20px rgba(0,255,0,0.3);">
+        <h3 style="margin-bottom:10px;color:#00ff88;text-align:center;">📈 Live P&L HUD</h3>
+        <div id="pnl-stats" style="font-size:18px;font-weight:bold;text-align:center;margin-bottom:10px;">$0.00</div>
+        <div id="pnl-details" style="font-size:12px;">
+            <div>Daily: <span id="daily-pnl">$0.00</span></div>
+            <div>Positions: <span id="position-count">0</span></div>
+            <div>Win Rate: <span id="win-rate">0%</span></div>
+        </div>
+    </div>
+
+    <!-- PHASE 51: LLM FUSE LOCK + MANUAL OVERRIDE -->
+    <div id="control-panel" style="position:fixed;bottom:20px;right:20px;z-index:1000;background:rgba(17,17,17,0.95);padding:15px;border:2px solid #ff4444;border-radius:8px;display:flex;flex-direction:column;gap:10px;">
+        <button id="llm-toggle" onclick="toggleLLM()" style="padding:10px;background:#0f0;color:#000;border:none;border-radius:5px;font-weight:bold;cursor:pointer;">🔒 Rick UNLOCKED</button>
+        <button onclick="manualOverride()" style="padding:10px;background:#ffaa00;color:#000;border:none;border-radius:5px;font-weight:bold;cursor:pointer;">🧠 Manual Override</button>
+        <button onclick="emergencyStop()" style="padding:10px;background:#ff4444;color:#fff;border:none;border-radius:5px;font-weight:bold;cursor:pointer;">🚨 Emergency Stop</button>
+    </div>
+
+    <!-- PHASE 52: Rollback + Decouple Self-Heal -->
+    <div id="emergency-panel" style="position:fixed;bottom:20px;left:20px;z-index:1000;background:rgba(17,17,17,0.95);padding:15px;border:2px solid #ff6600;border-radius:8px;">
+        <button onclick="rollback()" style="padding:10px;background:#ff6600;color:#fff;border:none;border-radius:5px;font-weight:bold;cursor:pointer;">🧨 Unplug / Rollback</button>
+    </div>
+
+    <script>
+        // PHASE 49: P&L HUD Logic
+        let rickLocked = false;
+        
+        const pnlStats = document.getElementById('pnl-stats');
+        const dailyPnl = document.getElementById('daily-pnl');
+        const positionCount = document.getElementById('position-count');
+        const winRate = document.getElementById('win-rate');
+        
+        setInterval(() => {
+            fetch('/rick/pnl')
+                .then(r => r.json())
+                .then(d => {
+                    pnlStats.innerText = d.pnl;
+                    dailyPnl.innerText = d.daily;
+                    positionCount.innerText = d.positions;
+                    winRate.innerText = d.winRate;
+                    
+                    // Animation flash
+                    pnlStats.style.textShadow = d.pnl.includes('+') ? '0 0 10px #0f0' : '0 0 10px #f44';
+                    setTimeout(() => pnlStats.style.textShadow = 'none', 500);
+                })
+                .catch(() => {
+                    // Fallback simulation
+                    const sim = {
+                        pnl: `$${(Math.random() * 5000 - 1000).toFixed(2)}`,
+                        daily: `$${(Math.random() * 1000 - 200).toFixed(2)}`,
+                        positions: Math.floor(Math.random() * 10),
+                        winRate: `${(Math.random() * 30 + 60).toFixed(1)}%`
+                    };
+                    pnlStats.innerText = sim.pnl;
+                    dailyPnl.innerText = sim.daily;
+                    positionCount.innerText = sim.positions;
+                    winRate.innerText = sim.winRate;
+                });
+        }, 2000);
+
+        // PHASE 51: LLM Controls
+        function toggleLLM() {
+            rickLocked = !rickLocked;
+            const button = document.getElementById('llm-toggle');
+            
+            if (rickLocked) {
+                button.innerText = '🔒 Rick LOCKED';
+                button.style.background = '#ff4444';
+                button.style.color = '#fff';
+            } else {
+                button.innerText = '🔒 Rick UNLOCKED';
+                button.style.background = '#0f0';
+                button.style.color = '#000';
+            }
+            
+            fetch(`/rick/llm/${rickLocked ? 'lock' : 'unlock'}`)
+                .then(r => r.json())
+                .then(d => console.log("Rick LLM", d.status))
+                .catch(() => console.log("Rick LLM", rickLocked ? "locked" : "unlocked"));
+        }
+
+        function manualOverride() {
+            fetch("/rick/override")
+                .then(r => r.json())
+                .then(d => {
+                    alert("Manual Override Triggered!");
+                    console.log("Override:", d.status);
+                })
+                .catch(() => alert("Override triggered!"));
+        }
+
+        function emergencyStop() {
+            if (confirm("Emergency Stop All Trading?")) {
+                fetch("/rick/emergency")
+                    .then(() => {
+                        alert("🚨 EMERGENCY STOP ACTIVATED");
+                        document.body.style.background = '#440000';
+                        setTimeout(() => document.body.style.background = '', 2000);
+                    })
+                    .catch(() => alert("🚨 EMERGENCY STOP ACTIVATED"));
+            }
+        }
+
+        // PHASE 52: Rollback
+        function rollback() {
+            if (confirm("🧨 This will revert to pre-upgrade state. Continue?")) {
+                fetch("/rick/rollback")
+                    .then(r => r.json())
+                    .then(d => {
+                        alert("Bot is reverting to pre-upgrade...");
+                        console.log("Rollback:", d.status);
+                    })
+                    .catch(() => alert("Bot is reverting to pre-upgrade..."));
+            }
+        }
+    </script>
+</body>
+</html>
+
+<!-- Phase 46: Rick GPT/Grok Relay Integration -->
+<div id="rick-relay-toggle" style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;">
+    <button onclick="openRickRelay()" style="padding: 10px; background: #0f0; color: #000; border: none; font-weight: bold; border-radius: 5px;">
+        🤖 Rick AI Relay
+    </button>
+</div>
+
+<script>
+function openRickRelay() {
+    window.open('/rick_gpt_relay.html', 'RickRelay', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+}
+</script>
+
+<!-- Phase 47: Theme Switcher Integration -->
+<div id="theme-selector" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
+    <select onchange="switchTheme(this.value)" style="padding: 5px; background: #111; color: #0f0; border: 1px solid #0f0;">
+        <option value="stealth">🖤 Stealth</option>
+        <option value="tron">💙 Tron Grid</option>
+        <option value="core">💚 Core Green</option>
+        <option value="crimson">❤️ Crimson War</option>
+    </select>
+</div>
+
+<script src="theme_engine.js"></script>
+
+<!-- Phase 48: Comic Strip Interface -->
+<div id="comic-controls" style="position: fixed; bottom: 60px; right: 10px; z-index: 1000;">
+    <button onclick="runRaceMode()" style="padding: 8px 12px; margin: 2px; background: #0f0; color: #000; border: none; font-weight: bold; border-radius: 3px;">
+        🎬 Race Mode
+    </button>
+    <button onclick="runDailySummary()" style="padding: 8px 12px; margin: 2px; background: #ffaa00; color: #000; border: none; font-weight: bold; border-radius: 3px;">
+        📊 Daily Summary
+    </button>
+</div>
+
+<div id="comic-frame" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; margin: 20px; max-height: 40vh; overflow-y: auto;"></div>
+
+<script src="race_comic.js"></script>
+
+<!-- Phase 52: Repair Interface Integration -->
+<div id="system-status" style="position: fixed; bottom: 10px; left: 10px; z-index: 1000;">
+    <button onclick="repairInterface.toggle()" style="padding: 8px 12px; background: #ffaa00; color: #000; border: none; font-weight: bold; border-radius: 5px;">
+        🔧 System Repair
+    </button>
+</div>
+
+<script src="pnl_hud.js"></script>
+<script src="rick_voice_narrator.js"></script>
+<script src="override_controls.js"></script>
+<script src="repair_interface.js"></script>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🤖 RICK Live Trading Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    
+    <!-- Socket.IO for WebSocket -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <!-- Chart.js for live graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(0,255,255,0.3);
+            box-shadow: 0 0 20px rgba(0,255,255,0.2);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 10px rgba(0,255,255,0.5); }
+            50% { text-shadow: 0 0 20px rgba(0,255,255,0.8), 0 0 30px rgba(0,255,255,0.6); }
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-live {
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-connected {
+            background: linear-gradient(45deg, #00ff00, #44ff44);
+        }
+        
+        .status-disconnected {
+            background: linear-gradient(45deg, #666, #888);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .widget {
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0,255,255,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .widget:hover {
+            border-color: rgba(0,255,255,0.5);
+            box-shadow: 0 6px 25px rgba(0,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0,255,255,0.2);
+        }
+        
+        .widget-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 5px rgba(0,255,255,0.5);
+        }
+        
+        .widget-icon {
+            font-size: 1.5em;
+        }
+        
+        /* Regime Widget */
+        .regime-display {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .regime-name {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            animation: regime-glow 2s ease-in-out infinite;
+        }
+        
+        .regime-bull { color: #00ff00; text-shadow: 0 0 20px #00ff00; }
+        .regime-bear { color: #ff0000; text-shadow: 0 0 20px #ff0000; }
+        .regime-sideways { color: #ffff00; text-shadow: 0 0 20px #ffff00; }
+        .regime-unknown { color: #888; }
+        
+        @keyframes regime-glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #0088ff);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* SwarmBot Table */
+        .swarmbot-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .swarmbot-table th {
+            background: rgba(0,255,255,0.1);
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid rgba(0,255,255,0.3);
+            font-weight: bold;
+            color: #00ffff;
+        }
+        
+        .swarmbot-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .swarmbot-row {
+            transition: background 0.2s;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .swarmbot-row:hover {
+            background: rgba(0,255,255,0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .bot-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #00ffff;
+        }
+        
+        .direction-long { color: #00ff00; font-weight: bold; }
+        .direction-short { color: #ff0000; font-weight: bold; }
+        
+        .pnl-positive { color: #00ff00; font-weight: bold; }
+        .pnl-negative { color: #ff0000; font-weight: bold; }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-box {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00ffff;
+        }
+        
+        /* Narration Feed */
+        .narration-feed {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        
+        .narration-feed::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .narration-feed::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        
+        .narration-feed::-webkit-scrollbar-thumb {
+            background: rgba(0,255,255,0.5);
+            border-radius: 10px;
+        }
+        
+        .narration-item {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #00ffff;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .narration-time {
+            font-size: 0.75em;
+            opacity: 0.6;
+            margin-bottom: 5px;
+        }
+        
+        .narration-text {
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .rick-says {
+            color: #ffff00;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 15px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #00ffff, #0088ff);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0,255,255,0.5);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Full Width Widgets */
+        .widget-full {
+            grid-column: 1 / -1;
+        }
+        
+        /* Activity Log */
+        .activity-log {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .log-time {
+            color: #888;
+        }
+        
+        .log-event {
+            color: #00ffff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .regime-name {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 RICK Live Trading Dashboard</h1>
+            <div class="status-bar">
+                <div id="connection-status" class="status-badge status-disconnected">
+                    <span id="connection-icon">⚫</span>
+                    <span id="connection-text">Connecting...</span>
+                </div>
+                <div class="status-badge">
+                    <span>📊 Active Bots:</span>
+                    <span id="active-bot-count">0</span>
+                </div>
+                <div class="status-badge">
+                    <span>💰 Today's P&L:</span>
+                    <span id="total-pnl">$0.00</span>
+                </div>
+                <div class="status-badge">
+                    <span>🎯 Win Rate:</span>
+                    <span id="win-rate">0%</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Market Regime Widget -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">🌊 Market Regime</div>
+                    <div class="widget-icon">📈</div>
+                </div>
+                <div class="regime-display">
+                    <div id="regime-name" class="regime-name regime-unknown">UNKNOWN</div>
+                    <div class="confidence-bar">
+                        <div id="confidence-fill" class="confidence-fill" style="width: 0%">0%</div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Positions</div>
+                        <div id="regime-positions" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Trades</div>
+                        <div id="regime-trades" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Wins</div>
+                        <div id="regime-wins" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Losses</div>
+                        <div id="regime-losses" class="stat-value">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- P&L Chart Widget -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">📊 P&L Tracking</div>
+                    <div class="widget-icon">💹</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="pnl-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Active SwarmBots Widget (Full Width) -->
+            <div class="widget widget-full">
+                <div class="widget-header">
+                    <div class="widget-title">🐝 Active SwarmBots</div>
+                    <div class="widget-icon">
+                        <span id="swarmbot-count">0</span> bots
+                    </div>
+                </div>
+                <div id="swarmbot-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🐝</div>
+                        <div>No active SwarmBots</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rick's Narration Widget (Full Width) -->
+            <div class="widget widget-full">
+                <div class="widget-header">
+                    <div class="widget-title">💬 Rick's Commentary</div>
+                    <div class="control-panel">
+                        <button class="control-btn" onclick="clearNarration()">Clear</button>
+                        <button class="control-btn" onclick="requestUpdate('narration')">Refresh</button>
+                    </div>
+                </div>
+                <div id="narration-feed" class="narration-feed">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <div>Waiting for Rick's commentary...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity Log Widget -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">📝 Activity Log</div>
+                    <div class="widget-icon">⚡</div>
+                </div>
+                <div id="activity-log" class="activity-log">
+                    <div class="log-entry">
+                        <span class="log-time">[Initializing...]</span>
+                        <span class="log-event">Dashboard starting...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // WebSocket Connection
+        const socket = io('http://127.0.0.1:5001', {
+            transports: ['websocket', 'polling']
+        });
+        
+        // Connection status
+        socket.on('connect', () => {
+            updateConnectionStatus(true);
+            logActivity('Connected to WebSocket server');
+        });
+        
+        socket.on('disconnect', () => {
+            updateConnectionStatus(false);
+            logActivity('Disconnected from server');
+        });
+        
+        // Initial data
+        socket.on('initial_data', (data) => {
+            console.log('Received initial data:', data);
+            updateSwarmBots(data.swarmbots);
+            updateRegime(data.regime);
+            updateNarration(data.narration);
+            logActivity('Initial data loaded');
+        });
+        
+        // Real-time updates
+        socket.on('swarmbot_update', (data) => {
+            updateSwarmBots(data);
+            logActivity(`SwarmBot update: ${data.length} active bots`);
+        });
+        
+        socket.on('regime_update', (data) => {
+            updateRegime(data);
+            logActivity(`Regime update: ${data.regime} (${data.confidence.toFixed(1)}%)`);
+        });
+        
+        socket.on('narration_update', (data) => {
+            updateNarration(data);
+        });
+        
+        // P&L Chart
+        const ctx = document.getElementById('pnl-chart').getContext('2d');
+        const pnlChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'P&L ($)',
+                    data: [],
+                    borderColor: '#00ffff',
+                    backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    }
+                },
+                scales: {
+                    x: { 
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: { 
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+        
+        // Update Functions
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connection-status');
+            const icon = document.getElementById('connection-icon');
+            const text = document.getElementById('connection-text');
+            
+            if (connected) {
+                status.className = 'status-badge status-connected';
+                icon.textContent = '🟢';
+                text.textContent = 'Connected';
+            } else {
+                status.className = 'status-badge status-disconnected';
+                icon.textContent = '⚫';
+                text.textContent = 'Disconnected';
+            }
+        }
+        
+        function updateSwarmBots(bots) {
+            const container = document.getElementById('swarmbot-container');
+            const count = document.getElementById('swarmbot-count');
+            const activeCount = document.getElementById('active-bot-count');
+            
+            count.textContent = bots.length;
+            activeCount.textContent = bots.length;
+            
+            if (!bots || bots.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🐝</div><div>No active SwarmBots</div></div>';
+                return;
+            }
+            
+            let html = '<table class="swarmbot-table">';
+            html += '<thead><tr>';
+            html += '<th>Bot ID</th><th>Pair</th><th>Direction</th>';
+            html += '<th>Entry</th><th>Current</th><th>Stop Loss</th>';
+            html += '<th>Take Profit</th><th>P&L</th><th>Status</th>';
+            html += '</tr></thead><tbody>';
+            
+            bots.forEach(bot => {
+                const pnlClass = bot.unrealized_pnl >= 0 ? 'pnl-positive' : 'pnl-negative';
+                const dirClass = bot.direction === 'LONG' ? 'direction-long' : 'direction-short';
+                const pnlSign = bot.unrealized_pnl >= 0 ? '+' : '';
+                
+                html += '<tr class="swarmbot-row">';
+                html += `<td class="bot-id">${bot.bot_id}</td>`;
+                html += `<td><strong>${bot.pair}</strong></td>`;
+                html += `<td class="${dirClass}">${bot.direction}</td>`;
+                html += `<td>${bot.entry_price.toFixed(5)}</td>`;
+                html += `<td>${bot.current_price.toFixed(5)}</td>`;
+                html += `<td>${bot.stop_loss.toFixed(5)}</td>`;
+                html += `<td>${bot.take_profit.toFixed(5)}</td>`;
+                html += `<td class="${pnlClass}">${pnlSign}$${bot.unrealized_pnl.toFixed(2)} (${pnlSign}${bot.pnl_pct.toFixed(2)}%)</td>`;
+                html += `<td>${bot.status}</td>`;
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        function updateRegime(data) {
+            // Regime name
+            const regimeName = document.getElementById('regime-name');
+            regimeName.textContent = data.regime;
+            regimeName.className = 'regime-name regime-' + data.regime.toLowerCase();
+            
+            // Confidence bar
+            const confidenceFill = document.getElementById('confidence-fill');
+            confidenceFill.style.width = data.confidence + '%';
+            confidenceFill.textContent = data.confidence.toFixed(1) + '%';
+            
+            // Stats
+            document.getElementById('regime-positions').textContent = data.active_positions;
+            document.getElementById('regime-trades').textContent = data.trades_today;
+            document.getElementById('regime-wins').textContent = data.wins_today || 0;
+            document.getElementById('regime-losses').textContent = data.losses_today || 0;
+            
+            // P&L
+            const pnlElement = document.getElementById('total-pnl');
+            const pnl = data.total_pnl_today;
+            pnlElement.textContent = (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2);
+            pnlElement.style.color = pnl >= 0 ? '#00ff00' : '#ff0000';
+            
+            // Win Rate
+            document.getElementById('win-rate').textContent = data.win_rate.toFixed(1) + '%';
+            
+            // Update chart
+            const now = new Date().toLocaleTimeString();
+            if (pnlChart.data.labels.length > 20) {
+                pnlChart.data.labels.shift();
+                pnlChart.data.datasets[0].data.shift();
+            }
+            pnlChart.data.labels.push(now);
+            pnlChart.data.datasets[0].data.push(pnl);
+            pnlChart.update('none');
+        }
+        
+        function updateNarration(entries) {
+            const feed = document.getElementById('narration-feed');
+            
+            if (!entries || entries.length === 0) return;
+            
+            // Remove empty state if present
+            const emptyState = feed.querySelector('.empty-state');
+            if (emptyState) {
+                feed.innerHTML = '';
+            }
+            
+            entries.forEach(entry => {
+                const item = document.createElement('div');
+                item.className = 'narration-item';
+                
+                const time = new Date(entry.timestamp).toLocaleTimeString();
+                const rickText = entry.rick_says || entry.event_type || 'System update';
+                
+                item.innerHTML = `
+                    <div class="narration-time">${time}</div>
+                    <div class="narration-text"><span class="rick-says">Rick:</span> ${rickText}</div>
+                `;
+                
+                feed.insertBefore(item, feed.firstChild);
+            });
+            
+            // Keep only last 50 items
+            while (feed.children.length > 50) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        function logActivity(message) {
+            const log = document.getElementById('activity-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const time = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-event">${message}</span>`;
+            
+            log.insertBefore(entry, log.firstChild);
+            
+            // Keep only last 50 entries
+            while (log.children.length > 50) {
+                log.removeChild(log.lastChild);
+            }
+        }
+        
+        function clearNarration() {
+            document.getElementById('narration-feed').innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><div>Narration cleared</div></div>';
+            logActivity('Narration feed cleared');
+        }
+        
+        function requestUpdate(type) {
+            socket.emit('request_update', { type: type });
+            logActivity(`Requested ${type} update`);
+        }
+        
+        // Auto-reconnect
+        setInterval(() => {
+            if (!socket.connected) {
+                socket.connect();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

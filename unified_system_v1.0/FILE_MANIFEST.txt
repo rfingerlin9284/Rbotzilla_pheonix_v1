@@ -1,0 +1,11 @@
+total 188K
+drwxrwxr-x+  2 ing ing 4.0K Oct 15 19:42 .
+drwxrwxr-x+ 31 ing ing  12K Oct 15 19:21 ..
+-rw-rw-r--+  1 ing ing 9.7K Oct 15 19:42 AI_INSTRUCTIONS.md
+-rw-rw-r--+  1 ing ing  17K Oct 15 19:41 CHARTER_SUMMARY.md
+-rw-rw-r--+  1 ing ing    0 Oct 15 19:42 FILE_MANIFEST.txt
+-rw-rw-r--+  1 ing ing  28K Oct 15 19:39 README_UNIFIED_SYSTEM_v1.0.md
+-rw-rw-r--+  1 ing ing 7.7K Oct 15 19:39 momentum_trailing.py
+-rw-r--r--+  1 ing ing  31K Oct 15 19:39 oanda_connector.py
+-rw-rw-r--+  1 ing ing  41K Oct 15 19:39 oanda_trading_engine.py
+-r--r--r--+  1 ing ing  18K Oct 15 19:39 rick_charter.py

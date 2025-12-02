@@ -1,0 +1,7 @@
+{
+  "label": "RIC • LIVE — Units Floor 15k — Hard Floor — 5-Gate — Human Narration",
+  "charter": {"units_floor":15000,"rr_min":3.2,"max_positions":3,"breaker_pct":0.05,"oco":true},
+  "gates": {"layers":5,"margin_cap_pct":35,"correlation_guard":true,"time_stop_hours":6},
+  "narration": {"human_only":true,"important_only":true},
+  "notes": "Institutional hard policy; do not relax without OVERRIDE."
+}

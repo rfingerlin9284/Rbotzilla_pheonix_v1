@@ -1,0 +1,17 @@
+{
+  "name": "rbotmaster-tmux-gui",
+  "version": "1.0.0",
+  "description": "Live TMUX streaming GUI with Rick AI command interface",
+  "main": "tmux_server.js",
+  "scripts": {
+    "start": "node tmux_server.js",
+    "dev": "node tmux_server.js"
+  },
+  "keywords": ["tmux", "websocket", "gui", "trading", "ai"],
+  "author": "RBOTzilla UNI Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.14.2"
+  }
+}

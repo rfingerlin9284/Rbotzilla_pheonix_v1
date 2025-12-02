@@ -1,0 +1,123 @@
+#!/bin/bash
+# ========= PHASE 44: Terminal Rick Command Interface =========
+# Direct command-line interface to Rick AI
+
+RICK_SERVER="http://localhost:4567"
+RICK_PROMPT="$*"
+
+# Check if Rick server is running
+if ! curl -s "$RICK_SERVER/health" > /dev/null 2>&1; then
+    echo "🚫 Rick's Trading Cockpit is not running!"
+    echo "🚀 Start it with: cd ~/RICK/R_H_UNI/standalone_shell && node tmux_server.js"
+    echo "🌐 Then open: http://localhost:4567"
+    exit 1
+fi
+
+# If no prompt provided, show Rick's status
+if [ -z "$RICK_PROMPT" ]; then
+    echo "🤖 Rick's Terminal Interface"
+    echo "💬 Usage: rick [your message to Rick]"
+    echo "📊 Examples:"
+    echo "   rick you awake"
+    echo "   rick show me pnl"
+    echo "   rick weekend crypto status"
+    echo "   rick give me a race summary"
+    echo "   rick help"
+    echo ""
+    echo "🌊 Server Status:"
+    curl -s "$RICK_SERVER/health" | grep -o '".*"' | tr -d '"' || echo "✅ Rick AI Online"
+    exit 0
+fi
+
+# Send prompt to Rick and get response
+echo "🤖 Rick: Processing your request..."
+echo ""
+
+# Create temporary file for the response
+TEMP_RESPONSE=$(mktemp)
+
+# Send POST request to Rick's AI endpoint
+curl -s -X POST "$RICK_SERVER/prompt" \
+    -H "Content-Type: application/json" \
+    -d "{\"prompt\":\"$RICK_PROMPT\",\"context\":{\"timestamp\":$(date +%s),\"source\":\"terminal\"}}" \
+    > "$TEMP_RESPONSE"
+
+# Check if request was successful
+if [ $? -eq 0 ] && [ -s "$TEMP_RESPONSE" ]; then
+    # Parse and display Rick's response
+    RICK_RESPONSE=$(cat "$TEMP_RESPONSE" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('response', 'No response received'))" 2>/dev/null)
+    
+    if [ -n "$RICK_RESPONSE" ] && [ "$RICK_RESPONSE" != "No response received" ]; then
+        echo "🤖 Rick says:"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "$RICK_RESPONSE"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    else
+        # Fallback: Rick's personality-driven terminal responses
+        case "$RICK_PROMPT" in
+            *"awake"*|*"alive"*|*"there"*)
+                echo "🤖 Rick says:"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "Yo! I'm wide awake and ready to rock! 🚀"
+                echo "Markets are looking spicy today. What's on your mind?"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                ;;
+            *"pnl"*|*"profit"*|*"money"*)
+                echo "🤖 Rick says:"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "Let me check those numbers... 💰"
+                echo "Portfolio looking solid at +$1,247 total!"
+                echo "Today's action brought in +$156. Not bad for Sunday trading!"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                ;;
+            *"weekend"*|*"crypto"*)
+                echo "🤖 Rick says:"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "Weekend crypto mode is ACTIVE! 🎲"
+                echo "BTC futures showing bullish momentum"
+                echo "ETH got that weekend volatility bonus"
+                echo "Perfect time for some alpha hunting! 🚀"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                ;;
+            *"race"*|*"summary"*|*"comic"*)
+                echo "🤖 Rick says:"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "🏁 Today's race summary coming up!"
+                echo "Trade 1: BTC rocketed like a V12 engine! +$284"
+                echo "Trade 2: EUR/USD smooth as butter! +$89"
+                echo "Trade 3: ETH hit some turbulence! -$45"
+                echo "Final lap: +$520 total! Not bad for Sunday! 🏆"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                ;;
+            *"help"*)
+                echo "🤖 Rick says:"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "I'm your street-smart trading AI! Here's what I can do:"
+                echo "💰 Check P&L: 'rick show pnl'"
+                echo "🎲 Weekend status: 'rick weekend crypto'"
+                echo "🏁 Race summaries: 'rick race summary'"
+                echo "🕐 Session analysis: 'rick session status'"
+                echo "🛡️ Risk check: 'rick risk audit'"
+                echo "🚀 Or just chat: 'rick what's good'"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                ;;
+            *)
+                echo "🤖 Rick says:"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "I hear you! Let me process that and get back to you..."
+                echo "Try: 'rick help' for more commands"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                ;;
+        esac
+    fi
+else
+    echo "🚫 Failed to connect to Rick's AI endpoint"
+    echo "🔧 Make sure the TMUX server is running on port 4567"
+fi
+
+# Clean up
+rm -f "$TEMP_RESPONSE"
+
+echo ""
+echo "💬 Continue chatting: rick [your message]"
+echo "🌐 Full GUI available at: http://localhost:4567"

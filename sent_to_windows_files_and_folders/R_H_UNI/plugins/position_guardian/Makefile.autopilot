@@ -1,0 +1,72 @@
+.PHONY: guardian-watch guardian-logs profit-stats profit-track profit-reset guardian-restart help
+
+BASE:=/home/ing/RICK/R_H_UNI
+PLUG:=$(BASE)/plugins/position_guardian
+LOGD:=$(BASE)/logs
+DAEMON_LOG:=$(LOGD)/guardian.log
+PROFIT_STATS:=$(LOGD)/profit_autopilot_stats.json
+STATE_FILE:=$(LOGD)/guardian_state.json
+
+help:
+	@echo "Position Guardian + Profit Autopilot — Makefile targets"
+	@echo "  make guardian-watch      tail daemon logs in real-time"
+	@echo "  make guardian-logs       show last 50 lines of daemon log"
+	@echo "  make guardian-restart    restart the systemd daemon"
+	@echo "  make profit-stats        compute & display profit analytics"
+	@echo "  make profit-track        run analytics in watch mode (every 10s)"
+	@echo "  make profit-reset        clear profit stats for new session"
+	@echo "  make setup-autopilot     full install of Profit Autopilot + tracking"
+
+# Watch live daemon output
+guardian-watch:
+	systemctl --user status position-guardian || echo "Daemon not running"
+	@echo "--- Tailing guardian.log ---"
+	tail -f $(DAEMON_LOG)
+
+# Show recent daemon logs
+guardian-logs:
+	@if [ -f $(DAEMON_LOG) ]; then \
+		tail -n 50 $(DAEMON_LOG); \
+	else \
+		echo "No logs yet. Run: make guardian-watch"; \
+	fi
+
+# Restart daemon
+guardian-restart:
+	systemctl --user restart position-guardian.service
+	@echo "[OK] Position Guardian restarted"
+	sleep 2
+	systemctl --user status position-guardian
+
+# Compute profit improvement metrics
+profit-stats:
+	@python3 $(PLUG)/profit_analytics.py
+
+# Watch profit stats every 10s
+profit-track:
+	@while true; do \
+		clear; \
+		echo "=== Profit Autopilot Live Tracking ==="; \
+		echo "Last updated: $$(date +%H:%M:%S)"; \
+		echo; \
+		python3 $(PLUG)/profit_analytics.py; \
+		echo; \
+		sleep 10; \
+	done
+
+# Reset all profit tracking data
+profit-reset:
+	rm -f $(PROFIT_STATS) $(STATE_FILE)
+	@echo "[OK] Profit stats cleared. New session starting..."
+
+# Full setup
+setup-autopilot: guardian-restart
+	@echo "[Step 1/3] Profit Autopilot rules installed"
+	@echo "[Step 2/3] Analytics module ready"
+	@echo "[Step 3/3] Restarted daemon to pick up changes"
+	@echo ""
+	@echo "Next: Watch it work with:"
+	@echo "  make guardian-watch     # Live logs"
+	@echo "  make profit-track       # Profit analytics every 10s"
+
+.DEFAULT_GOAL := help

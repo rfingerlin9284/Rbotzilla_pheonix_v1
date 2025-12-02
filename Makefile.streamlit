@@ -1,0 +1,64 @@
+.PHONY: help install backend dashboard setup clean test logs
+
+help:
+	@echo "🤖 RBOTzilla Streamlit Dashboard Commands"
+	@echo "=========================================="
+	@echo ""
+	@echo "Setup:"
+	@echo "  make setup       - Install dependencies & create .env"
+	@echo "  make install     - Install requirements.txt"
+	@echo ""
+	@echo "Run:"
+	@echo "  make backend     - Start FastAPI backend (port 8000)"
+	@echo "  make dashboard   - Start Streamlit dashboard (port 8501)"
+	@echo "  make all         - Start both (requires 2 terminals)"
+	@echo ""
+	@echo "Utilities:"
+	@echo "  make health      - Check backend health"
+	@echo "  make logs        - Tail backend logs"
+	@echo "  make clean       - Clean cache & logs"
+	@echo "  make test        - Run tests"
+	@echo ""
+
+setup:
+	@echo "🔧 Setting up RBOTzilla..."
+	@bash setup_streamlit.sh
+
+install:
+	@echo "📦 Installing dependencies..."
+	pip install -r requirements.txt
+	pip install fastapi uvicorn websockets websocket-client
+
+backend:
+	@echo "🚀 Starting FastAPI Backend..."
+	@echo "API: http://127.0.0.1:8000"
+	@echo "Docs: http://127.0.0.1:8000/docs"
+	python3 -m uvicorn backend:app --reload --host 127.0.0.1 --port 8000
+
+dashboard:
+	@echo "🎨 Starting Streamlit Dashboard..."
+	@echo "Open: http://127.0.0.1:8501"
+	streamlit run dashboard.py --server.port 8501 --server.address 127.0.0.1
+
+all: backend dashboard
+
+health:
+	@echo "🏥 Checking backend health..."
+	curl -s http://127.0.0.1:8000/api/health | python3 -m json.tool
+
+logs:
+	@echo "📋 Tailing backend logs..."
+	tail -f rbotzilla_backend.log
+
+clean:
+	@echo "🧹 Cleaning cache & logs..."
+	rm -rf __pycache__ .pytest_cache .streamlit
+	rm -f rbotzilla_backend.log
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	@echo "✅ Clean complete"
+
+test:
+	@echo "🧪 Running tests..."
+	pytest -v
+
+.DEFAULT_GOAL := help

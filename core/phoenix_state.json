@@ -1,0 +1,9 @@
+{
+  "daily_start_balance": 10000.0,
+  "current_balance": 0.0,
+  "daily_pnl_pct": 0.0,
+  "daily_peak_pnl": 0.0,
+  "open_positions_count": 0,
+  "last_updated_iso": "2025-12-02T14:32:19.664447+00:00",
+  "cooldowns": {}
+}

@@ -1,0 +1,6 @@
+Restore hedging: Always-on quant hedger, ML 3:1 filter, anti-spam cooldowns, and SL/TP enforcement
+- Hedger: integrates quant_hedge_rules + regime_detector; applies size multipliers and stop tightening
+- ML: util/smart_aggression.py with 3:1 filter and hive_mind_bridge attaching ml_data
+- Anti-spam: 60s cooldown (fix_machine_gun.py)
+- Snapshot and installer utilities: create_snapshot.py, install_brain.py
+- Misc: archive legacy simulation files to archived_simulations/

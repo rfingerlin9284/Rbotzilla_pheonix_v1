@@ -1,0 +1,236 @@
+# Makefile — Wolfpack Autonomy Hardening + Gate Charter Integration
+# 
+# This Makefile is the orchestration layer:
+# - Manages guardian lifecycle (systemd)
+# - Routes ALL orders through the gate (non-bypassable)
+# - Consumes live pointers feed (swarm-aware)
+# - Provides audit trail inspection
+#
+# Use: make <target>
+#
+
+.PHONY: help guard-on guard-off guard-status order tick watch-pointers watch-logs install-hardening test-gate-sanity
+
+BIN := $(HOME)/.local/bin
+POINTERS := /home/ing/RICK/R_H_UNI/logs/actions_now.json
+NARRATION := /home/ing/RICK/R_H_UNI/logs/narration.jsonl
+BASE := /home/ing/RICK/R_H_UNI
+
+# Color codes for output
+RED := \033[0;31m
+GREEN := \033[0;32m
+YELLOW := \033[1;33m
+BLUE := \033[0;34m
+NC := \033[0m # No Color
+
+help:
+	@echo "$(BLUE)╔════════════════════════════════════════════════════════════╗$(NC)"
+	@echo "$(BLUE)║  WOLFPACK AUTONOMY HARDENING + GATE CHARTER                ║$(NC)"
+	@echo "$(BLUE)╚════════════════════════════════════════════════════════════╝$(NC)"
+	@echo ""
+	@echo "$(YELLOW)GUARDIAN LIFECYCLE:$(NC)"
+	@echo "  make guard-on              Install & enable guardian (systemd)"
+	@echo "  make guard-off             Stop guardian & timers"
+	@echo "  make guard-status          Check guardian + timer status"
+	@echo "  make guard-restart         Restart guardian (emergency)"
+	@echo ""
+	@echo "$(YELLOW)ORDER ENTRY (Non-Bypassable):$(NC)"
+	@echo "  make order VENUE=oanda SYMBOL=EUR_USD SIDE=buy UNITS=1000"
+	@echo "  make order-dry VENUE=oanda SYMBOL=EUR_USD SIDE=buy UNITS=1000"
+	@echo "  make order-reduce-only VENUE=oanda SYMBOL=EUR_USD SIDE=sell UNITS=500"
+	@echo ""
+	@echo "$(YELLOW)SWARM / POINTERS:$(NC)"
+	@echo "  make tick                  Show all pending actions"
+	@echo "  make watch-pointers        Watch live pointers (refresh 1s)"
+	@echo "  make watch-logs            Watch narration audit trail"
+	@echo ""
+	@echo "$(YELLOW)INSTALLATION & TESTING:$(NC)"
+	@echo "  make install-hardening     Run autonomy hardening kit"
+	@echo "  make test-gate-sanity      Dry-run order gate tests"
+	@echo "  make audit-trail           Show last 20 lines of narration"
+	@echo ""
+
+# ═══════════════════════════════════════════════════════════════════════
+# GUARDIAN LIFECYCLE
+# ═══════════════════════════════════════════════════════════════════════
+
+guard-on: install-hardening
+	@echo "$(GREEN)[GUARDIAN]$(NC) Enabling systemd services..."
+	@systemctl --user enable position-guardian.service
+	@systemctl --user enable pg-emit-state.timer
+	@systemctl --user start position-guardian.service
+	@systemctl --user start pg-emit-state.timer
+	@sleep 2
+	@echo "$(GREEN)[OK]$(NC) Guardian is $(shell systemctl --user is-active position-guardian.service)"
+	@echo "$(GREEN)[OK]$(NC) Pointers timer is $(shell systemctl --user is-active pg-emit-state.timer)"
+	@echo "$(GREEN)[READY]$(NC) All orders will now pass through the gate."
+
+guard-off:
+	@echo "$(RED)[GUARDIAN]$(NC) Stopping systemd services..."
+	@systemctl --user stop position-guardian.service position-guardian.socket || true
+	@systemctl --user stop pg-emit-state.timer || true
+	@echo "$(RED)[OK]$(NC) Guardian and pointers stopped."
+	@echo "$(YELLOW)[WARNING]$(NC) Orders will NOT pass through gate until guard-on is run."
+
+guard-status:
+	@echo "$(BLUE)[STATUS]$(NC) Guardian Service:"
+	@systemctl --user status position-guardian.service --no-pager || echo "Not active"
+	@echo ""
+	@echo "$(BLUE)[STATUS]$(NC) Pointers Timer:"
+	@systemctl --user status pg-emit-state.timer --no-pager || echo "Not active"
+	@echo ""
+	@echo "$(BLUE)[LOGS]$(NC) Last 10 guardian events:"
+	@journalctl --user -u position-guardian.service -n 10 --no-pager || echo "No logs"
+
+guard-restart:
+	@echo "$(YELLOW)[RESTART]$(NC) Emergency restart of guardian..."
+	@systemctl --user restart position-guardian.service
+	@sleep 1
+	@systemctl --user status position-guardian.service --no-pager
+
+# ═══════════════════════════════════════════════════════════════════════
+# ORDER ENTRY (Non-Bypassable Gate)
+# ═══════════════════════════════════════════════════════════════════════
+
+order:
+	@if [ -z "$(VENUE)" ] || [ -z "$(SYMBOL)" ] || [ -z "$(SIDE)" ] || [ -z "$(UNITS)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Missing required args: VENUE SYMBOL SIDE UNITS"; \
+		echo "Usage: make order VENUE=oanda SYMBOL=EUR_USD SIDE=buy UNITS=1000"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)[GATE]$(NC) Routing order through guardian gate..."
+	@$(BIN)/trade \
+		--venue $(VENUE) \
+		--symbol $(SYMBOL) \
+		--side $(SIDE) \
+		--units $(UNITS) \
+		$(if $(REDUCE_ONLY),--reduce-only,)
+	@echo "$(GREEN)[COMPLETE]$(NC) Order placed (or rejected by gate)."
+
+order-dry:
+	@if [ -z "$(VENUE)" ] || [ -z "$(SYMBOL)" ] || [ -z "$(SIDE)" ] || [ -z "$(UNITS)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Missing required args"; \
+		exit 1; \
+	fi
+	@echo "$(YELLOW)[DRY-RUN]$(NC) Testing order against gate (no actual trade)..."
+	@$(BIN)/trade \
+		--venue $(VENUE) \
+		--symbol $(SYMBOL) \
+		--side $(SIDE) \
+		--units $(UNITS) \
+		--dry-run
+	@echo "$(GREEN)[DRY-RUN COMPLETE]$(NC)"
+
+order-reduce-only:
+	@if [ -z "$(VENUE)" ] || [ -z "$(SYMBOL)" ] || [ -z "$(SIDE)" ] || [ -z "$(UNITS)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Missing required args"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)[GATE]$(NC) Reduce-only order (bypasses some gates)..."
+	@$(BIN)/trade \
+		--venue $(VENUE) \
+		--symbol $(SYMBOL) \
+		--side $(SIDE) \
+		--units $(UNITS) \
+		--reduce-only
+	@echo "$(GREEN)[COMPLETE]$(NC)"
+
+# ═══════════════════════════════════════════════════════════════════════
+# SWARM / LIVE POINTERS
+# ═══════════════════════════════════════════════════════════════════════
+
+tick:
+	@if [ ! -f "$(POINTERS)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Pointers file not found: $(POINTERS)"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)[POINTERS]$(NC) Pending Actions:"
+	@jq -r '.actions[]? | "[ACTION] \(.type) on \(.symbol) (units=\(.units), pos=\(.position_id))"' $(POINTERS) 2>/dev/null || echo "No actions"
+	@echo ""
+	@echo "$(BLUE)[ACCOUNT]$(NC) Current State:"
+	@jq '.account' $(POINTERS) 2>/dev/null | sed 's/^/  /'
+
+watch-pointers:
+	@echo "$(BLUE)[WATCH]$(NC) Live pointers (refresh every 1s)..."
+	@watch -n 1 'jq ".account.margin_utilization, .positions | length, .actions | length" $(POINTERS) 2>/dev/null || echo "No data yet"'
+
+watch-logs:
+	@echo "$(BLUE)[WATCH]$(NC) Live narration audit trail..."
+	@tail -f $(NARRATION)
+
+# ═══════════════════════════════════════════════════════════════════════
+# INSTALLATION & TESTING
+# ═══════════════════════════════════════════════════════════════════════
+
+install-hardening:
+	@if [ ! -f "$(BASE)/install_wolfpack_autonomy_hardening.sh" ]; then \
+		echo "$(RED)[ERROR]$(NC) Script not found: $(BASE)/install_wolfpack_autonomy_hardening.sh"; \
+		exit 1; \
+	fi
+	@echo "$(YELLOW)[INSTALLING]$(NC) Wolfpack Autonomy Hardening Kit..."
+	@bash $(BASE)/install_wolfpack_autonomy_hardening.sh
+	@echo "$(GREEN)[COMPLETE]$(NC) Hardening installed."
+
+test-gate-sanity:
+	@echo "$(YELLOW)[TEST]$(NC) Running gate sanity tests (all dry-run)..."
+	@echo ""
+	@echo "$(BLUE)[TEST 1]$(NC) Valid order should pass gate (EUR_USD buy 1000)"
+	@$(BIN)/trade --venue oanda --symbol EUR_USD --side buy --units 1000 --dry-run || true
+	@echo ""
+	@echo "$(BLUE)[TEST 2]$(NC) Tiny order should pass gate (EUR_USD buy 100)"
+	@$(BIN)/trade --venue oanda --symbol EUR_USD --side buy --units 100 --dry-run || true
+	@echo ""
+	@echo "$(BLUE)[TEST 3]$(NC) Reduce-only should be allowed"
+	@$(BIN)/trade --venue oanda --symbol EUR_USD --side sell --units 500 --reduce-only --dry-run || true
+	@echo ""
+	@echo "$(GREEN)[TESTS COMPLETE]$(NC)"
+
+audit-trail:
+	@if [ ! -f "$(NARRATION)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Narration file not found: $(NARRATION)"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)[AUDIT]$(NC) Last 20 narration entries:"
+	@tail -20 $(NARRATION) | jq '.' 2>/dev/null | sed 's/^/  /'
+
+# ═══════════════════════════════════════════════════════════════════════
+# UTILITIES
+# ═══════════════════════════════════════════════════════════════════════
+
+.PHONY: clean logs dump-pointers
+
+logs:
+	@mkdir -p $(BASE)/logs
+	@echo "$(GREEN)[OK]$(NC) Logs directory: $(BASE)/logs"
+
+dump-pointers:
+	@if [ -f "$(POINTERS)" ]; then \
+		echo "$(BLUE)[POINTERS]$(NC)"; \
+		jq '.' $(POINTERS) 2>/dev/null; \
+	else \
+		echo "$(RED)[NONE]$(NC) Pointers not available yet (wait 20s)"; \
+	fi
+
+clean:
+	@echo "$(YELLOW)[CLEANUP]$(NC) Removing old backup files..."
+	@find $(HOME)/.local/bin -name "trade.bak.*" -delete 2>/dev/null || true
+	@echo "$(GREEN)[OK]$(NC)"
+
+# ═══════════════════════════════════════════════════════════════════════
+# WOLF PACK INIT (One-Shot Setup)
+# ═══════════════════════════════════════════════════════════════════════
+
+.PHONY: init
+
+init: guard-on logs
+	@echo ""
+	@echo "$(GREEN)╔════════════════════════════════════════════════════════════╗$(NC)"
+	@echo "$(GREEN)║  ✅ WOLFPACK AUTONOMY HARDENING INITIALIZED                ║$(NC)"
+	@echo "$(GREEN)╚════════════════════════════════════════════════════════════╝$(NC)"
+	@echo ""
+	@echo "$(BLUE)Next Steps:$(NC)"
+	@echo "  1. Verify gate is working: make test-gate-sanity"
+	@echo "  2. Watch live pointers:   make watch-pointers"
+	@echo "  3. Place order:           make order VENUE=oanda SYMBOL=EUR_USD SIDE=buy UNITS=1000"
+	@echo "  4. Monitor audit trail:   make watch-logs"
+	@echo ""

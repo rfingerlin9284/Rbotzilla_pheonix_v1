@@ -1,0 +1,77 @@
+import logging
+import requests
+import json
+from auth_manager import AuthManager
+
+logger = logging.getLogger("OandaConn")
+
+class OandaConnection:
+    def __init__(self):
+        self.auth = AuthManager()
+        self.token = self.auth.get_oanda_token()
+        self.account = self.auth.get_oanda_account()
+        
+        # Select Environment URL
+        if self.auth.is_live():
+            self.base_url = "https://api-fxtrade.oanda.com/v3"
+        else:
+            self.base_url = "https://api-fxpractice.oanda.com/v3"
+            
+        self.headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+
+    def heartbeat(self):
+        try:
+            url = f"{self.base_url}/accounts/{self.account}/summary"
+            r = requests.get(url, headers=self.headers, timeout=5)
+            
+            if r.status_code == 200:
+                data = r.json()
+                balance = data['account']['balance']
+                return True, f"Connected (Bal: ${balance})"
+            else:
+                return False, f"HTTP {r.status_code}: {r.text}"
+        except Exception as e:
+            return False, str(e)
+            
+    def place_order(self, order_spec):
+        """
+        Executes a real trade on OANDA.
+        order_spec: {'instrument': 'EUR_USD', 'units': 10000, 'type': 'MARKET'}
+        """
+        try:
+            # 1. Construct the Payload
+            # OANDA requires the instrument format "EUR_USD" (Underscore)
+            instrument = order_spec['instrument'].replace('/', '_')
+            
+            payload = {
+                "order": {
+                    "units": str(order_spec['units']),
+                    "instrument": instrument,
+                    "timeInForce": "FOK",
+                    "type": "MARKET",
+                    "positionFill": "DEFAULT"
+                }
+            }
+
+            # 2. Send Request
+            url = f"{self.base_url}/accounts/{self.account}/orders"
+            logger.info(f"🚀 SENDING REAL ORDER: {json.dumps(payload)}")
+            
+            r = requests.post(url, headers=self.headers, json=payload, timeout=5)
+            
+            # 3. Handle Response
+            if r.status_code == 201:
+                data = r.json()
+                fill_price = data.get('orderFillTransaction', {}).get('price', 'UNKNOWN')
+                logger.info(f"✅ TRADE FILLED @ {fill_price} (ID: {data.get('lastTransactionID')})")
+                return True
+            else:
+                logger.error(f"❌ TRADE FAILED: {r.status_code} - {r.text}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"❌ EXCEPTION IN ORDER: {str(e)}")
+            return False

@@ -1,0 +1,26 @@
+{
+  "mode": "CANARY",
+  "session_duration_minutes": 45.350356966666666,
+  "session_duration_hours": 0.7558392827777778,
+  "total_trades": 0,
+  "completed_trades": 0,
+  "wins": 0,
+  "losses": 0,
+  "win_rate": 0.0,
+  "total_pnl": 0.0,
+  "avg_pnl_per_trade": 0,
+  "starting_capital": 2271.38,
+  "ending_capital": 2271.38,
+  "return_pct": 0.0,
+  "consecutive_losses": 0,
+  "trades_rejected": 0,
+  "charter_violations": 0,
+  "charter_compliance": {
+    "min_notional_usd": 15000,
+    "min_risk_reward": 3.2,
+    "max_hold_hours": 6,
+    "enforced": true
+  },
+  "promotion_eligible": false,
+  "timestamp": "2025-11-25T06:59:07.612088+00:00"
+}

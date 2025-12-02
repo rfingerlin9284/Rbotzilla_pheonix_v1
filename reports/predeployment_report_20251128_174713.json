@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-11-28T17:47:13.128297",
+  "repo_root": "/home/ing/RICK/RICK_PHOENIX",
+  "results": [
+    {
+      "name": "detect_unsafe_place_order",
+      "status": "PASS",
+      "duration_ms": 348.79,
+      "details": {
+        "unsafe_count": 0,
+        "unsafe_samples": []
+      },
+      "exception": null
+    },
+    {
+      "name": "readiness_checks",
+      "status": "PASS",
+      "duration_ms": 318.63,
+      "details": {
+        "returncode": 0,
+        "stdout": "No unsafe place_order occurrences found (scan ok)\nRunning: python3 scripts/detect_unsafe_place_order.py\nRunning: python3 tests/test_safe_place_order.py\nRunning: python3 tests/test_router_safe_orders.py\n\nAll readiness checks passed (local).\n",
+        "stderr": ""
+      },
+      "exception": null
+    },
+    {
+      "name": "safe_place_order_behavior",
+      "status": "PASS",
+      "duration_ms": 4.56,
+      "details": {
+        "paper_ok": true,
+        "paper_resp_keys": [
+          "simulated",
+          "order_id",
+          "status",
+          "details",
+          "success"
+        ],
+        "live_ok": true,
+        "live_resp_keys": [
+          "ok",
+          "id",
+          "success"
+        ]
+      },
+      "exception": null
+    },
+    {
+      "name": "router_and_demo",
+      "status": "FAIL",
+      "duration_ms": 37.12,
+      "details": {
+        "exception": "'FakeBroker' object has no attribute 'heartbeat'"
+      },
+      "exception": "Traceback (most recent call last):\n  File \"/home/ing/RICK/RICK_PHOENIX/scripts/predeployment_diagnostics.py\", line 31, in run_check\n    res = func()\n          ^^^^^^\n  File \"/home/ing/RICK/RICK_PHOENIX/scripts/predeployment_diagnostics.py\", line 107, in check_router_and_demo\n    status = r.get_broker_status()\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ing/RICK/RICK_PHOENIX/PhoenixV2/execution/router.py\", line 206, in get_broker_status\n    ok, msg = self.oanda.heartbeat()\n              ^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'FakeBroker' object has no attribute 'heartbeat'\n"
+    },
+    {
+      "name": "quant_hedge_performance",
+      "status": "PASS",
+      "duration_ms": 113.26,
+      "details": {
+        "duration_ms": 6.85,
+        "severity_score": 0.5185714285714286,
+        "primary_action": "pause_trading",
+        "confidence": 0.7
+      },
+      "exception": null
+    },
+    {
+      "name": "connectors_basic",
+      "status": "PASS",
+      "duration_ms": 135.54,
+      "details": {
+        "oanda_connect_ok": false,
+        "coinbase_connect_ok": false,
+        "ibkr_class_present": true
+      },
+      "exception": null
+    }
+  ],
+  "summary": {
+    "pass": 5,
+    "warn": 0,
+    "fail": 1
+  }
+}

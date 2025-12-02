@@ -1,0 +1,75 @@
+import time
+import logging
+import sys
+import os
+from auth_manager import AuthManager
+from oanda_connection import OandaConnection
+from ibkr_connection_stub import IBKRConnectionStub
+from strategy_aggregator import StrategyAggregator
+from execution_gate import ExecutionGate
+from hive_mind_bridge import HiveMindBridge
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - [RBOTZILLA] - %(levelname)s - %(message)s', handlers=[logging.StreamHandler(sys.stdout)])
+logger = logging.getLogger("Engine")
+
+class RBotZillaEngine:
+    def __init__(self):
+        logger.info("🦖 INITIALIZING RBOTZILLA EXECUTION SYSTEM...")
+        self.auth = AuthManager()
+        self.oanda = OandaConnection()
+        self.ibkr = IBKRConnectionStub()
+        self.brain = HiveMindBridge()       
+        self.aggregator = StrategyAggregator() 
+        self.gate = ExecutionGate()         
+        self.running = False
+
+    def start(self):
+        oanda_ok, msg = self.oanda.heartbeat()
+        if not oanda_ok:
+            logger.error(f"❌ OANDA Connection Failed: {msg}. Check .env")
+            # In paper mode we might continue, but let's be strict for now
+            # return 
+
+        self.running = True
+        logger.info("🟢 SYSTEM ONLINE. Listening for Hive Mind inference...")
+        
+        try:
+            while self.running:
+                self.tick()
+                time.sleep(1) 
+        except KeyboardInterrupt:
+            self.shutdown()
+
+    def tick(self):
+        inference = self.brain.fetch_inference()
+        if inference:
+            logger.info(f"🧠 Hive Mind Signal: {inference['pair']} {inference['direction']} [{inference['timeframe']}]")
+            valid, msg = self.aggregator.ingest_hive_inference(inference)
+            if valid:
+                signal = self.aggregator.get_valid_signals()[-1] 
+                approved, reason = self.gate.validate_signal(signal)
+                if approved:
+                    # Extra safety: double-check EXECUTION_ENABLED env toggle
+                    exec_enabled = os.getenv('EXECUTION_ENABLED', 'true').lower()
+                    if exec_enabled in ['false', '0', 'no', 'off']:
+                        logger.warning("🛡️ EXECUTION DISABLED BY ENV. Not placing orders.")
+                    else:
+                        # compute dynamic units while respecting MAX_POSITION_SIZE from env
+                        max_size = int(os.getenv('MAX_POSITION_SIZE', 10000))
+                        # default unit cap for safety when not provided
+                        default_unit_cap = 1000
+                        units = min(max_size, int(signal.get('size', default_unit_cap)))
+                        units = min(units, default_unit_cap)
+                        logger.info(f"✅ GATE PASSED. Executing on OANDA with units={units}...")
+                        self.oanda.place_order({"instrument": signal["symbol"], "units": units, "type": "MARKET"})
+                else:
+                    logger.warning(f"🛡️ GATE BLOCKED: {reason}")
+            else:
+                logger.warning(f"⚠️ AGGREGATOR BLOCKED: {msg}")
+
+    def shutdown(self):
+        logger.info("🛑 SHUTDOWN SEQUENCE INITIATED...")
+        self.running = False
+
+if __name__ == "__main__":
+    RBotZillaEngine().start()

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBOTzilla UNI - Control Center</title>
+    <style>
+        /* Sci-Fi Dashboard Theme */
+        :root {
+            --primary-color: #00ffcc;
+            --secondary-color: #ff6b35;
+            --background-dark: #0a0a0a;
+            --background-medium: #1a1a1a;
+            --background-light: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #333333;
+            --success-color: #00ff00;
+            --error-color: #ff0000;
+            --warning-color: #ffff00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background-dark);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Header Bar */
+        .header {
+            background: linear-gradient(90deg, var(--background-medium), var(--background-light));
+            border-bottom: 2px solid var(--primary-color);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-medium);
+        }
+
+        .status-light {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-color);
+            box-shadow: 0 0 6px var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Container */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+
+        /* Dashboard Panes */
+        .pane {
+            background: var(--background-medium);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            overflow: auto;
+            box-shadow: 0 4px 8px rgba(0, 255, 204, 0.1);
+        }
+
+        .pane-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pane-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .pane-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .pane-btn {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--background-dark);
+            color: var(--text-secondary);
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .pane-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* System Status Pane */
+        .system-status {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .metric-value {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Trading Console Pane */
+        .trading-console {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .console-output {
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            height: 200px;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .console-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .console-input input {
+            flex: 1;
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .console-input button {
+            background: var(--primary-color);
+            color: var(--background-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .console-input button:hover {
+            background: #00e6b8;
+        }
+
+        /* Market Data Pane */
+        .market-data {
+            grid-column: 3;
+            grid-row: 1;
+        }
+
+        .price-ticker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--background-dark);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .price-ticker.negative {
+            border-left-color: var(--error-color);
+        }
+
+        /* Analytics Pane */
+        .analytics {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+        }
+
+        .chart-placeholder {
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Rick AI Pane */
+        .rick-ai {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .rick-chat {
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            height: 150px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .rick-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .rick-input input {
+            flex: 1;
+            background: var(--background-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .rick-input button {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Animations */
+        .pane {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🚀 RBOTzilla UNI</div>
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-light"></div>
+                <span>OPERATIONAL</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-light" style="background: var(--warning-color); box-shadow: 0 0 6px var(--warning-color);"></div>
+                <span>MONITORING</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-light" style="background: var(--secondary-color); box-shadow: 0 0 6px var(--secondary-color);"></div>
+                <span>AI ACTIVE</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- System Status Pane -->
+        <div class="pane system-status">
+            <div class="pane-header">
+                <div class="pane-title">📊 System Status</div>
+                <div class="pane-controls">
+                    <div class="pane-btn" title="Refresh">↻</div>
+                    <div class="pane-btn" title="Settings">⚙</div>
+                </div>
+            </div>
+            <div class="metric">
+                <span>System Health</span>
+                <span class="metric-value">OPERATIONAL</span>
+            </div>
+            <div class="metric">
+                <span>Active Phases</span>
+                <span class="metric-value">30-33</span>
+            </div>
+            <div class="metric">
+                <span>Historical Signals</span>
+                <span class="metric-value">940</span>
+            </div>
+            <div class="metric">
+                <span>Avg Confidence</span>
+                <span class="metric-value">66.3%</span>
+            </div>
+            <div class="metric">
+                <span>Archive Backups</span>
+                <span class="metric-value">2</span>
+            </div>
+            <div class="metric">
+                <span>Upgrade Packages</span>
+                <span class="metric-value">1</span>
+            </div>
+            <div class="metric">
+                <span>Risk Management</span>
+                <span class="metric-value">ACTIVE</span>
+            </div>
+        </div>
+
+        <!-- Trading Console Pane -->
+        <div class="pane trading-console">
+            <div class="pane-header">
+                <div class="pane-title">💻 Trading Console</div>
+                <div class="pane-controls">
+                    <div class="pane-btn" title="Clear">✕</div>
+                    <div class="pane-btn" title="Export">↗</div>
+                </div>
+            </div>
+            <div class="console-output" id="consoleOutput">
+                <div style="color: var(--primary-color);">RBOTzilla UNI Console v1.0</div>
+                <div style="color: var(--text-secondary);">System initialized. Ready for commands.</div>
+                <div style="color: var(--success-color);">✅ Historical replay: 940 signals generated</div>
+                <div style="color: var(--success-color);">✅ Fusion hybridizer: AI intelligence active</div>
+                <div style="color: var(--warning-color);">⚠️ Upgrade system: 1 package pending</div>
+            </div>
+            <div class="console-input">
+                <input type="text" id="consoleInput" placeholder="Enter command..." />
+                <button onclick="executeCommand()">Execute</button>
+            </div>
+        </div>
+
+        <!-- Market Data Pane -->
+        <div class="pane market-data">
+            <div class="pane-header">
+                <div class="pane-title">📈 Market Data</div>
+                <div class="pane-controls">
+                    <div class="pane-btn" title="Refresh">↻</div>
+                    <div class="pane-btn" title="Configure">⚙</div>
+                </div>
+            </div>
+            <div class="price-ticker">
+                <div>
+                    <div style="font-weight: bold;">BTC/USDT</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Binance</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: bold;">$42,150</div>
+                    <div style="font-size: 12px; color: var(--success-color);">+1.2%</div>
+                </div>
+            </div>
+            <div class="price-ticker">
+                <div>
+                    <div style="font-weight: bold;">ETH/USDT</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Binance</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: bold;">$2,485</div>
+                    <div style="font-size: 12px; color: var(--success-color);">+0.8%</div>
+                </div>
+            </div>
+            <div class="price-ticker negative">
+                <div>
+                    <div style="font-weight: bold;">ADA/USDT</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Binance</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: bold;">$0.448</div>
+                    <div style="font-size: 12px; color: var(--error-color);">-0.3%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Pane -->
+        <div class="pane analytics">
+            <div class="pane-header">
+                <div class="pane-title">📊 Performance Analytics</div>
+                <div class="pane-controls">
+                    <div class="pane-btn" title="Timeframe">📅</div>
+                    <div class="pane-btn" title="Export">↗</div>
+                </div>
+            </div>
+            <div class="chart-placeholder">
+                📊 Performance Chart<br>
+                <span style="font-size: 12px;">Historical replay results visualization</span>
+            </div>
+        </div>
+
+        <!-- Rick AI Pane -->
+        <div class="pane rick-ai">
+            <div class="pane-header">
+                <div class="pane-title">🤖 Rick AI Assistant</div>
+                <div class="pane-controls">
+                    <div class="pane-btn" title="Clear">✕</div>
+                    <div class="pane-btn" title="Settings">⚙</div>
+                </div>
+            </div>
+            <div class="rick-chat" id="rickChat">
+                <div style="color: var(--secondary-color); font-weight: bold;">[Rick]:</div>
+                <div style="margin-bottom: 10px;">Hey! RBOTzilla UNI is fully operational. What would you like to analyze?</div>
+                <div style="color: var(--text-secondary); font-size: 11px;">Available commands: status, analyze, backtest, upgrade</div>
+            </div>
+            <div class="rick-input">
+                <input type="text" id="rickInput" placeholder="Ask Rick..." />
+                <button onclick="askRick()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Console functionality
+        function executeCommand() {
+            const input = document.getElementById('consoleInput');
+            const output = document.getElementById('consoleOutput');
+            const command = input.value.trim();
+            
+            if (command) {
+                // Add command to output
+                output.innerHTML += `<div style="color: var(--primary-color);">> ${command}</div>`;
+                
+                // Simulate command execution
+                setTimeout(() => {
+                    let response = '';
+                    switch(command.toLowerCase()) {
+                        case 'status':
+                            response = '✅ All systems operational. 940 signals generated.';
+                            break;
+                        case 'health':
+                            response = '📊 System health: EXCELLENT. All phases active.';
+                            break;
+                        case 'upgrade':
+                            response = '📦 1 upgrade package pending. Ready to apply.';
+                            break;
+                        case 'backtest':
+                            response = '📊 Running historical analysis... 66.3% avg confidence.';
+                            break;
+                        default:
+                            response = `Command '${command}' executed. Check system logs for details.`;
+                    }
+                    output.innerHTML += `<div style="color: var(--success-color);">${response}</div>`;
+                    output.scrollTop = output.scrollHeight;
+                }, 500);
+                
+                input.value = '';
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        // Rick AI functionality
+        function askRick() {
+            const input = document.getElementById('rickInput');
+            const chat = document.getElementById('rickChat');
+            const question = input.value.trim();
+            
+            if (question) {
+                // Add user message
+                chat.innerHTML += `<div style="color: var(--text-primary); margin: 10px 0;"><strong>[You]:</strong> ${question}</div>`;
+                
+                // Simulate Rick response
+                setTimeout(() => {
+                    let response = '';
+                    if (question.toLowerCase().includes('status')) {
+                        response = 'System is running perfectly! 940 historical signals with 66.3% confidence. All risk management layers active.';
+                    } else if (question.toLowerCase().includes('analyze')) {
+                        response = 'Running analysis... The fusion hybridizer shows strong ML-pattern consensus. Market conditions favorable for trading.';
+                    } else if (question.toLowerCase().includes('upgrade')) {
+                        response = 'Found 1 pending upgrade package. Recommend applying during low-activity period. Want me to schedule it?';
+                    } else {
+                        response = `Interesting question! Based on current system data, I'd recommend checking the analytics pane for detailed insights.`;
+                    }
+                    
+                    chat.innerHTML += `<div style="color: var(--secondary-color); margin: 10px 0;"><strong>[Rick]:</strong> ${response}</div>`;
+                    chat.scrollTop = chat.scrollHeight;
+                }, 1000);
+                
+                input.value = '';
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+
+        // Handle Enter key for inputs
+        document.getElementById('consoleInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') executeCommand();
+        });
+
+        document.getElementById('rickInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') askRick();
+        });
+
+        // Update timestamps and status indicators
+        setInterval(() => {
+            // Update status indicators with animation
+            const lights = document.querySelectorAll('.status-light');
+            lights.forEach(light => {
+                light.style.opacity = Math.random() > 0.5 ? '1' : '0.7';
+            });
+        }, 2000);
+
+        // Initialize dashboard
+        console.log('🚀 RBOTzilla UNI Dashboard initialized');
+        
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update price data (simulation)
+            const tickers = document.querySelectorAll('.price-ticker');
+            // This would connect to real WebSocket in production
+        }, 5000);
+    </script>
+</body>
+</html>

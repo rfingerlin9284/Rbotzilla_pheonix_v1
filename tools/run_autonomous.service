@@ -1,0 +1,19 @@
+[Unit]
+Description=RBOTzilla Autonomous Paper Trading (Run Autonomous)
+After=network.target
+
+[Service]
+Type=simple
+User=ing
+WorkingDirectory=/home/ing/RICK/RICK_LIVE_CLEAN
+Environment=EXECUTION_ENABLED=1
+Environment=ALLOW_LIVE_TRADING=false
+Environment=PAPER_MODE=true
+Environment=TRADING_ENVIRONMENT=sandbox
+ExecStart=/usr/bin/env bash -lc 'nohup bash tools/safe_start_paper_trading.sh >/home/ing/RICK/RICK_LIVE_CLEAN/logs/service_stdout.log 2>&1'
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

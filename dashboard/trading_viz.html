@@ -1,0 +1,706 @@
+<!-- Advanced Trading Dashboard Visualization Component -->
+<div id="tradingVisualization" style="display: none;">
+    
+    <!-- HIVE Analysis Results -->
+    <div class="hive-results-panel">
+        <div class="hive-header">
+            <span class="hive-title">🐝 HIVE Analysis Results</span>
+            <span class="hive-timestamp" id="hiveTimestamp">--:--:--</span>
+        </div>
+        
+        <div id="hiveAnalysisContainer" class="hive-analysis-list">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Active Positions with Live Bar Graph -->
+    <div class="positions-panel">
+        <div class="positions-header">
+            <span class="positions-title">📊 ACTIVE POSITIONS</span>
+            <span class="positions-count" id="positionCount">0 positions</span>
+        </div>
+        
+        <div id="positionsContainer" class="positions-grid">
+            <!-- Populated by JavaScript: one card per position -->
+        </div>
+    </div>
+    
+    <!-- SwarmBot Live Commentary Terminal -->
+    <div class="swarmbot-terminal">
+        <div class="terminal-header">
+            <span class="terminal-icon">🤖</span>
+            <span class="terminal-title">SwarmBot Live Commentary</span>
+            <span class="terminal-status-light" id="swarmBotStatus">●</span>
+        </div>
+        
+        <div id="swarmBotLog" class="terminal-log">
+            <div class="terminal-line">
+                <span class="terminal-timestamp">[09:21:24]</span>
+                <span class="terminal-text">🟢 SwarmBot initialized. Monitoring 5 active positions. Scanning for signal improvements...</span>
+            </div>
+        </div>
+        
+        <div class="terminal-footer">
+            <input type="text" id="swarmBotCommand" class="terminal-input" placeholder="Send command to SwarmBot (e.g., 'check EUR_USD', 'show stats')" />
+            <button id="swarmBotSend" class="terminal-send-btn">Send</button>
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* ============ HIVE ANALYSIS PANEL ============ */
+.hive-results-panel {
+    background: linear-gradient(135deg, rgba(107, 0, 200, 0.1), rgba(0, 107, 200, 0.1));
+    border: 2px solid rgba(107, 0, 200, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.hive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(107, 0, 200, 0.2);
+}
+
+.hive-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #9d4edd;
+}
+
+.hive-timestamp {
+    color: #7209b7;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.hive-analysis-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.hive-analysis-item {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 4px solid #9d4edd;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.hive-analysis-item:hover {
+    background: rgba(107, 0, 200, 0.2);
+    transform: translateX(5px);
+}
+
+.hive-analysis-item.passed {
+    border-left-color: #06d6a0;
+}
+
+.hive-analysis-item.failed {
+    border-left-color: #ef476f;
+}
+
+.hive-symbol {
+    font-weight: bold;
+    color: #ffd60a;
+    font-size: 1.1em;
+}
+
+.hive-score {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.hive-score.pass {
+    background: #06d6a0;
+    color: #000;
+}
+
+.hive-score.fail {
+    background: #ef476f;
+    color: #fff;
+}
+
+.hive-ratio {
+    color: #118ab2;
+    font-size: 0.9em;
+    margin-top: 6px;
+}
+
+.hive-comment {
+    color: #e0e0e0;
+    font-size: 0.9em;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* ============ POSITIONS PANEL ============ */
+.positions-panel {
+    background: linear-gradient(135deg, rgba(0, 107, 200, 0.1), rgba(0, 150, 200, 0.1));
+    border: 2px solid rgba(0, 150, 200, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.positions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(0, 150, 200, 0.2);
+}
+
+.positions-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #0096c7;
+}
+
+.positions-count {
+    color: #00b4d8;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.positions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 15px;
+}
+
+.position-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(0, 150, 200, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.position-card:hover {
+    border-color: rgba(0, 150, 200, 0.6);
+    background: rgba(0, 150, 200, 0.1);
+}
+
+.position-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 150, 200, 0.2);
+}
+
+.position-symbol {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffd60a;
+}
+
+.position-side {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.position-side.long {
+    background: #06d6a0;
+    color: #000;
+}
+
+.position-side.short {
+    background: #ef476f;
+    color: #fff;
+}
+
+.position-info {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.position-info-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    color: #e0e0e0;
+}
+
+.position-info-label {
+    opacity: 0.7;
+}
+
+.position-info-value {
+    font-weight: bold;
+    color: #00d9ff;
+}
+
+/* Bar Graph Visualization */
+.position-bar-graph {
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+}
+
+.bar-graph-container {
+    position: relative;
+    height: 60px;
+    background: rgba(0, 20, 40, 0.8);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.bar-sl {
+    position: absolute;
+    height: 100%;
+    left: 10%;
+    width: 15%;
+    background: linear-gradient(90deg, rgba(239, 71, 111, 0.3), rgba(239, 71, 111, 0.7));
+    border-right: 2px solid #ef476f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef476f;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.bar-entry {
+    position: absolute;
+    height: 100%;
+    left: 30%;
+    width: 25%;
+    background: linear-gradient(90deg, rgba(255, 214, 10, 0.2), rgba(255, 214, 10, 0.5));
+    border: 2px solid #ffd60a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffd60a;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.bar-tp {
+    position: absolute;
+    height: 100%;
+    right: 10%;
+    width: 20%;
+    background: linear-gradient(90deg, rgba(6, 214, 160, 0.3), rgba(6, 214, 160, 0.7));
+    border-left: 2px solid #06d6a0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #06d6a0;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.bar-current {
+    position: absolute;
+    height: 100%;
+    background: rgba(0, 217, 255, 0.8);
+    width: 3px;
+    border: 1px solid #00d9ff;
+    animation: pulse-price 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-price {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.bar-graph-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    color: #7a8a99;
+}
+
+.bar-label {
+    flex: 1;
+    text-align: center;
+}
+
+.position-pnl {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 150, 200, 0.2);
+    font-weight: bold;
+}
+
+.pnl-label {
+    opacity: 0.8;
+}
+
+.pnl-value.profit {
+    color: #06d6a0;
+}
+
+.pnl-value.loss {
+    color: #ef476f;
+}
+
+/* ============ SWARMBOT TERMINAL ============ */
+.swarmbot-terminal {
+    background: #0a0e27;
+    border: 2px solid #00ff41;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
+
+.terminal-header {
+    background: linear-gradient(90deg, rgba(0, 255, 65, 0.1), rgba(0, 0, 0, 0.8));
+    border-bottom: 1px solid #00ff41;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.terminal-icon {
+    font-size: 1.2em;
+}
+
+.terminal-title {
+    flex: 1;
+    color: #00ff41;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
+
+.terminal-status-light {
+    font-size: 1.5em;
+    color: #00ff41;
+    animation: blink-status 1s ease-in-out infinite;
+}
+
+@keyframes blink-status {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.terminal-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    background: #0a0e27;
+}
+
+.terminal-line {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.terminal-timestamp {
+    color: #0096c7;
+    font-weight: bold;
+    min-width: 70px;
+}
+
+.terminal-text {
+    color: #00ff41;
+    flex: 1;
+    word-wrap: break-word;
+}
+
+.terminal-log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-log::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.terminal-log::-webkit-scrollbar-thumb {
+    background: #00ff41;
+    border-radius: 4px;
+}
+
+.terminal-footer {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(0, 255, 65, 0.1));
+    border-top: 1px solid #00ff41;
+    padding: 12px 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.terminal-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00ff41;
+    border-radius: 5px;
+    padding: 8px 12px;
+    color: #00ff41;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.terminal-input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.terminal-input::placeholder {
+    color: rgba(0, 255, 65, 0.4);
+}
+
+.terminal-send-btn {
+    background: linear-gradient(135deg, #00ff41, #00d9ff);
+    border: none;
+    color: #000;
+    padding: 8px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.terminal-send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
+
+.terminal-send-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .positions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .swarmbot-terminal {
+        height: 300px;
+    }
+}
+</style>
+
+<script>
+// Trading Visualization JavaScript
+
+// Sample data structure for HIVE analysis
+const hiveAnalysisData = [
+    {
+        symbol: 'EUR_USD',
+        timestamp: new Date(),
+        filtering_score: 8.5,
+        profit_ratio: 3.2,
+        passed: true,
+        comment: 'Strong uptrend with solid support. Risk/reward excellent.'
+    },
+    {
+        symbol: 'GBP_USD',
+        timestamp: new Date(),
+        filtering_score: 7.2,
+        profit_ratio: 2.8,
+        passed: true,
+        comment: 'Consolidation breakout. Favorable setup.'
+    }
+];
+
+// Sample data structure for active positions
+const activePositionsData = [
+    {
+        symbol: 'EUR_USD',
+        side: 'LONG',
+        entry: 1.0850,
+        sl: 1.0780,
+        tp: 1.1050,
+        current_price: 1.0900,
+        units: 100000,
+        pnl: 500,
+        pnl_pct: 0.46
+    },
+    {
+        symbol: 'GBP_USD',
+        side: 'SHORT',
+        entry: 1.3400,
+        sl: 1.3480,
+        tp: 1.3200,
+        current_price: 1.3350,
+        units: 50000,
+        pnl: 2500,
+        pnl_pct: 1.85
+    }
+];
+
+// Populate HIVE analysis
+function updateHiveAnalysis() {
+    const container = document.getElementById('hiveAnalysisContainer');
+    if (!container) return;
+    
+    container.innerHTML = hiveAnalysisData.map(item => `
+        <div class="hive-analysis-item ${item.passed ? 'passed' : 'failed'}">
+            <div>
+                <span class="hive-symbol">${item.symbol}</span>
+                <span class="hive-score ${item.passed ? 'pass' : 'fail'}">
+                    ${item.passed ? '✓ PASS' : '✗ FAIL'} - Score: ${item.filtering_score.toFixed(1)}/10
+                </span>
+            </div>
+            <div class="hive-ratio">
+                Profit/Loss Ratio: <strong>${item.profit_ratio.toFixed(1)}:1</strong>
+                ${item.profit_ratio >= 3.0 ? '✓ Exceeds 3:1 threshold' : '✗ Below threshold'}
+            </div>
+            <div class="hive-comment">"${item.comment}"</div>
+        </div>
+    `).join('');
+}
+
+// Populate active positions with bar graph
+function updateActivePositions() {
+    const container = document.getElementById('positionsContainer');
+    const countElement = document.getElementById('positionCount');
+    if (!container) return;
+    
+    countElement.textContent = `${activePositionsData.length} position${activePositionsData.length !== 1 ? 's' : ''}`;
+    
+    container.innerHTML = activePositionsData.map((pos, idx) => {
+        const pctFromSL = ((pos.current_price - pos.sl) / (pos.entry - pos.sl)) * 100;
+        const pctFromEntry = ((pos.current_price - pos.entry) / (pos.tp - pos.entry)) * 100;
+        
+        return `
+            <div class="position-card">
+                <div class="position-header">
+                    <span class="position-symbol">${pos.symbol}</span>
+                    <span class="position-side ${pos.side === 'LONG' ? 'long' : 'short'}">
+                        ${pos.side}
+                    </span>
+                </div>
+                
+                <div class="position-info">
+                    <div class="position-info-line">
+                        <span class="position-info-label">Entry:</span>
+                        <span class="position-info-value">${pos.entry.toFixed(5)}</span>
+                    </div>
+                    <div class="position-info-line">
+                        <span class="position-info-label">Current:</span>
+                        <span class="position-info-value">${pos.current_price.toFixed(5)}</span>
+                    </div>
+                    <div class="position-info-line">
+                        <span class="position-info-label">Units:</span>
+                        <span class="position-info-value">${(pos.units / 1000).toFixed(0)}k</span>
+                    </div>
+                </div>
+                
+                <div class="position-bar-graph">
+                    <div class="bar-graph-container">
+                        <div class="bar-sl" style="left: calc(50% - 25%);">SL</div>
+                        <div class="bar-entry" style="left: calc(50% - 12.5%);">ENTRY</div>
+                        <div class="bar-tp" style="left: calc(50% + 10%);">TP</div>
+                        <div class="bar-current" style="left: calc(50% + ${(pctFromEntry - 50)}%);">●</div>
+                    </div>
+                    <div class="bar-graph-labels">
+                        <div class="bar-label">SL<br/>${pos.sl.toFixed(5)}</div>
+                        <div class="bar-label">Entry<br/>${pos.entry.toFixed(5)}</div>
+                        <div class="bar-label">TP<br/>${pos.tp.toFixed(5)}</div>
+                    </div>
+                </div>
+                
+                <div class="position-pnl">
+                    <span class="pnl-label">P&L:</span>
+                    <span class="pnl-value ${pos.pnl >= 0 ? 'profit' : 'loss'}">
+                        $${Math.abs(pos.pnl).toFixed(2)} (${pos.pnl_pct > 0 ? '+' : ''}${pos.pnl_pct.toFixed(2)}%)
+                    </span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// SwarmBot terminal handler
+function initSwarmBotTerminal() {
+    const input = document.getElementById('swarmBotCommand');
+    const sendBtn = document.getElementById('swarmBotSend');
+    const log = document.getElementById('swarmBotLog');
+    
+    if (!input || !sendBtn || !log) return;
+    
+    function addTerminalLine(timestamp, text) {
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        const ts = timestamp.toLocaleTimeString();
+        line.innerHTML = `<span class="terminal-timestamp">[${ts}]</span><span class="terminal-text">${text}</span>`;
+        log.appendChild(line);
+        log.scrollTop = log.scrollHeight;
+    }
+    
+    function sendCommand() {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        
+        addTerminalLine(new Date(), `🟣 User: ${cmd}`);
+        input.value = '';
+        
+        // Mock SwarmBot responses
+        setTimeout(() => {
+            const responses = [
+                '🟢 EUR_USD: Detecting strong upward momentum. RSI at 62, MA crossover confirmed.',
+                '🟡 Position GBP_USD: TP hit! Locking in gains, switching to next opportunity.',
+                '🔴 Market alert: Volatility spike incoming. Tightening all stops to breakeven.',
+                '🟢 Scanning complete. Found 3 high-probability setups. Quality scores: 8.7, 7.9, 8.2.',
+                '🟡 Swapping strategy: Removing TP cap on EUR_USD, enabling smart trailing stop.',
+                '🟢 All systems nominal. Capital deployment at 65%. Ready for next signal.'
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            addTerminalLine(new Date(), response);
+        }, 300);
+    }
+    
+    sendBtn.addEventListener('click', sendCommand);
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendCommand();
+    });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateHiveAnalysis();
+    updateActivePositions();
+    initSwarmBotTerminal();
+    
+    // Refresh every 5 seconds
+    setInterval(() => {
+        updateHiveAnalysis();
+        updateActivePositions();
+    }, 5000);
+});
+</script>

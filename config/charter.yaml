@@ -1,0 +1,113 @@
+# CFO Bet System Charter - YAML config for the auto trading rule engine
+# Note: This is the authoritative spec for gating, drawdown, pack rules, and risk limits
+
+mission:
+  name: CFO-Bet-AutoTrader
+  start_capital: 5000.0
+  monthly_deposit: 2000.0
+  target: 1000000.0
+  horizon_months: 36
+
+markets:
+  - name: FX
+    connector: OANDA
+  - name: Crypto
+    connector: COINBASE_ADVANCED
+  - name: Futures
+    connector: IBKR
+
+holding_constraints:
+  max_hold_hours: 6
+  allow_overnight_if_trailing_above_R: 2.0
+
+risk:
+  max_concurrent_trades: 4
+  risk_per_trade_pct: 0.0075  # 0.75% default
+  risk_per_trade_pct_high_conviction: 0.02
+  portfolio_risk_cap_pct: 0.05  # 5% of equity at risk
+  min_risk_per_trade_pct: 0.005  # 0.5% minimum
+  max_daily_loss_pct: 0.03  # 3% per day (stop trading for the day)
+  weekly_loss_pct: 0.07  # 7% per rolling week
+
+drawdown:
+  soft_threshold_pct: 0.10  # 10% reduce sizes
+  triage_threshold_pct: 0.20  # 20% only top strategies
+  emergency_halt_pct: 0.30  # 30% full halt
+
+strategy_packs:
+  core_packs:
+    institutional_sd: pack_a
+    ema_scalper: pack_b
+    trap_reversal: pack_c
+    holy_grail: pack_d
+  min_trade_size_notional: 15000
+  max_daily_trades_total: 50
+
+hedge:
+  use_hedging: true
+  min_correlation_to_hedge: -0.5
+  hedge_when_margin_pct_gt: 0.25
+
+execution:
+  require_pin: 841921
+  min_rr_ratio: 3.2
+  oco_required: true
+  max_order_latency_ms: 300
+
+version: 1
+# CFO Bet System Charter - YAML config for the auto trading rule engine
+# Note: This is the authoritative spec for gating, drawdown, pack rules, and risk limits
+
+mission:
+  name: CFO-Bet-AutoTrader
+  start_capital: 5000.0
+  monthly_deposit: 2000.0
+  target: 1000000.0
+  horizon_months: 36
+
+markets:
+  - name: FX
+    connector: OANDA
+  - name: Crypto
+    connector: COINBASE_ADVANCED
+  - name: Futures
+    connector: IBKR
+
+holding_constraints:
+  max_hold_hours: 6
+  allow_overnight_if_trailing_above_R: 2.0
+
+risk:
+  max_concurrent_trades: 4
+  risk_per_trade_pct: 0.0075  # 0.75% default
+  risk_per_trade_pct_high_conviction: 0.02
+  portfolio_risk_cap_pct: 0.05  # 5% of equity at risk
+  min_risk_per_trade_pct: 0.005  # 0.5% minimum
+  max_daily_loss_pct: 0.03  # 3% per day (stop trading for the day)
+  weekly_loss_pct: 0.07  # 7% per rolling week
+
+drawdown:
+  soft_threshold_pct: 0.10  # 10% reduce sizes
+  triage_threshold_pct: 0.20  # 20% only top strategies
+  emergency_halt_pct: 0.30  # 30% full halt
+
+strategy_packs:
+  core_packs:
+    institutional_sd: pack_a
+    ema_scalper: pack_b
+    trap_reversal: pack_c
+    holy_grail: pack_d
+  min_trade_size_notional: 15000
+  max_daily_trades_total: 50
+
+hedge:
+  use_hedging: true
+  min_correlation_to_hedge: -0.5
+  hedge_when_margin_pct_gt: 0.25
+
+execution:
+  require_pin: 841921
+  min_rr_ratio: 3.2
+  oco_required: true
+  max_order_latency_ms: 300
+version: 1

@@ -1,0 +1,622 @@
+{
+  "metadata": {
+    "system_name": "RICK_LIVE_CLEAN",
+    "pin": 841921,
+    "generated": "2025-10-12T11:00:01.092726",
+    "total_components": 34,
+    "risk_reward_ratio": 3.2,
+    "min_notional_usd": 15000
+  },
+  "core_foundation": {
+    "description": "Immutable constants and system validation",
+    "components": {
+      "rick_charter.py": {
+        "path": "foundation/rick_charter.py",
+        "purpose": "Immutable trading constants with self-validation",
+        "status": "ACTIVE",
+        "key_features": [
+          "MIN_RISK_REWARD_RATIO = 3.2",
+          "MIN_NOTIONAL_USD = $15,000",
+          "PIN validation (841921)",
+          "Self-test on import",
+          "Max placement latency: 300ms"
+        ],
+        "dependencies": [],
+        "verification": "VERIFIED"
+      },
+      "progress.py": {
+        "path": "foundation/progress.py",
+        "purpose": "Phase tracking and system progress management",
+        "status": "ACTIVE",
+        "key_features": [
+          "Phase status tracking",
+          "Atomic progress updates",
+          "Change tracker integration"
+        ],
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "VERIFIED"
+      }
+    }
+  },
+  "mode_management": {
+    "description": "Dynamic mode switching and environment control",
+    "components": {
+      "mode_manager.py": {
+        "path": "util/mode_manager.py",
+        "purpose": ".upgrade_toggle integration for OFF/GHOST/CANARY/LIVE modes",
+        "status": "ACTIVE",
+        "key_features": [
+          "Mode mappings: OFF/GHOST/CANARY/LIVE",
+          "Environment auto-detection",
+          "PIN validation for LIVE mode",
+          "Connector environment mapping",
+          "SimpleLogger (avoids util/logging.py conflict)"
+        ],
+        "modes": {
+          "OFF": {
+            "oanda": "practice",
+            "coinbase": "sandbox"
+          },
+          "GHOST": {
+            "oanda": "practice",
+            "coinbase": "sandbox"
+          },
+          "CANARY": {
+            "oanda": "practice",
+            "coinbase": "sandbox"
+          },
+          "LIVE": {
+            "oanda": "live",
+            "coinbase": "live",
+            "requires_pin": true
+          }
+        },
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "VERIFIED"
+      }
+    }
+  },
+  "logging_infrastructure": {
+    "description": "Event and P&L logging with session tracking",
+    "components": {
+      "narration_logger.py": {
+        "path": "util/narration_logger.py",
+        "purpose": "Centralized event and P&L logging",
+        "status": "ACTIVE",
+        "key_features": [
+          "log_narration() for trading events",
+          "log_pnl() for trade P&L tracking",
+          "get_session_summary() for metrics",
+          "get_latest_narration(n) for recent events",
+          "Writes to narration.jsonl and pnl.jsonl",
+          "Fallback import chain support"
+        ],
+        "log_files": {
+          "narration": "pre_upgrade/headless/logs/narration.jsonl",
+          "pnl": "pre_upgrade/headless/logs/pnl.jsonl"
+        },
+        "dependencies": [],
+        "verification": "VERIFIED"
+      },
+      "progress_tracker.py": {
+        "path": "util/progress_tracker.py",
+        "purpose": "Immutable progress tracking with auto-README generation",
+        "status": "ACTIVE",
+        "key_features": [
+          "Append-only progress log",
+          "Automatic README.md generation",
+          "Timestamped backups",
+          "Active files registry",
+          "Atomic file operations"
+        ],
+        "dependencies": [],
+        "verification": "VERIFIED"
+      }
+    }
+  },
+  "trading_connectors": {
+    "description": "Broker integrations with OCO and min-notional enforcement",
+    "components": {
+      "oanda_connector.py": {
+        "path": "brokers/oanda_connector.py",
+        "purpose": "OANDA FX trading connector with OCO support",
+        "status": "ACTIVE",
+        "key_features": [
+          "Environment auto-detection (practice/live)",
+          "Min-notional enforcement ($15k)",
+          "Auto-upsize units (500\u219212,907)",
+          "OCO placement with latency logging",
+          "Narration event logging",
+          "Import fallback chain"
+        ],
+        "asset_class": "FX",
+        "symbols": [
+          "EUR_USD",
+          "GBP_USD",
+          "USD_JPY",
+          "AUD_USD",
+          "USD_CAD"
+        ],
+        "dependencies": [
+          "rick_charter.py",
+          "mode_manager.py",
+          "narration_logger.py"
+        ],
+        "verification": "VERIFIED"
+      },
+      "coinbase_connector.py": {
+        "path": "brokers/coinbase_connector.py",
+        "purpose": "Coinbase Advanced crypto trading connector",
+        "status": "ACTIVE",
+        "key_features": [
+          "Environment auto-detection (sandbox/live)",
+          "Min-notional enforcement ($15k)",
+          "OCO placement logging",
+          "Advanced API integration",
+          "Import fallback chain"
+        ],
+        "asset_class": "CRYPTO",
+        "symbols": [
+          "BTC-USD",
+          "ETH-USD",
+          "BNB-USD",
+          "SOL-USD",
+          "XRP-USD"
+        ],
+        "dependencies": [
+          "rick_charter.py",
+          "mode_manager.py",
+          "narration_logger.py"
+        ],
+        "verification": "VERIFIED"
+      }
+    }
+  },
+  "ml_intelligence": {
+    "description": "Machine learning models and pattern recognition",
+    "components": {
+      "ml_models.py": {
+        "path": "ml_learning/ml_models.py",
+        "purpose": "ML model loader with stochastic signal generation",
+        "status": "ACTIVE",
+        "key_features": [
+          "Model types: A (Forex), B (Crypto), C (Derivatives)",
+          "Regime-aware signal generation",
+          "Confidence scoring (0.0-1.0)",
+          "Stochastic behavior support",
+          "MLSignal dataclass output"
+        ],
+        "model_types": {
+          "A": "Forex",
+          "B": "Spot Crypto",
+          "C": "Derivatives/Futures"
+        },
+        "dependencies": [
+          "regime_detector.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "pattern_learner.py": {
+        "path": "ml_learning/pattern_learner.py",
+        "purpose": "ML-powered pattern memorization and similarity matching",
+        "status": "ACTIVE",
+        "key_features": [
+          "Trade pattern storage with outcomes",
+          "Similarity scoring using indicator distance",
+          "Win/loss learning loop",
+          "Performance-based filtering (55% min win rate)",
+          "Max 10,000 patterns storage",
+          "Indicator weights: RSI (20%), MACD (20%), BB (15%)"
+        ],
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "optimizer.py": {
+        "path": "ml_learning/optimizer.py",
+        "purpose": "Strategy parameter optimization",
+        "status": "ACTIVE",
+        "key_features": [
+          "Parameter tuning",
+          "Performance optimization",
+          "Backtesting integration"
+        ],
+        "dependencies": [],
+        "verification": "ACTIVE"
+      }
+    }
+  },
+  "smart_logic": {
+    "description": "Intelligent signal validation and filtering",
+    "components": {
+      "smart_logic.py": {
+        "path": "logic/smart_logic.py",
+        "purpose": "Signal validation with RR, FVG, Fibonacci confluence",
+        "status": "ACTIVE",
+        "key_features": [
+          "Risk/Reward validation (\u22653.2)",
+          "FVG (Fair Value Gap) detection",
+          "Fibonacci confluence scoring",
+          "Filter scoring system (0.0-1.0)",
+          "SignalValidation dataclass",
+          "FilterScore with weights"
+        ],
+        "filters": [
+          "Risk/Reward ratio check",
+          "FVG alignment validation",
+          "Fibonacci level confluence",
+          "Trend strength analysis",
+          "Volume confirmation"
+        ],
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "regime_detector.py": {
+        "path": "logic/regime_detector.py",
+        "purpose": "Market regime classification",
+        "status": "ACTIVE",
+        "key_features": [
+          "Regime types: BULL, BEAR, SIDEWAYS, CRASH, TRIAGE",
+          "Volatility-based detection",
+          "Trend strength calculation",
+          "Stochastic regime probabilities",
+          "Confidence scoring"
+        ],
+        "regimes": {
+          "BULL": "Positive trend, controlled volatility",
+          "BEAR": "Negative trend",
+          "SIDEWAYS": "Low trend, low volatility",
+          "CRASH": "Extreme negative + high vol",
+          "TRIAGE": "Uncertainty baseline"
+        },
+        "dependencies": [],
+        "verification": "ACTIVE"
+      }
+    }
+  },
+  "risk_management": {
+    "description": "OCO validation, dynamic sizing, and risk controls",
+    "components": {
+      "oco_validator.py": {
+        "path": "risk/oco_validator.py",
+        "purpose": "Hard-enforce OCO on every open position",
+        "status": "ACTIVE",
+        "key_features": [
+          "Every position must have TP and SL",
+          "Auto-close positions without OCO",
+          "Risk exposure calculation",
+          "Max risk per position: 2%",
+          "Force close threshold: 5%",
+          "Validation interval: 30 seconds"
+        ],
+        "dependencies": [
+          "alerting system (optional)"
+        ],
+        "verification": "ACTIVE"
+      },
+      "oco_integration_example.py": {
+        "path": "risk/oco_integration_example.py",
+        "purpose": "OCO integration examples and templates",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      },
+      "dynamic_sizing.py": {
+        "path": "risk/dynamic_sizing.py",
+        "purpose": "Kelly Criterion-based position sizing",
+        "status": "ACTIVE",
+        "key_features": [
+          "Kelly optimal fraction calculation",
+          "Volatility adjustment",
+          "Max position: 10% capital",
+          "Min position: 0.1% capital",
+          "Kelly multiplier: 0.25 (quarter Kelly)",
+          "Volatility target: 2% daily",
+          "Sharpe ratio integration",
+          "Emergency stop at 15% drawdown"
+        ],
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "session_breaker.py": {
+        "path": "risk/session_breaker.py",
+        "purpose": "Final risk circuit breaker beyond daily limits",
+        "status": "ACTIVE",
+        "key_features": [
+          "Cumulative P&L monitoring",
+          "Halt trading at -5% threshold",
+          "Consecutive trigger limit: 3",
+          "Session reset: 24 hours",
+          "System shutdown procedures",
+          "Alerting integration"
+        ],
+        "dependencies": [
+          "alerting system (optional)"
+        ],
+        "verification": "ACTIVE"
+      },
+      "session_breaker_integration.py": {
+        "path": "risk/session_breaker_integration.py",
+        "purpose": "Session breaker integration helpers",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      },
+      "correlation_monitor.py": {
+        "path": "risk/correlation_monitor.py",
+        "purpose": "Portfolio correlation tracking and exposure control",
+        "status": "ACTIVE",
+        "key_features": [
+          "Real-time symbol correlations",
+          "Block trades >0.7 correlation",
+          "Warning at >0.5 correlation",
+          "Asset grouping: FX major/minor, crypto, indices",
+          "Min 20 data points for reliability",
+          "30-day lookback window",
+          "Portfolio diversification tracking"
+        ],
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "risk_control_center.py": {
+        "path": "risk/risk_control_center.py",
+        "purpose": "Central risk management coordination",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      }
+    }
+  },
+  "futures_trading": {
+    "description": "Futures/derivatives trading with dynamic leverage",
+    "components": {
+      "futures_engine.py": {
+        "path": "connectors/futures/futures_engine.py",
+        "purpose": "Futures trading engine with venue management",
+        "status": "ACTIVE",
+        "key_features": [
+          "Multi-venue support",
+          "Leverage management",
+          "Margin monitoring",
+          "Funding rate tracking"
+        ],
+        "dependencies": [
+          "leverage_calculator.py",
+          "venue_manager.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "leverage_calculator.py": {
+        "path": "connectors/futures/leverage_calculator.py",
+        "purpose": "Dynamic leverage calculation",
+        "status": "ACTIVE",
+        "key_features": [
+          "Max leverage: 25x",
+          "Base risk per trade: 2%",
+          "Confidence-based multipliers",
+          "Volatility adjustments",
+          "Market condition scaling",
+          "Position concentration penalty",
+          "Max 15% balance per position"
+        ],
+        "confidence_multipliers": {
+          "0.95": 1.5,
+          "0.85": 1.2,
+          "0.75": 1.0,
+          "0.65": 0.7,
+          "0.55": 0.4
+        },
+        "dependencies": [],
+        "verification": "ACTIVE"
+      },
+      "venue_manager.py": {
+        "path": "connectors/futures/venue_manager.py",
+        "purpose": "Multi-venue futures trading management",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      }
+    }
+  },
+  "wolfpack_orchestration": {
+    "description": "Multi-strategy wolfpack coordination",
+    "components": {
+      "orchestrator.py": {
+        "path": "wolf_packs/orchestrator.py",
+        "purpose": "Wolfpack strategy orchestration",
+        "status": "ACTIVE",
+        "key_features": [
+          "Regime-based strategy selection",
+          "Stochastic regime detection",
+          "Strategy coordination"
+        ],
+        "dependencies": [
+          "regime_detector.py"
+        ],
+        "verification": "ACTIVE"
+      },
+      "_base.py": {
+        "path": "wolf_packs/_base.py",
+        "purpose": "Base wolfpack class and interfaces",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      },
+      "extracted_oanda.py": {
+        "path": "wolf_packs/extracted_oanda.py",
+        "purpose": "OANDA-specific wolfpack strategies",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      },
+      "stochastic_config.py": {
+        "path": "wolf_packs/stochastic_config.py",
+        "purpose": "Stochastic parameter configuration",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      }
+    }
+  },
+  "swarm_execution": {
+    "description": "Individual position management with trailing stops",
+    "components": {
+      "swarm_bot.py": {
+        "path": "swarm/swarm_bot.py",
+        "purpose": "Individual bot for single position management",
+        "status": "ACTIVE",
+        "key_features": [
+          "Trailing stop management",
+          "TTL expiration (6 hours default)",
+          "Position lifecycle tracking",
+          "Trail types: FIXED, VOLATILITY, PERCENTAGE",
+          "Volatility multiplier: 1.5x ATR",
+          "Update interval: 10 seconds"
+        ],
+        "position_states": [
+          "ACTIVE",
+          "TRAILING",
+          "CLOSING",
+          "CLOSED",
+          "EXPIRED",
+          "STOPPED"
+        ],
+        "dependencies": [
+          "rick_charter.py"
+        ],
+        "verification": "ACTIVE"
+      }
+    }
+  },
+  "ghost_trading": {
+    "description": "45-minute validation sessions before live promotion",
+    "components": {
+      "ghost_trading_engine.py": {
+        "path": "ghost_trading_engine.py",
+        "purpose": "45-minute ghost trading validation",
+        "status": "ACTIVE - CURRENTLY RUNNING",
+        "key_features": [
+          "Real-time paper trading simulation",
+          "OANDA FX pairs only",
+          "45-minute session duration",
+          "Promotion criteria evaluation",
+          "Narration logging integration",
+          "P&L tracking"
+        ],
+        "promotion_criteria": {
+          "min_trades": 10,
+          "min_win_rate": 70.0,
+          "min_pnl": 50.0,
+          "max_consecutive_losses": 3,
+          "min_avg_rr": 2.5
+        },
+        "dependencies": [
+          "narration_logger.py",
+          "mode_manager.py"
+        ],
+        "verification": "RUNNING"
+      },
+      "test_ghost_trading.py": {
+        "path": "test_ghost_trading.py",
+        "purpose": "2-minute ghost trading test suite",
+        "status": "ACTIVE",
+        "key_features": [
+          "Quick validation (2 minutes)",
+          "5 trade simulation",
+          "Mode switching verification",
+          "Logging verification"
+        ],
+        "dependencies": [
+          "ghost_trading_engine.py"
+        ],
+        "verification": "VERIFIED"
+      }
+    }
+  },
+  "promotion_system": {
+    "description": "Automated canary-to-live promotion logic",
+    "components": {
+      "canary_to_live.py": {
+        "path": "canary_to_live.py",
+        "purpose": "Automated GHOST\u2192CANARY\u2192LIVE promotion",
+        "status": "ACTIVE",
+        "key_features": [
+          "Reads from narration_logger",
+          "Uses mode_manager for promotion",
+          "PIN validation for LIVE",
+          "Min 3 successful sessions",
+          "70% min win rate",
+          "100+ total trades required",
+          "$50+ avg P&L per session",
+          "85% consistency threshold"
+        ],
+        "dependencies": [
+          "narration_logger.py",
+          "mode_manager.py",
+          "rick_charter.py"
+        ],
+        "verification": "TESTED"
+      }
+    }
+  },
+  "monitoring_dashboard": {
+    "description": "Real-time monitoring and visualization",
+    "components": {
+      "generate_dashboard.py": {
+        "path": "dashboard/generate_dashboard.py",
+        "purpose": "Static HTML dashboard generator",
+        "status": "ACTIVE",
+        "key_features": [
+          "No Flask dependency",
+          "Mode badges with color coding",
+          "Performance metrics",
+          "Recent activity feed",
+          "Auto-refresh every 10 seconds",
+          "Quick command reference"
+        ],
+        "dependencies": [
+          "narration_logger.py",
+          "mode_manager.py"
+        ],
+        "verification": "VERIFIED"
+      },
+      "monitor_ghost_session.py": {
+        "path": "scripts/monitor_ghost_session.py",
+        "purpose": "Real-time ghost session monitoring",
+        "status": "ACTIVE",
+        "key_features": [
+          "Live session tracking",
+          "Trade-by-trade updates",
+          "P&L summary display",
+          "Auto-refresh every 5 seconds",
+          "Process status detection"
+        ],
+        "dependencies": [
+          "narration_logger.py"
+        ],
+        "verification": "VERIFIED"
+      }
+    }
+  },
+  "utilities": {
+    "description": "Helper utilities and tools",
+    "components": {
+      "logging.py": {
+        "path": "util/logging.py",
+        "purpose": "System logging utilities",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      },
+      "retry.py": {
+        "path": "util/retry.py",
+        "purpose": "Retry logic for API calls",
+        "status": "ACTIVE",
+        "verification": "ACTIVE"
+      }
+    }
+  }
+}

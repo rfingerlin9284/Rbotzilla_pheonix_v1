@@ -1,0 +1,35 @@
+# Use an official Python base image with required version (e.g., 3.11-slim)
+FROM python:3.11-slim
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy the wait-for-postgres script and make it executable
+COPY wait-for-postgres.sh /app/wait-for-postgres.sh
+RUN chmod +x /app/wait-for-postgres.sh
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    iproute2 \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy only requirements first to leverage Docker cache
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy your backend source code
+COPY . .
+COPY orchestrator/trigger_graph.py /app/orchestrator/trigger_graph.py
+
+# Expose the port your WebSocket server runs on
+EXPOSE 8008
+
+# Set PYTHONPATH so Python can find your modules
+ENV PYTHONPATH=/app
+
+# Command to run the WebSocket application, waiting for PostgreSQL to be ready
+CMD ["/app/wait-for-postgres.sh", "postgres", "python", "-m", "uvicorn", "websocket_server:app", "--host", "0.0.0.0", "--port", "8008"]

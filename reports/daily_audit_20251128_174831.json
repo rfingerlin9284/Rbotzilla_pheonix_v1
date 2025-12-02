@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-11-28T17:48:31.873910+00:00",
+  "report_file": "/home/ing/RICK/RICK_PHOENIX/reports/predeployment_report_20251128_174748.json",
+  "baseline_file": "/home/ing/RICK/RICK_PHOENIX/reports/baseline_predeployment.json",
+  "deltas": {
+    "detect_unsafe_place_order": {
+      "base": 136.51,
+      "current": 136.51,
+      "pct": 0.0
+    },
+    "readiness_checks": {
+      "base": 252.77,
+      "current": 252.77,
+      "pct": 0.0
+    },
+    "safe_place_order_behavior": {
+      "base": 3.99,
+      "current": 3.99,
+      "pct": 0.0
+    },
+    "router_and_demo": {
+      "base": 34.72,
+      "current": 34.72,
+      "pct": 0.0
+    },
+    "quant_hedge_performance": {
+      "base": 32.36,
+      "current": 32.36,
+      "pct": 0.0
+    },
+    "connectors_basic": {
+      "base": 137.99,
+      "current": 137.99,
+      "pct": 0.0
+    }
+  },
+  "flagged": []
+}

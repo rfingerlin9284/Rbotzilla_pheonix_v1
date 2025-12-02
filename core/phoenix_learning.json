@@ -1,0 +1,53 @@
+{
+  "strategy_performance": {},
+  "strategy_weights": {},
+  "order_strategy_map": {},
+  "strategy_params": {
+    "LiquiditySweepWolf": {
+      "wick_multiplier": 1.0,
+      "limit_size": 1,
+      "sharpe": 0.0
+    },
+    "EMAScalperWolf": {
+      "fast": 10,
+      "slow": 40,
+      "risk_reward": 1.5,
+      "sharpe": 0.0
+    },
+    "SupplyDemandWolf": {
+      "lookback": 10,
+      "sl_mult": 1.0,
+      "sharpe": 0.0
+    },
+    "MultiTFConfluenceWolf": {
+      "htf_weight": 0.5,
+      "pullback": 0.01,
+      "sharpe": 0.0
+    },
+    "SupplyDemandMultiTapWolf": {
+      "taps": 2,
+      "sharpe": 0.0
+    },
+    "ChartPatternBreakWolf": {
+      "min_volume_mult": 1.2,
+      "sharpe": 0.0
+    },
+    "RangeMidlineBounceWolf": {
+      "adx_threshold": 20,
+      "sharpe": 0.0
+    },
+    "LongWickReversalWolf": {
+      "body_mult": 1.5,
+      "sharpe": 0.0
+    },
+    "MomentumShiftWolf": {
+      "lookback": 5,
+      "sharpe": 0.0
+    },
+    "CCIDivergenceWolf": {
+      "cci_window": 14,
+      "sensitivity": 0.015,
+      "sharpe": 0.0
+    }
+  }
+}

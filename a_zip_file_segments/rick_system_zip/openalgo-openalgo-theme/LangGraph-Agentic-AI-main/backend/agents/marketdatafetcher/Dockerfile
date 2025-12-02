@@ -1,0 +1,35 @@
+# ================================
+# MARKET DATA FETCHER AGENT DOCKERFILE
+# ================================
+
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project source
+COPY . .
+
+# Set default environment variables (can be overridden by docker-compose)
+ENV PYTHONPATH=/app
+ENV REDIS_URL=redis://redis:6379
+ENV DATABASE_URL=postgresql://postgres:password@postgres:5432/agentic_trading
+
+# Copy wait-for-postgres script for health checks
+COPY wait-for-postgres.sh /wait-for-postgres.sh
+RUN chmod +x /wait-for-postgres.sh
+
+# Command to run the MarketDataFetcher agent
+CMD ["/wait-for-postgres.sh", "postgres", "python3", "-m", "backend.agents.marketdatafetcher.main"]

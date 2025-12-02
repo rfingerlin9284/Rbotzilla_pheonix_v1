@@ -1,0 +1,18 @@
+{
+  "EUR_USD": {
+    "metrics": {
+      "cagr": 0,
+      "sharpe": 0,
+      "max_dd": 0
+    },
+    "trades": []
+  },
+  "BTC_USD": {
+    "metrics": {
+      "cagr": 0,
+      "sharpe": 0,
+      "max_dd": 0
+    },
+    "trades": []
+  }
+}

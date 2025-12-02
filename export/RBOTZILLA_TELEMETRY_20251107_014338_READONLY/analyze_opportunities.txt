@@ -1,0 +1,69 @@
+================================================================================
+🔍 CURRENT MARKET OPPORTUNITIES ANALYSIS
+================================================================================
+
+Analyzing momentum signals (SMA 20/50 + momentum threshold 0.15%)...
+
+🎯 ACTIVE SIGNALS: None
+
+================================================================================
+
+⚠️  NEAR-MISS OPPORTUNITIES (6):
+--------------------------------------------------------------------------------
+These would have triggered with a lower momentum threshold:
+
+AUD_USD: ALMOST SELL
+  Price: 0.64758
+  SMA20: 0.64805
+  SMA50: 0.64822
+  Momentum: (-0.077%) (momentum (0.077%) > threshold 0.15%))
+  💡 Would trigger with threshold: 0.077%
+
+NZD_USD: ALMOST SELL
+  Price: 0.56273
+  SMA20: 0.56351
+  SMA50: 0.56378
+  Momentum: (-0.142%) (momentum (0.142%) > threshold 0.15%))
+  💡 Would trigger with threshold: 0.142%
+
+EUR_GBP: ALMOST SELL
+  Price: 0.87908
+  SMA20: 0.87900
+  SMA50: 0.87952
+  Momentum: (-0.020%) (momentum (0.020%) > threshold 0.15%))
+  💡 Would trigger with threshold: 0.020%
+
+NZD_CHF: ALMOST SELL
+  Price: 0.45414
+  SMA20: 0.45443
+  SMA50: 0.45492
+  Momentum: (-0.081%) (momentum (0.081%) > threshold 0.15%))
+  💡 Would trigger with threshold: 0.081%
+
+AUD_JPY: ALMOST SELL
+  Price: 99.20200
+  SMA20: 99.19060
+  SMA50: 99.26980
+  Momentum: (-0.003%) (momentum (0.003%) > threshold 0.15%))
+  💡 Would trigger with threshold: 0.003%
+
+GBP_JPY: ALMOST BUY
+  Price: 201.10000
+  SMA20: 201.03910
+  SMA50: 200.95240
+  Momentum: 0.046% (momentum 0.046% < threshold 0.15%)
+  💡 Would trigger with threshold: 0.046%
+
+
+================================================================================
+📋 ANALYSIS SUMMARY:
+--------------------------------------------------------------------------------
+Total pairs analyzed: 10
+Active signals found: 0
+Near-miss opportunities: 6
+
+💡 Average near-miss momentum: 0.062%
+   Current threshold: 0.15%
+   Suggestion: Test threshold between 0.10% - 0.13% in backtest
+
+================================================================================

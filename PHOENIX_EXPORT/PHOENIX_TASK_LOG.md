@@ -1,0 +1,61 @@
+# Phoenix Core Export run: 2025-11-28T07:42:44.498348Z
+- Files scanned: 5004
+- Total canonical selected: 38
+- Category rick_and_hive: 5 selected
+- Category engines: 8 selected
+- Category brokers: 5 selected
+- Category risk_and_gates: 5 selected
+- Category strategies_and_wolfpacks: 10 selected
+- Category charters: 5 selected
+- Duplication & exclusion list (some examples):
+- EXCLUDED canary_summary.sh -> not canonical based on heuristics / backup / legacy
+- EXCLUDED rbotzilla_unified_10year_sim.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED YOUR_IBKR_OS_CONFIGURATION.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED Makefile -> not canonical based on heuristics / backup / legacy
+- EXCLUDED canary_trading_engine_OLD_DEPRECATED.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED QUICK_DEPLOY_COMMANDS.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED AGENT_2_QUICK_START.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED analyze_trades.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED OPENALGO_ANALYSIS_AND_IMPLEMENTATION_ROADMAP.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED test_door_files_present.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED SYSTEM_READY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED TASKS_JSON_REFERENCE.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED FRONTEND_INTEGRATION_CHECKLIST.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED SYSTEM_PROTECTION_ADDENDUM.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED IMPLEMENTATION_BLUEPRINT_MULTI_BROKER.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED validate_system.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED PROMPTS_READY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED PERSISTENT_MONITOR_GUIDE.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED show_endpoint_status.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED ENDPOINT_STATUS_SUMMARY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED MULTI_BROKER_QUICK_START.sh -> not canonical based on heuristics / backup / legacy
+- EXCLUDED test_futures_historical_data.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED activate_risk_modules.sh -> not canonical based on heuristics / backup / legacy
+- EXCLUDED AGENT_REVEAL_VERIFICATION.txt -> not canonical based on heuristics / backup / legacy
+- EXCLUDED system_architecture.dot -> not canonical based on heuristics / backup / legacy
+- EXCLUDED COMPLETE_SYSTEM_INVENTORY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED MULTI_BROKER_DEPLOYMENT_SUMMARY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED daily_replay_audit.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED envv_new.env -> not canonical based on heuristics / backup / legacy
+- EXCLUDED monitor_narration.sh -> not canonical based on heuristics / backup / legacy
+- EXCLUDED CAPITAL_PLAN.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED CONTROL_PLANE_SUMMARY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED LIVE_TRADING_ACTIVATED.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED SYSTEM_DIAGRAM.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED PAPER_README.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED live_monitor.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED analyze_opportunities.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED launch_complete_dashboard.sh -> not canonical based on heuristics / backup / legacy
+- EXCLUDED FRONTEND_SNAPSHOT_FOR_INTEGRATION_REVIEW.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED check_canary_status.sh -> not canonical based on heuristics / backup / legacy
+- EXCLUDED test_oanda_paper_trading.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED .agent_governance_lock -> not canonical based on heuristics / backup / legacy
+- EXCLUDED canary_trading_report.json -> not canonical based on heuristics / backup / legacy
+- EXCLUDED ANALYSIS_SUMMARY.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED RECOMMENDED_PATH_VERIFICATION_COMPLETE.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED env_decrypt.env -> not canonical based on heuristics / backup / legacy
+- EXCLUDED SESSION_ACTIVITY_REPORT_NOV5-6_2025.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED COPY_PASTE_START_NOW.md -> not canonical based on heuristics / backup / legacy
+- EXCLUDED check_integrity.py -> not canonical based on heuristics / backup / legacy
+- EXCLUDED HANDOFF_MISSION_COMPLETE.md -> not canonical based on heuristics / backup / legacy
+

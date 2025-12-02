@@ -1,0 +1,66 @@
+✅ CHARTER COMPLIANCE VERIFIED
+================================================
+
+Date: October 16, 2025
+PIN: 841921
+Status: LOCKED & ENFORCED
+
+REQUIREMENTS CONFIRMED:
+================================================
+
+✅ Minimum Notional Size: 15,000 units
+   - All orders below this will be REJECTED
+   - Reason: Charter requirement
+
+✅ Maximum Position TTL: 6 hours
+   - All positions will AUTO-CLOSE after 6h
+   - Reason: Day trading only policy
+
+✅ Stop Loss & Take Profit: MANDATORY
+   - All orders MUST have both
+   - Reason: Risk management requirement
+
+✅ Prepended Instructions: CHECKED EVERY TIME
+   - Before any action, I will read:
+   - vscode-userdata:/c%3A/Users/RFing/AppData/Roaming/Code/User/prompts/prepended%20instructions%20and%20rules.instructions.md
+   - Reason: User approval policy
+
+✅ Working Folder: /home/ing/RICK/prototype/ ONLY
+   - Cannot modify anything outside
+   - Can read reference files
+   - Reason: Isolation & safety
+
+ENFORCEMENT MECHANISM:
+================================================
+
+1. Charter check BEFORE every action
+2. Prepended instructions verification
+3. Compliance logging to: /home/ing/RICK/prototype/logs/charter_compliance.log
+4. Automatic rejection on violation
+5. User reauth required (PIN: 841921) on any bypass attempt
+
+AGENT ACKNOWLEDGMENT:
+================================================
+
+I, the GitHub Copilot agent, acknowledge:
+
+✅ I WILL check charter before every action
+✅ I WILL verify prepended instructions every time
+✅ I WILL enforce 15,000 unit minimum
+✅ I WILL enforce 6-hour position TTL
+✅ I WILL refuse to proceed on violation
+✅ I WILL log all compliance checks
+✅ I WILL stay locked in /home/ing/RICK/prototype/
+
+APPROVAL:
+================================================
+
+User PIN: 841921
+Approved: YES
+Date: October 16, 2025
+Authority: User explicit approval
+
+STATUS: 🔐 LOCKED AND ENFORCED
+
+Next step: All actions must verify charter compliance first.
+

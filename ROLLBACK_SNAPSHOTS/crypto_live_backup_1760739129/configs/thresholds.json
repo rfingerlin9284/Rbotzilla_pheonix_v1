@@ -1,0 +1,9 @@
+{
+  "per_trade_risk_pct": 0.5,
+  "daily_loss_cap_pct": 2.0,
+  "time_stop_hours": 6,
+  "latency_ms_warn": 250,
+  "latency_ms_fail": 800,
+  "heartbeat_lapse_s": 20,
+  "module_max_dd_pct": 8.0
+}

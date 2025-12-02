@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Simple pre-commit hook: Run detect_unsafe_place_order and fail commit if any unsafe calls are found
+PYTHONPATH=$(pwd) python3 scripts/precommit_check.py
+RC=$?
+if [ $RC -ne 0 ]; then
+  echo "Pre-commit checks failed (unsafe place_order calls detected). Fix issues before committing."
+  exit $RC
+fi
+exit 0
